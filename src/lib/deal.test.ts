@@ -14,18 +14,32 @@ const terms = (overrides: Partial<DealTerms> = {}): DealTerms => ({
   ...overrides,
 });
 
+const prices = { benzin: 2, diesel: 2 };
+
 describe("travelCost", () => {
   test("is unknown without a distance", () => {
-    expect(travelCost({ distanceKm: null, tolls: null }, [{ consumption: 10 }], 2)).toBeNull();
+    const cars = [{ consumption: 10, fuel: "diesel" as const }];
+    expect(travelCost({ distanceKm: null, tolls: null }, cars, prices)).toBeNull();
   });
 
   test("counts the round trip for every car with its own consumption plus tolls", () => {
-    const cars = [{ consumption: 10 }, { consumption: 5 }];
-    expect(travelCost({ distanceKm: 100, tolls: 15 }, cars, 2)).toBe(75);
+    const cars = [
+      { consumption: 10, fuel: "diesel" as const },
+      { consumption: 5, fuel: "diesel" as const },
+    ];
+    expect(travelCost({ distanceKm: 100, tolls: 15 }, cars, prices)).toBe(75);
+  });
+
+  test("prices every car by its fuel type", () => {
+    const cars = [
+      { consumption: 10, fuel: "diesel" as const },
+      { consumption: 5, fuel: "benzin" as const },
+    ];
+    expect(travelCost({ distanceKm: 100, tolls: null }, cars, { benzin: 2, diesel: 1.5 })).toBe(50);
   });
 
   test("only counts tolls without cars", () => {
-    expect(travelCost({ distanceKm: 50, tolls: 8 }, [], 2)).toBe(8);
+    expect(travelCost({ distanceKm: 50, tolls: 8 }, [], prices)).toBe(8);
   });
 });
 

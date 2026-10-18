@@ -17,7 +17,7 @@ import type {
 } from '@prisma/orm-sqlite/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'9d0fe1345d9cd762693ffec5f6644caeae67b8beb7be03fd8624d1754ff0d685'>;
+  StorageHashBase<'3726f55cbe4786c3411f56927b04f305f32d94eca7e1f65930ef2efc74435292'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'260b8608d1aacaf1f690779a6cff39a12947c599597c5ba464ca75b9e775df53'>;
@@ -139,6 +139,7 @@ export type FieldOutputTypes = {
     readonly Car: {
       readonly consumption: CodecTypes['sqlite/real@1']['output'];
       readonly createdAt: CodecTypes['sqlite/datetime@1']['output'];
+      readonly fuel: CodecTypes['sqlite/text@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly name: CodecTypes['sqlite/text@1']['output'];
       readonly seats: CodecTypes['sqlite/integer@1']['output'] | null;
@@ -171,13 +172,13 @@ export type FieldOutputTypes = {
       readonly dealNotes: CodecTypes['sqlite/text@1']['output'];
       readonly dealType: CodecTypes['sqlite/text@1']['output'];
       readonly deposit: CodecTypes['sqlite/real@1']['output'] | null;
+      readonly dieselPrice: CodecTypes['sqlite/real@1']['output'] | null;
       readonly distanceKm: CodecTypes['sqlite/real@1']['output'] | null;
       readonly doorPercent: CodecTypes['sqlite/real@1']['output'] | null;
       readonly drinks: CodecTypes['sqlite/text@1']['output'];
       readonly durationMin: CodecTypes['sqlite/integer@1']['output'] | null;
       readonly expectedAttendance: CodecTypes['sqlite/integer@1']['output'] | null;
       readonly fee: CodecTypes['sqlite/real@1']['output'] | null;
-      readonly fuelPrice: CodecTypes['sqlite/real@1']['output'] | null;
       readonly gemaReported: CodecTypes['sqlite/integer@1']['output'];
       readonly hospitalityNotes: CodecTypes['sqlite/text@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
@@ -186,7 +187,10 @@ export type FieldOutputTypes = {
       readonly notes: CodecTypes['sqlite/text@1']['output'];
       readonly ownFoh: CodecTypes['sqlite/integer@1']['output'];
       readonly people: CodecTypes['sqlite/integer@1']['output'] | null;
+      readonly petrolPrice: CodecTypes['sqlite/real@1']['output'] | null;
       readonly rent: CodecTypes['sqlite/real@1']['output'] | null;
+      readonly returnKm: CodecTypes['sqlite/real@1']['output'] | null;
+      readonly returnMin: CodecTypes['sqlite/integer@1']['output'] | null;
       readonly riderSent: CodecTypes['sqlite/integer@1']['output'];
       readonly stagePlotSent: CodecTypes['sqlite/integer@1']['output'];
       readonly status: CodecTypes['sqlite/text@1']['output'];
@@ -195,6 +199,7 @@ export type FieldOutputTypes = {
       readonly ticketPresale: CodecTypes['sqlite/real@1']['output'] | null;
       readonly title: CodecTypes['sqlite/text@1']['output'];
       readonly tolls: CodecTypes['sqlite/real@1']['output'] | null;
+      readonly tourId: CodecTypes['sqlite/text@1']['output'] | null;
       readonly type: CodecTypes['sqlite/text@1']['output'];
       readonly venueId: CodecTypes['sqlite/text@1']['output'] | null;
     };
@@ -216,11 +221,12 @@ export type FieldOutputTypes = {
     };
     readonly Settings: {
       readonly bandSize: CodecTypes['sqlite/integer@1']['output'];
-      readonly fuelPrice: CodecTypes['sqlite/real@1']['output'];
+      readonly dieselPrice: CodecTypes['sqlite/real@1']['output'];
       readonly homeAddress: CodecTypes['sqlite/text@1']['output'];
       readonly homeLat: CodecTypes['sqlite/real@1']['output'] | null;
       readonly homeLon: CodecTypes['sqlite/real@1']['output'] | null;
       readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly petrolPrice: CodecTypes['sqlite/real@1']['output'];
     };
     readonly SupportAct: {
       readonly contact: CodecTypes['sqlite/text@1']['output'];
@@ -241,6 +247,11 @@ export type FieldOutputTypes = {
       readonly label: CodecTypes['sqlite/text@1']['output'];
       readonly position: CodecTypes['sqlite/integer@1']['output'];
       readonly start: CodecTypes['sqlite/text@1']['output'];
+    };
+    readonly Tour: {
+      readonly createdAt: CodecTypes['sqlite/datetime@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly name: CodecTypes['sqlite/text@1']['output'];
     };
     readonly Venue: {
       readonly address: CodecTypes['sqlite/text@1']['output'];
@@ -271,6 +282,7 @@ export type FieldInputTypes = {
     readonly Car: {
       readonly consumption: CodecTypes['sqlite/real@1']['input'];
       readonly createdAt: CodecTypes['sqlite/datetime@1']['input'];
+      readonly fuel: CodecTypes['sqlite/text@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly name: CodecTypes['sqlite/text@1']['input'];
       readonly seats: CodecTypes['sqlite/integer@1']['input'] | null;
@@ -303,13 +315,13 @@ export type FieldInputTypes = {
       readonly dealNotes: CodecTypes['sqlite/text@1']['input'];
       readonly dealType: CodecTypes['sqlite/text@1']['input'];
       readonly deposit: CodecTypes['sqlite/real@1']['input'] | null;
+      readonly dieselPrice: CodecTypes['sqlite/real@1']['input'] | null;
       readonly distanceKm: CodecTypes['sqlite/real@1']['input'] | null;
       readonly doorPercent: CodecTypes['sqlite/real@1']['input'] | null;
       readonly drinks: CodecTypes['sqlite/text@1']['input'];
       readonly durationMin: CodecTypes['sqlite/integer@1']['input'] | null;
       readonly expectedAttendance: CodecTypes['sqlite/integer@1']['input'] | null;
       readonly fee: CodecTypes['sqlite/real@1']['input'] | null;
-      readonly fuelPrice: CodecTypes['sqlite/real@1']['input'] | null;
       readonly gemaReported: CodecTypes['sqlite/integer@1']['input'];
       readonly hospitalityNotes: CodecTypes['sqlite/text@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
@@ -318,7 +330,10 @@ export type FieldInputTypes = {
       readonly notes: CodecTypes['sqlite/text@1']['input'];
       readonly ownFoh: CodecTypes['sqlite/integer@1']['input'];
       readonly people: CodecTypes['sqlite/integer@1']['input'] | null;
+      readonly petrolPrice: CodecTypes['sqlite/real@1']['input'] | null;
       readonly rent: CodecTypes['sqlite/real@1']['input'] | null;
+      readonly returnKm: CodecTypes['sqlite/real@1']['input'] | null;
+      readonly returnMin: CodecTypes['sqlite/integer@1']['input'] | null;
       readonly riderSent: CodecTypes['sqlite/integer@1']['input'];
       readonly stagePlotSent: CodecTypes['sqlite/integer@1']['input'];
       readonly status: CodecTypes['sqlite/text@1']['input'];
@@ -327,6 +342,7 @@ export type FieldInputTypes = {
       readonly ticketPresale: CodecTypes['sqlite/real@1']['input'] | null;
       readonly title: CodecTypes['sqlite/text@1']['input'];
       readonly tolls: CodecTypes['sqlite/real@1']['input'] | null;
+      readonly tourId: CodecTypes['sqlite/text@1']['input'] | null;
       readonly type: CodecTypes['sqlite/text@1']['input'];
       readonly venueId: CodecTypes['sqlite/text@1']['input'] | null;
     };
@@ -348,11 +364,12 @@ export type FieldInputTypes = {
     };
     readonly Settings: {
       readonly bandSize: CodecTypes['sqlite/integer@1']['input'];
-      readonly fuelPrice: CodecTypes['sqlite/real@1']['input'];
+      readonly dieselPrice: CodecTypes['sqlite/real@1']['input'];
       readonly homeAddress: CodecTypes['sqlite/text@1']['input'];
       readonly homeLat: CodecTypes['sqlite/real@1']['input'] | null;
       readonly homeLon: CodecTypes['sqlite/real@1']['input'] | null;
       readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly petrolPrice: CodecTypes['sqlite/real@1']['input'];
     };
     readonly SupportAct: {
       readonly contact: CodecTypes['sqlite/text@1']['input'];
@@ -373,6 +390,11 @@ export type FieldInputTypes = {
       readonly label: CodecTypes['sqlite/text@1']['input'];
       readonly position: CodecTypes['sqlite/integer@1']['input'];
       readonly start: CodecTypes['sqlite/text@1']['input'];
+    };
+    readonly Tour: {
+      readonly createdAt: CodecTypes['sqlite/datetime@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly name: CodecTypes['sqlite/text@1']['input'];
     };
     readonly Venue: {
       readonly address: CodecTypes['sqlite/text@1']['input'];
@@ -403,6 +425,7 @@ export type StorageColumnTypes = {
     readonly cars: {
       readonly consumption: CodecTypes['sqlite/real@1']['output'];
       readonly created_at: CodecTypes['sqlite/datetime@1']['output'];
+      readonly fuel: CodecTypes['sqlite/text@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly name: CodecTypes['sqlite/text@1']['output'];
       readonly seats: CodecTypes['sqlite/integer@1']['output'] | null;
@@ -444,13 +467,13 @@ export type StorageColumnTypes = {
       readonly deal_notes: CodecTypes['sqlite/text@1']['output'];
       readonly deal_type: CodecTypes['sqlite/text@1']['output'];
       readonly deposit: CodecTypes['sqlite/real@1']['output'] | null;
+      readonly diesel_price: CodecTypes['sqlite/real@1']['output'] | null;
       readonly distance_km: CodecTypes['sqlite/real@1']['output'] | null;
       readonly door_percent: CodecTypes['sqlite/real@1']['output'] | null;
       readonly drinks: CodecTypes['sqlite/text@1']['output'];
       readonly duration_min: CodecTypes['sqlite/integer@1']['output'] | null;
       readonly expected_attendance: CodecTypes['sqlite/integer@1']['output'] | null;
       readonly fee: CodecTypes['sqlite/real@1']['output'] | null;
-      readonly fuel_price: CodecTypes['sqlite/real@1']['output'] | null;
       readonly gema_reported: CodecTypes['sqlite/integer@1']['output'];
       readonly hospitality_notes: CodecTypes['sqlite/text@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
@@ -459,7 +482,10 @@ export type StorageColumnTypes = {
       readonly notes: CodecTypes['sqlite/text@1']['output'];
       readonly own_foh: CodecTypes['sqlite/integer@1']['output'];
       readonly people: CodecTypes['sqlite/integer@1']['output'] | null;
+      readonly petrol_price: CodecTypes['sqlite/real@1']['output'] | null;
       readonly rent: CodecTypes['sqlite/real@1']['output'] | null;
+      readonly return_km: CodecTypes['sqlite/real@1']['output'] | null;
+      readonly return_min: CodecTypes['sqlite/integer@1']['output'] | null;
       readonly rider_sent: CodecTypes['sqlite/integer@1']['output'];
       readonly stage_plot_sent: CodecTypes['sqlite/integer@1']['output'];
       readonly status: CodecTypes['sqlite/text@1']['output'];
@@ -468,6 +494,7 @@ export type StorageColumnTypes = {
       readonly ticket_presale: CodecTypes['sqlite/real@1']['output'] | null;
       readonly title: CodecTypes['sqlite/text@1']['output'];
       readonly tolls: CodecTypes['sqlite/real@1']['output'] | null;
+      readonly tour_id: CodecTypes['sqlite/text@1']['output'] | null;
       readonly type: CodecTypes['sqlite/text@1']['output'];
       readonly venue_id: CodecTypes['sqlite/text@1']['output'] | null;
     };
@@ -480,11 +507,12 @@ export type StorageColumnTypes = {
     };
     readonly settings: {
       readonly band_size: CodecTypes['sqlite/integer@1']['output'];
-      readonly fuel_price: CodecTypes['sqlite/real@1']['output'];
+      readonly diesel_price: CodecTypes['sqlite/real@1']['output'];
       readonly home_address: CodecTypes['sqlite/text@1']['output'];
       readonly home_lat: CodecTypes['sqlite/real@1']['output'] | null;
       readonly home_lon: CodecTypes['sqlite/real@1']['output'] | null;
       readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly petrol_price: CodecTypes['sqlite/real@1']['output'];
     };
     readonly support_acts: {
       readonly contact: CodecTypes['sqlite/text@1']['output'];
@@ -505,6 +533,11 @@ export type StorageColumnTypes = {
       readonly label: CodecTypes['sqlite/text@1']['output'];
       readonly position: CodecTypes['sqlite/integer@1']['output'];
       readonly start: CodecTypes['sqlite/text@1']['output'];
+    };
+    readonly tours: {
+      readonly created_at: CodecTypes['sqlite/datetime@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly name: CodecTypes['sqlite/text@1']['output'];
     };
     readonly venues: {
       readonly address: CodecTypes['sqlite/text@1']['output'];
@@ -535,6 +568,7 @@ export type StorageColumnInputTypes = {
     readonly cars: {
       readonly consumption: CodecTypes['sqlite/real@1']['input'];
       readonly created_at: CodecTypes['sqlite/datetime@1']['input'];
+      readonly fuel: CodecTypes['sqlite/text@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly name: CodecTypes['sqlite/text@1']['input'];
       readonly seats: CodecTypes['sqlite/integer@1']['input'] | null;
@@ -576,13 +610,13 @@ export type StorageColumnInputTypes = {
       readonly deal_notes: CodecTypes['sqlite/text@1']['input'];
       readonly deal_type: CodecTypes['sqlite/text@1']['input'];
       readonly deposit: CodecTypes['sqlite/real@1']['input'] | null;
+      readonly diesel_price: CodecTypes['sqlite/real@1']['input'] | null;
       readonly distance_km: CodecTypes['sqlite/real@1']['input'] | null;
       readonly door_percent: CodecTypes['sqlite/real@1']['input'] | null;
       readonly drinks: CodecTypes['sqlite/text@1']['input'];
       readonly duration_min: CodecTypes['sqlite/integer@1']['input'] | null;
       readonly expected_attendance: CodecTypes['sqlite/integer@1']['input'] | null;
       readonly fee: CodecTypes['sqlite/real@1']['input'] | null;
-      readonly fuel_price: CodecTypes['sqlite/real@1']['input'] | null;
       readonly gema_reported: CodecTypes['sqlite/integer@1']['input'];
       readonly hospitality_notes: CodecTypes['sqlite/text@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
@@ -591,7 +625,10 @@ export type StorageColumnInputTypes = {
       readonly notes: CodecTypes['sqlite/text@1']['input'];
       readonly own_foh: CodecTypes['sqlite/integer@1']['input'];
       readonly people: CodecTypes['sqlite/integer@1']['input'] | null;
+      readonly petrol_price: CodecTypes['sqlite/real@1']['input'] | null;
       readonly rent: CodecTypes['sqlite/real@1']['input'] | null;
+      readonly return_km: CodecTypes['sqlite/real@1']['input'] | null;
+      readonly return_min: CodecTypes['sqlite/integer@1']['input'] | null;
       readonly rider_sent: CodecTypes['sqlite/integer@1']['input'];
       readonly stage_plot_sent: CodecTypes['sqlite/integer@1']['input'];
       readonly status: CodecTypes['sqlite/text@1']['input'];
@@ -600,6 +637,7 @@ export type StorageColumnInputTypes = {
       readonly ticket_presale: CodecTypes['sqlite/real@1']['input'] | null;
       readonly title: CodecTypes['sqlite/text@1']['input'];
       readonly tolls: CodecTypes['sqlite/real@1']['input'] | null;
+      readonly tour_id: CodecTypes['sqlite/text@1']['input'] | null;
       readonly type: CodecTypes['sqlite/text@1']['input'];
       readonly venue_id: CodecTypes['sqlite/text@1']['input'] | null;
     };
@@ -612,11 +650,12 @@ export type StorageColumnInputTypes = {
     };
     readonly settings: {
       readonly band_size: CodecTypes['sqlite/integer@1']['input'];
-      readonly fuel_price: CodecTypes['sqlite/real@1']['input'];
+      readonly diesel_price: CodecTypes['sqlite/real@1']['input'];
       readonly home_address: CodecTypes['sqlite/text@1']['input'];
       readonly home_lat: CodecTypes['sqlite/real@1']['input'] | null;
       readonly home_lon: CodecTypes['sqlite/real@1']['input'] | null;
       readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly petrol_price: CodecTypes['sqlite/real@1']['input'];
     };
     readonly support_acts: {
       readonly contact: CodecTypes['sqlite/text@1']['input'];
@@ -637,6 +676,11 @@ export type StorageColumnInputTypes = {
       readonly label: CodecTypes['sqlite/text@1']['input'];
       readonly position: CodecTypes['sqlite/integer@1']['input'];
       readonly start: CodecTypes['sqlite/text@1']['input'];
+    };
+    readonly tours: {
+      readonly created_at: CodecTypes['sqlite/datetime@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly name: CodecTypes['sqlite/text@1']['input'];
     };
     readonly venues: {
       readonly address: CodecTypes['sqlite/text@1']['input'];
@@ -669,6 +713,7 @@ export namespace Models {
   export type Car = {
     consumption: CodecTypes['sqlite/real@1']['output'];
     createdAt: CodecTypes['sqlite/datetime@1']['output'];
+    fuel: CodecTypes['sqlite/text@1']['output'];
     id: CodecTypes['sqlite/text@1']['output'];
     name: CodecTypes['sqlite/text@1']['output'];
     seats: CodecTypes['sqlite/integer@1']['output'] | null;
@@ -705,13 +750,13 @@ export namespace Models {
     dealNotes: CodecTypes['sqlite/text@1']['output'];
     dealType: CodecTypes['sqlite/text@1']['output'];
     deposit: CodecTypes['sqlite/real@1']['output'] | null;
+    dieselPrice: CodecTypes['sqlite/real@1']['output'] | null;
     distanceKm: CodecTypes['sqlite/real@1']['output'] | null;
     doorPercent: CodecTypes['sqlite/real@1']['output'] | null;
     drinks: CodecTypes['sqlite/text@1']['output'];
     durationMin: CodecTypes['sqlite/integer@1']['output'] | null;
     expectedAttendance: CodecTypes['sqlite/integer@1']['output'] | null;
     fee: CodecTypes['sqlite/real@1']['output'] | null;
-    fuelPrice: CodecTypes['sqlite/real@1']['output'] | null;
     gemaReported: CodecTypes['sqlite/integer@1']['output'];
     hospitalityNotes: CodecTypes['sqlite/text@1']['output'];
     id: CodecTypes['sqlite/text@1']['output'];
@@ -720,7 +765,10 @@ export namespace Models {
     notes: CodecTypes['sqlite/text@1']['output'];
     ownFoh: CodecTypes['sqlite/integer@1']['output'];
     people: CodecTypes['sqlite/integer@1']['output'] | null;
+    petrolPrice: CodecTypes['sqlite/real@1']['output'] | null;
     rent: CodecTypes['sqlite/real@1']['output'] | null;
+    returnKm: CodecTypes['sqlite/real@1']['output'] | null;
+    returnMin: CodecTypes['sqlite/integer@1']['output'] | null;
     riderSent: CodecTypes['sqlite/integer@1']['output'];
     stagePlotSent: CodecTypes['sqlite/integer@1']['output'];
     status: CodecTypes['sqlite/text@1']['output'];
@@ -729,6 +777,7 @@ export namespace Models {
     ticketPresale: CodecTypes['sqlite/real@1']['output'] | null;
     title: CodecTypes['sqlite/text@1']['output'];
     tolls: CodecTypes['sqlite/real@1']['output'] | null;
+    tourId: CodecTypes['sqlite/text@1']['output'] | null;
     type: CodecTypes['sqlite/text@1']['output'];
     venueId: CodecTypes['sqlite/text@1']['output'] | null;
     backline: BacklineItem[];
@@ -737,9 +786,17 @@ export namespace Models {
     presaleLinks: PresaleLink[];
     supportActs: SupportAct[];
     timetable: TimetableEntry[];
+    tour: Tour | null;
     venue: Venue | null;
     readonly [RelationKeys]?:
-      'backline' | 'cars' | 'contacts' | 'presaleLinks' | 'supportActs' | 'timetable' | 'venue';
+      | 'backline'
+      | 'cars'
+      | 'contacts'
+      | 'presaleLinks'
+      | 'supportActs'
+      | 'timetable'
+      | 'tour'
+      | 'venue';
   };
   export type GigCar = {
     carId: CodecTypes['sqlite/text@1']['output'];
@@ -767,11 +824,12 @@ export namespace Models {
   };
   export type Settings = {
     bandSize: CodecTypes['sqlite/integer@1']['output'];
-    fuelPrice: CodecTypes['sqlite/real@1']['output'];
+    dieselPrice: CodecTypes['sqlite/real@1']['output'];
     homeAddress: CodecTypes['sqlite/text@1']['output'];
     homeLat: CodecTypes['sqlite/real@1']['output'] | null;
     homeLon: CodecTypes['sqlite/real@1']['output'] | null;
     id: CodecTypes['sqlite/text@1']['output'];
+    petrolPrice: CodecTypes['sqlite/real@1']['output'];
     readonly [RelationKeys]?: never;
   };
   export type SupportAct = {
@@ -797,6 +855,13 @@ export namespace Models {
     start: CodecTypes['sqlite/text@1']['output'];
     gig: Gig;
     readonly [RelationKeys]?: 'gig';
+  };
+  export type Tour = {
+    createdAt: CodecTypes['sqlite/datetime@1']['output'];
+    id: CodecTypes['sqlite/text@1']['output'];
+    name: CodecTypes['sqlite/text@1']['output'];
+    gigs: Gig[];
+    readonly [RelationKeys]?: 'gigs';
   };
   export type Venue = {
     address: CodecTypes['sqlite/text@1']['output'];
@@ -827,6 +892,7 @@ export declare const models: {
   Settings: Models.Settings;
   SupportAct: Models.SupportAct;
   TimetableEntry: Models.TimetableEntry;
+  Tour: Models.Tour;
   Venue: Models.Venue;
 };
 
@@ -926,6 +992,15 @@ type ContractBase = Omit<
                   readonly codecId: 'sqlite/datetime@1';
                   readonly nullable: false;
                   readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly fuel: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'sqlite/text@1', 'diesel'>;
+                  };
                 };
                 readonly id: {
                   readonly nativeType: 'text';
@@ -1270,6 +1345,11 @@ type ContractBase = Omit<
                   readonly codecId: 'sqlite/real@1';
                   readonly nullable: true;
                 };
+                readonly diesel_price: {
+                  readonly nativeType: 'real';
+                  readonly codecId: 'sqlite/real@1';
+                  readonly nullable: true;
+                };
                 readonly distance_km: {
                   readonly nativeType: 'real';
                   readonly codecId: 'sqlite/real@1';
@@ -1300,11 +1380,6 @@ type ContractBase = Omit<
                   readonly nullable: true;
                 };
                 readonly fee: {
-                  readonly nativeType: 'real';
-                  readonly codecId: 'sqlite/real@1';
-                  readonly nullable: true;
-                };
-                readonly fuel_price: {
                   readonly nativeType: 'real';
                   readonly codecId: 'sqlite/real@1';
                   readonly nullable: true;
@@ -1373,9 +1448,24 @@ type ContractBase = Omit<
                   readonly codecId: 'sqlite/integer@1';
                   readonly nullable: true;
                 };
+                readonly petrol_price: {
+                  readonly nativeType: 'real';
+                  readonly codecId: 'sqlite/real@1';
+                  readonly nullable: true;
+                };
                 readonly rent: {
                   readonly nativeType: 'real';
                   readonly codecId: 'sqlite/real@1';
+                  readonly nullable: true;
+                };
+                readonly return_km: {
+                  readonly nativeType: 'real';
+                  readonly codecId: 'sqlite/real@1';
+                  readonly nullable: true;
+                };
+                readonly return_min: {
+                  readonly nativeType: 'integer';
+                  readonly codecId: 'sqlite/integer@1';
                   readonly nullable: true;
                 };
                 readonly rider_sent: {
@@ -1434,6 +1524,11 @@ type ContractBase = Omit<
                   readonly codecId: 'sqlite/real@1';
                   readonly nullable: true;
                 };
+                readonly tour_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: true;
+                };
                 readonly type: {
                   readonly nativeType: 'text';
                   readonly codecId: 'sqlite/text@1';
@@ -1459,6 +1554,12 @@ type ContractBase = Omit<
                   readonly unique: false;
                 },
                 {
+                  readonly name: 'gigs_tour_id_idx_be575d54';
+                  readonly prefix: 'gigs_tour_id_idx';
+                  readonly columns: readonly ['tour_id'];
+                  readonly unique: false;
+                },
+                {
                   readonly name: 'gigs_venue_id_idx_7506cf3f';
                   readonly prefix: 'gigs_venue_id_idx';
                   readonly columns: readonly ['venue_id'];
@@ -1475,6 +1576,18 @@ type ContractBase = Omit<
                   readonly target: {
                     readonly namespaceId: '__unbound__' & NamespaceId;
                     readonly tableName: 'venues';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: '__unbound__' & NamespaceId;
+                    readonly tableName: 'gigs';
+                    readonly columns: readonly ['tour_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: '__unbound__' & NamespaceId;
+                    readonly tableName: 'tours';
                     readonly columns: readonly ['id'];
                   };
                 },
@@ -1548,13 +1661,13 @@ type ContractBase = Omit<
                     readonly value: DefaultLiteralValue<'sqlite/integer@1', 4>;
                   };
                 };
-                readonly fuel_price: {
+                readonly diesel_price: {
                   readonly nativeType: 'real';
                   readonly codecId: 'sqlite/real@1';
                   readonly nullable: false;
                   readonly default: {
                     readonly kind: 'literal';
-                    readonly value: DefaultLiteralValue<'sqlite/real@1', 1.8>;
+                    readonly value: DefaultLiteralValue<'sqlite/real@1', 1.7>;
                   };
                 };
                 readonly home_address: {
@@ -1580,6 +1693,15 @@ type ContractBase = Omit<
                   readonly nativeType: 'text';
                   readonly codecId: 'sqlite/text@1';
                   readonly nullable: false;
+                };
+                readonly petrol_price: {
+                  readonly nativeType: 'real';
+                  readonly codecId: 'sqlite/real@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'sqlite/real@1', 1.8>;
+                  };
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
@@ -1755,6 +1877,30 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly tours: {
+              columns: {
+                readonly created_at: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/datetime@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+                readonly name: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
             readonly venues: {
               columns: {
                 readonly address: {
@@ -1869,6 +2015,10 @@ type ContractBase = Omit<
                 'unbezahlt',
               ];
             };
+            readonly FuelType: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['benzin', 'diesel'];
+            };
             readonly GigStatus: {
               readonly kind: 'valueSet';
               readonly values: readonly [
@@ -1949,6 +2099,7 @@ type ContractBase = Omit<
       readonly namespace: '__unbound__' & NamespaceId;
       readonly model: 'TimetableEntry';
     };
+    readonly tours: { readonly namespace: '__unbound__' & NamespaceId; readonly model: 'Tour' };
     readonly venues: { readonly namespace: '__unbound__' & NamespaceId; readonly model: 'Venue' };
   };
   readonly domain: {
@@ -2019,6 +2170,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/datetime@1' };
               };
+              readonly fuel: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
@@ -2055,6 +2210,7 @@ type ContractBase = Omit<
               readonly fields: {
                 readonly consumption: { readonly column: 'consumption' };
                 readonly createdAt: { readonly column: 'created_at' };
+                readonly fuel: { readonly column: 'fuel' };
                 readonly id: { readonly column: 'id' };
                 readonly name: { readonly column: 'name' };
                 readonly seats: { readonly column: 'seats' };
@@ -2190,6 +2346,10 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
               };
+              readonly dieselPrice: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
+              };
               readonly distanceKm: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
@@ -2211,10 +2371,6 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/integer@1' };
               };
               readonly fee: {
-                readonly nullable: true;
-                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
-              };
-              readonly fuelPrice: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
               };
@@ -2250,9 +2406,21 @@ type ContractBase = Omit<
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/integer@1' };
               };
+              readonly petrolPrice: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
+              };
               readonly rent: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
+              };
+              readonly returnKm: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
+              };
+              readonly returnMin: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/integer@1' };
               };
               readonly riderSent: {
                 readonly nullable: false;
@@ -2285,6 +2453,10 @@ type ContractBase = Omit<
               readonly tolls: {
                 readonly nullable: true;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
+              };
+              readonly tourId: {
+                readonly nullable: true;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
               };
               readonly type: {
                 readonly nullable: false;
@@ -2362,6 +2534,18 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['gigId'];
                 };
               };
+              readonly tour: {
+                readonly to: {
+                  readonly namespace: '__unbound__' & NamespaceId;
+                  readonly model: 'Tour';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: true;
+                readonly on: {
+                  readonly localFields: readonly ['tourId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
               readonly venue: {
                 readonly to: {
                   readonly namespace: '__unbound__' & NamespaceId;
@@ -2396,13 +2580,13 @@ type ContractBase = Omit<
                 readonly dealNotes: { readonly column: 'deal_notes' };
                 readonly dealType: { readonly column: 'deal_type' };
                 readonly deposit: { readonly column: 'deposit' };
+                readonly dieselPrice: { readonly column: 'diesel_price' };
                 readonly distanceKm: { readonly column: 'distance_km' };
                 readonly doorPercent: { readonly column: 'door_percent' };
                 readonly drinks: { readonly column: 'drinks' };
                 readonly durationMin: { readonly column: 'duration_min' };
                 readonly expectedAttendance: { readonly column: 'expected_attendance' };
                 readonly fee: { readonly column: 'fee' };
-                readonly fuelPrice: { readonly column: 'fuel_price' };
                 readonly gemaReported: { readonly column: 'gema_reported' };
                 readonly hospitalityNotes: { readonly column: 'hospitality_notes' };
                 readonly id: { readonly column: 'id' };
@@ -2411,7 +2595,10 @@ type ContractBase = Omit<
                 readonly notes: { readonly column: 'notes' };
                 readonly ownFoh: { readonly column: 'own_foh' };
                 readonly people: { readonly column: 'people' };
+                readonly petrolPrice: { readonly column: 'petrol_price' };
                 readonly rent: { readonly column: 'rent' };
+                readonly returnKm: { readonly column: 'return_km' };
+                readonly returnMin: { readonly column: 'return_min' };
                 readonly riderSent: { readonly column: 'rider_sent' };
                 readonly stagePlotSent: { readonly column: 'stage_plot_sent' };
                 readonly status: { readonly column: 'status' };
@@ -2420,6 +2607,7 @@ type ContractBase = Omit<
                 readonly ticketPresale: { readonly column: 'ticket_presale' };
                 readonly title: { readonly column: 'title' };
                 readonly tolls: { readonly column: 'tolls' };
+                readonly tourId: { readonly column: 'tour_id' };
                 readonly type: { readonly column: 'type' };
                 readonly venueId: { readonly column: 'venue_id' };
               };
@@ -2577,7 +2765,7 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/integer@1' };
               };
-              readonly fuelPrice: {
+              readonly dieselPrice: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
               };
@@ -2597,6 +2785,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
               };
+              readonly petrolPrice: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/real@1' };
+              };
             };
             readonly relations: Record<string, never>;
             readonly storage: {
@@ -2604,11 +2796,12 @@ type ContractBase = Omit<
               readonly namespaceId: '__unbound__';
               readonly fields: {
                 readonly bandSize: { readonly column: 'band_size' };
-                readonly fuelPrice: { readonly column: 'fuel_price' };
+                readonly dieselPrice: { readonly column: 'diesel_price' };
                 readonly homeAddress: { readonly column: 'home_address' };
                 readonly homeLat: { readonly column: 'home_lat' };
                 readonly homeLon: { readonly column: 'home_lon' };
                 readonly id: { readonly column: 'id' };
+                readonly petrolPrice: { readonly column: 'petrol_price' };
               };
             };
           };
@@ -2740,6 +2933,44 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly Tour: {
+            readonly fields: {
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/datetime@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly name: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+            };
+            readonly relations: {
+              readonly gigs: {
+                readonly to: {
+                  readonly namespace: '__unbound__' & NamespaceId;
+                  readonly model: 'Gig';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['tourId'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'tours';
+              readonly namespaceId: '__unbound__';
+              readonly fields: {
+                readonly createdAt: { readonly column: 'created_at' };
+                readonly id: { readonly column: 'id' };
+                readonly name: { readonly column: 'name' };
+              };
+            };
+          };
           readonly Venue: {
             readonly fields: {
               readonly address: {
@@ -2853,6 +3084,13 @@ type ContractBase = Omit<
               { readonly name: 'saalmiete'; readonly value: 'saalmiete' },
               { readonly name: 'hut'; readonly value: 'hut' },
               { readonly name: 'unbezahlt'; readonly value: 'unbezahlt' },
+            ];
+          };
+          readonly FuelType: {
+            readonly codecId: 'sqlite/text@1';
+            readonly members: readonly [
+              { readonly name: 'benzin'; readonly value: 'benzin' },
+              { readonly name: 'diesel'; readonly value: 'diesel' },
             ];
           };
           readonly GigStatus: {

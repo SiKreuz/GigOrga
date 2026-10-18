@@ -1,8 +1,11 @@
+import type { FuelType } from "$lib/labels";
+
 import { type Db, type Reader, transaction } from "../db";
 
 export type CarInput = {
   name: string;
   consumption: number;
+  fuel: FuelType;
   seats: number | null;
   standard: number;
 };
@@ -24,8 +27,17 @@ export async function deleteCar(db: Db, id: string) {
 }
 
 export async function listCars(db: Reader) {
-  const cars = await db.orm.Car.select("id", "name", "consumption", "seats", "standard").all();
-  return cars.toSorted((a, b) => a.name.localeCompare(b.name, "de", { sensitivity: "base" }));
+  const cars = await db.orm.Car.select(
+    "id",
+    "name",
+    "consumption",
+    "fuel",
+    "seats",
+    "standard",
+  ).all();
+  return cars
+    .map((car) => ({ ...car, fuel: car.fuel as FuelType }))
+    .toSorted((a, b) => a.name.localeCompare(b.name, "de", { sensitivity: "base" }));
 }
 
 export type CarSummary = Awaited<ReturnType<typeof listCars>>[number];

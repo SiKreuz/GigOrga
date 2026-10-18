@@ -8,7 +8,8 @@ import { describe, expect, vi } from "vitest";
 const settings = {
   homeAddress: "Proberaum, München",
   bandSize: 4,
-  fuelPrice: 1.8,
+  petrolPrice: 1.8,
+  dieselPrice: 1.7,
 };
 
 function fakeServices(places: Record<string, [number, number] | undefined>) {

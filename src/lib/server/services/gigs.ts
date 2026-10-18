@@ -2,6 +2,7 @@ import type {
   AccommodationType,
   BacklineProvider,
   DealType,
+  FuelType,
   GigStatus,
   GigType,
   InvoiceStatus,
@@ -60,7 +61,8 @@ export type TravelInput = {
   distanceKm: number | null;
   durationMin: number | null;
   people: number | null;
-  fuelPrice: number | null;
+  petrolPrice: number | null;
+  dieselPrice: number | null;
   tolls: number | null;
   carIds: string[];
 };
@@ -225,7 +227,9 @@ export async function getGig(db: Reader, id: string) {
     dealType: gig.dealType as DealType,
     invoiceStatus: gig.invoiceStatus as InvoiceStatus,
     accommodationType: gig.accommodationType as AccommodationType,
-    cars: gig.cars.map((link) => link.car).toSorted((a, b) => a.name.localeCompare(b.name, "de")),
+    cars: gig.cars
+      .map((link) => ({ ...link.car, fuel: link.car.fuel as FuelType }))
+      .toSorted((a, b) => a.name.localeCompare(b.name, "de")),
     contacts: gig.contacts.toSorted((a, b) => a.contact.name.localeCompare(b.contact.name, "de")),
     timetable: gig.timetable
       .toSorted(byPosition)

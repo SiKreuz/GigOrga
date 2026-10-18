@@ -5,7 +5,9 @@
   import Field from "$lib/components/Field.svelte";
   import SectionCard from "$lib/components/SectionCard.svelte";
   import SectionForm from "$lib/components/SectionForm.svelte";
+  import Select from "$lib/components/Select.svelte";
   import { formatNumber } from "$lib/format";
+  import { fuelTypes } from "$lib/labels";
   import type { CarSummary } from "$lib/server/services/cars";
   import { Car, Plus, Settings, Trash2 } from "@lucide/svelte";
 
@@ -21,7 +23,7 @@
 </svelte:head>
 
 {#snippet carFields(car: CarSummary | undefined, errors: Record<string, string>, prefix: string)}
-  <div class="grid gap-3 sm:grid-cols-[1fr_9rem_6rem]">
+  <div class="grid gap-3 sm:grid-cols-[1fr_7rem_9rem_6rem]">
     <Field id="{prefix}-name" label="Name" error={errors.name}>
       <input
         id="{prefix}-name"
@@ -31,6 +33,9 @@
         placeholder="z. B. Bandbus"
         required
       />
+    </Field>
+    <Field id="{prefix}-fuel" label="Kraftstoff">
+      <Select id="{prefix}-fuel" name="fuel" options={fuelTypes} value={car?.fuel ?? "diesel"} />
     </Field>
     <Field id="{prefix}-consumption" label="Verbrauch (l/100 km)" error={errors.consumption}>
       <input
@@ -82,7 +87,7 @@
           placeholder="Straße, PLZ Ort"
         />
       </Field>
-      <div class="grid gap-4 sm:grid-cols-2">
+      <div class="grid gap-4 sm:grid-cols-3">
         <Field id="bandSize" label="Personen in der Band" error={errorsFor("settings").bandSize}>
           <input
             id="bandSize"
@@ -92,13 +97,22 @@
             value={data.settings.bandSize}
           />
         </Field>
-        <Field id="fuelPrice" label="Spritpreis (€/l)" error={errorsFor("settings").fuelPrice}>
+        <Field id="dieselPrice" label="Diesel (€/l)" error={errorsFor("settings").dieselPrice}>
           <input
-            id="fuelPrice"
-            name="fuelPrice"
+            id="dieselPrice"
+            name="dieselPrice"
             class="input"
             inputmode="decimal"
-            value={formatNumber(data.settings.fuelPrice)}
+            value={formatNumber(data.settings.dieselPrice)}
+          />
+        </Field>
+        <Field id="petrolPrice" label="Benzin (€/l)" error={errorsFor("settings").petrolPrice}>
+          <input
+            id="petrolPrice"
+            name="petrolPrice"
+            class="input"
+            inputmode="decimal"
+            value={formatNumber(data.settings.petrolPrice)}
           />
         </Field>
       </div>

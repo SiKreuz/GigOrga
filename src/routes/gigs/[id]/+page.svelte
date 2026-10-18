@@ -18,8 +18,11 @@
 
   const gig = $derived(data.gig);
   const people = $derived(gig.people ?? data.settings.bandSize);
-  const fuelPrice = $derived(gig.fuelPrice ?? data.settings.fuelPrice);
-  const travel = $derived(travelCost(gig, gig.cars, fuelPrice));
+  const prices = $derived({
+    benzin: gig.petrolPrice ?? data.settings.petrolPrice,
+    diesel: gig.dieselPrice ?? data.settings.dieselPrice,
+  });
+  const travel = $derived(travelCost(gig, gig.cars, prices));
   const net = $derived(estimate(gig, travel, people).net);
 
   let editingBasics = $state(false);
@@ -170,7 +173,7 @@
       settings={data.settings}
       {travel}
       {people}
-      {fuelPrice}
+      {prices}
       errors={errorsFor("travel")}
       {routeError}
       bind:editing={editing.fahrt}

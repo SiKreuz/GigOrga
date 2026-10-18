@@ -1,0 +1,626 @@
+[
+  {
+    "id": "table.tours",
+    "label": "Create table tours",
+    "summary": "Creates table tours with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "tours"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"tours\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "tours"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"tours\"",
+        "sql": "CREATE TABLE \"tours\" (\n  \"created_at\" TEXT NOT NULL DEFAULT (datetime('now')),\n  \"id\" TEXT NOT NULL,\n  \"name\" TEXT NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"tours\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "tours"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.cars.fuel",
+    "label": "Add column fuel on cars",
+    "summary": "Adds column fuel on cars",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "fuel",
+        "table": "cars"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"fuel\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "cars",
+          "fuel"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"fuel\"",
+        "sql": "ALTER TABLE \"cars\" ADD COLUMN \"fuel\" TEXT DEFAULT 'diesel' NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"fuel\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "cars",
+          "fuel"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.gigs.diesel_price",
+    "label": "Add column diesel_price on gigs",
+    "summary": "Adds column diesel_price on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "diesel_price",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"diesel_price\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "diesel_price"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"diesel_price\"",
+        "sql": "ALTER TABLE \"gigs\" ADD COLUMN \"diesel_price\" REAL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"diesel_price\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "diesel_price"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.gigs.petrol_price",
+    "label": "Add column petrol_price on gigs",
+    "summary": "Adds column petrol_price on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "petrol_price",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"petrol_price\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "petrol_price"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"petrol_price\"",
+        "sql": "ALTER TABLE \"gigs\" ADD COLUMN \"petrol_price\" REAL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"petrol_price\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "petrol_price"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.gigs.return_km",
+    "label": "Add column return_km on gigs",
+    "summary": "Adds column return_km on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "return_km",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"return_km\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "return_km"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"return_km\"",
+        "sql": "ALTER TABLE \"gigs\" ADD COLUMN \"return_km\" REAL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"return_km\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "return_km"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.gigs.return_min",
+    "label": "Add column return_min on gigs",
+    "summary": "Adds column return_min on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "return_min",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"return_min\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "return_min"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"return_min\"",
+        "sql": "ALTER TABLE \"gigs\" ADD COLUMN \"return_min\" INTEGER"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"return_min\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "return_min"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.gigs.tour_id",
+    "label": "Add column tour_id on gigs",
+    "summary": "Adds column tour_id on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "tour_id",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"tour_id\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "tour_id"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"tour_id\"",
+        "sql": "ALTER TABLE \"gigs\" ADD COLUMN \"tour_id\" TEXT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"tour_id\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "tour_id"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.settings.diesel_price",
+    "label": "Add column diesel_price on settings",
+    "summary": "Adds column diesel_price on settings",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "diesel_price",
+        "table": "settings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"diesel_price\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "settings",
+          "diesel_price"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"diesel_price\"",
+        "sql": "ALTER TABLE \"settings\" ADD COLUMN \"diesel_price\" REAL DEFAULT 1.7 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"diesel_price\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "settings",
+          "diesel_price"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.settings.petrol_price",
+    "label": "Add column petrol_price on settings",
+    "summary": "Adds column petrol_price on settings",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "petrol_price",
+        "table": "settings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"petrol_price\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "settings",
+          "petrol_price"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"petrol_price\"",
+        "sql": "ALTER TABLE \"settings\" ADD COLUMN \"petrol_price\" REAL DEFAULT 1.8 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"petrol_price\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "settings",
+          "petrol_price"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "copy-gig-fuel-price",
+    "label": "Copy gig fuel price into petrol and diesel price",
+    "summary": "Keep custom fuel prices of existing gigs",
+    "operationClass": "data",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "gigs"
+      }
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Keep custom fuel prices of existing gigs",
+        "sql": "UPDATE \"gigs\" SET \"petrol_price\" = \"fuel_price\", \"diesel_price\" = \"fuel_price\""
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "copy-settings-fuel-price",
+    "label": "Copy default fuel price into petrol and diesel price",
+    "summary": "Keep the default fuel price",
+    "operationClass": "data",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "settings"
+      }
+    },
+    "precheck": [],
+    "execute": [
+      {
+        "description": "Keep the default fuel price",
+        "sql": "UPDATE \"settings\" SET \"petrol_price\" = \"fuel_price\", \"diesel_price\" = \"fuel_price\""
+      }
+    ],
+    "postcheck": []
+  },
+  {
+    "id": "index.gigs.gigs_tour_id_idx_be575d54",
+    "label": "Create index gigs_tour_id_idx_be575d54 on gigs",
+    "summary": "Creates index gigs_tour_id_idx_be575d54 on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "gigs_tour_id_idx_be575d54",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"gigs_tour_id_idx_be575d54\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gigs_tour_id_idx_be575d54"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"gigs_tour_id_idx_be575d54\"",
+        "sql": "CREATE INDEX \"gigs_tour_id_idx_be575d54\" ON \"gigs\" (\"tour_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"gigs_tour_id_idx_be575d54\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gigs_tour_id_idx_be575d54"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recreateTable.gigs",
+    "label": "Recreate table gigs",
+    "summary": "Recreates table gigs to apply schema changes: database/gigs/foreign-key:tour_id->.tours(id)",
+    "operationClass": "destructive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"gigs\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gigs"
+        ]
+      },
+      {
+        "description": "ensure temp table \"_prisma_new_gigs\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "_prisma_new_gigs"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create new table \"_prisma_new_gigs\" with desired schema",
+        "sql": "CREATE TABLE \"_prisma_new_gigs\" (\n  \"accommodation_address\" TEXT DEFAULT '' NOT NULL,\n  \"accommodation_link\" TEXT DEFAULT '' NOT NULL,\n  \"accommodation_name\" TEXT DEFAULT '' NOT NULL,\n  \"accommodation_notes\" TEXT DEFAULT '' NOT NULL,\n  \"accommodation_paid\" INTEGER DEFAULT 0 NOT NULL,\n  \"accommodation_type\" TEXT DEFAULT 'keine' NOT NULL,\n  \"beds\" INTEGER,\n  \"breakfast\" INTEGER DEFAULT 0 NOT NULL,\n  \"buyout\" REAL,\n  \"catering\" INTEGER DEFAULT 0 NOT NULL,\n  \"check_in\" TEXT DEFAULT '' NOT NULL,\n  \"costs\" REAL,\n  \"created_at\" TEXT DEFAULT (datetime('now')) NOT NULL,\n  \"date\" TEXT NOT NULL,\n  \"deal_notes\" TEXT DEFAULT '' NOT NULL,\n  \"deal_type\" TEXT DEFAULT 'festgage' NOT NULL,\n  \"deposit\" REAL,\n  \"diesel_price\" REAL,\n  \"distance_km\" REAL,\n  \"door_percent\" REAL,\n  \"drinks\" TEXT DEFAULT '' NOT NULL,\n  \"duration_min\" INTEGER,\n  \"expected_attendance\" INTEGER,\n  \"fee\" REAL,\n  \"gema_reported\" INTEGER DEFAULT 0 NOT NULL,\n  \"hospitality_notes\" TEXT DEFAULT '' NOT NULL,\n  \"id\" TEXT NOT NULL,\n  \"input_list_sent\" INTEGER DEFAULT 0 NOT NULL,\n  \"invoice_status\" TEXT DEFAULT 'offen' NOT NULL,\n  \"notes\" TEXT DEFAULT '' NOT NULL,\n  \"own_foh\" INTEGER DEFAULT 0 NOT NULL,\n  \"people\" INTEGER,\n  \"petrol_price\" REAL,\n  \"rent\" REAL,\n  \"return_km\" REAL,\n  \"return_min\" INTEGER,\n  \"rider_sent\" INTEGER DEFAULT 0 NOT NULL,\n  \"stage_plot_sent\" INTEGER DEFAULT 0 NOT NULL,\n  \"status\" TEXT DEFAULT 'anfrage' NOT NULL,\n  \"tech_notes\" TEXT DEFAULT '' NOT NULL,\n  \"ticket_door\" REAL,\n  \"ticket_presale\" REAL,\n  \"title\" TEXT NOT NULL,\n  \"tolls\" REAL,\n  \"tour_id\" TEXT,\n  \"type\" TEXT DEFAULT 'club' NOT NULL,\n  \"venue_id\" TEXT,\n  PRIMARY KEY (\"id\"),\n  FOREIGN KEY (\"venue_id\") REFERENCES \"venues\" (\"id\") ON DELETE SET NULL,\n  FOREIGN KEY (\"tour_id\") REFERENCES \"tours\" (\"id\") ON DELETE SET NULL\n)"
+      },
+      {
+        "description": "copy data from \"gigs\" to \"_prisma_new_gigs\"",
+        "sql": "INSERT INTO \"_prisma_new_gigs\" (\"accommodation_address\", \"accommodation_link\", \"accommodation_name\", \"accommodation_notes\", \"accommodation_paid\", \"accommodation_type\", \"beds\", \"breakfast\", \"buyout\", \"catering\", \"check_in\", \"costs\", \"created_at\", \"date\", \"deal_notes\", \"deal_type\", \"deposit\", \"diesel_price\", \"distance_km\", \"door_percent\", \"drinks\", \"duration_min\", \"expected_attendance\", \"fee\", \"gema_reported\", \"hospitality_notes\", \"id\", \"input_list_sent\", \"invoice_status\", \"notes\", \"own_foh\", \"people\", \"petrol_price\", \"rent\", \"return_km\", \"return_min\", \"rider_sent\", \"stage_plot_sent\", \"status\", \"tech_notes\", \"ticket_door\", \"ticket_presale\", \"title\", \"tolls\", \"tour_id\", \"type\", \"venue_id\") SELECT \"accommodation_address\", \"accommodation_link\", \"accommodation_name\", \"accommodation_notes\", \"accommodation_paid\", \"accommodation_type\", \"beds\", \"breakfast\", \"buyout\", \"catering\", \"check_in\", \"costs\", \"created_at\", \"date\", \"deal_notes\", \"deal_type\", \"deposit\", \"diesel_price\", \"distance_km\", \"door_percent\", \"drinks\", \"duration_min\", \"expected_attendance\", \"fee\", \"gema_reported\", \"hospitality_notes\", \"id\", \"input_list_sent\", \"invoice_status\", \"notes\", \"own_foh\", \"people\", \"petrol_price\", \"rent\", \"return_km\", \"return_min\", \"rider_sent\", \"stage_plot_sent\", \"status\", \"tech_notes\", \"ticket_door\", \"ticket_presale\", \"title\", \"tolls\", \"tour_id\", \"type\", \"venue_id\" FROM \"gigs\""
+      },
+      {
+        "description": "drop old table \"gigs\"",
+        "sql": "DROP TABLE \"gigs\""
+      },
+      {
+        "description": "rename \"_prisma_new_gigs\" to \"gigs\"",
+        "sql": "ALTER TABLE \"_prisma_new_gigs\" RENAME TO \"gigs\""
+      },
+      {
+        "description": "recreate index \"gigs_date_idx_b4ca319c\" on \"gigs\"",
+        "sql": "CREATE INDEX \"gigs_date_idx_b4ca319c\" ON \"gigs\" (\"date\")"
+      },
+      {
+        "description": "recreate index \"gigs_tour_id_idx_be575d54\" on \"gigs\"",
+        "sql": "CREATE INDEX \"gigs_tour_id_idx_be575d54\" ON \"gigs\" (\"tour_id\")"
+      },
+      {
+        "description": "recreate index \"gigs_venue_id_idx_7506cf3f\" on \"gigs\"",
+        "sql": "CREATE INDEX \"gigs_venue_id_idx_7506cf3f\" ON \"gigs\" (\"venue_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"gigs\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gigs"
+        ]
+      },
+      {
+        "description": "verify temp table \"_prisma_new_gigs\" is gone",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "_prisma_new_gigs"
+        ]
+      },
+      {
+        "description": "verify foreign key (venue_id) → venues(id) on \"gigs\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pragma_foreign_key_list('gigs') f WHERE f.\"table\" = 'venues' GROUP BY f.id HAVING COUNT(*) = 1 AND SUM(CASE WHEN (f.\"from\", f.\"to\") IN (('venue_id', 'id')) THEN 1 ELSE 0 END) = 1)"
+      },
+      {
+        "description": "verify foreign key (tour_id) → tours(id) on \"gigs\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pragma_foreign_key_list('gigs') f WHERE f.\"table\" = 'tours' GROUP BY f.id HAVING COUNT(*) = 1 AND SUM(CASE WHEN (f.\"from\", f.\"to\") IN (('tour_id', 'id')) THEN 1 ELSE 0 END) = 1)"
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.gigs.fuel_price",
+    "label": "Drop column fuel_price on gigs",
+    "summary": "Drops column fuel_price on gigs which is not in the contract",
+    "operationClass": "destructive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "fuel_price",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"fuel_price\" exists on \"gigs\"",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "fuel_price"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"fuel_price\" from \"gigs\"",
+        "sql": "ALTER TABLE \"gigs\" DROP COLUMN \"fuel_price\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"fuel_price\" is gone from \"gigs\"",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "fuel_price"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.settings.fuel_price",
+    "label": "Drop column fuel_price on settings",
+    "summary": "Drops column fuel_price on settings which is not in the contract",
+    "operationClass": "destructive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "fuel_price",
+        "table": "settings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"fuel_price\" exists on \"settings\"",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "settings",
+          "fuel_price"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"fuel_price\" from \"settings\"",
+        "sql": "ALTER TABLE \"settings\" DROP COLUMN \"fuel_price\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"fuel_price\" is gone from \"settings\"",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "settings",
+          "fuel_price"
+        ]
+      }
+    ]
+  }
+]

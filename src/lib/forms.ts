@@ -4,6 +4,7 @@ import {
   accommodationTypes,
   backlineProviders,
   dealTypes,
+  fuelTypes,
   gigStatuses,
   gigTypes,
   invoiceStatuses,
@@ -124,7 +125,8 @@ export const travelSchema = v.object({
   distanceKm: number,
   durationMin: integer,
   people: integer,
-  fuelPrice: number,
+  petrolPrice: number,
+  dieselPrice: number,
   tolls: number,
   carIds: jsonList(v.string()),
 });
@@ -136,6 +138,7 @@ export const carSchema = v.object({
     v.number("Bitte den Verbrauch angeben"),
     v.maxValue(50, "Unrealistischer Verbrauch"),
   ),
+  fuel: v.picklist(keys(fuelTypes)),
   seats: integer,
   standard: flag,
 });
@@ -190,7 +193,8 @@ export const settingsSchema = v.object({
     v.integer("Ganze Zahl angeben"),
     v.minValue(1, "Mindestens 1"),
   ),
-  fuelPrice: requiredNumber(1.8),
+  petrolPrice: requiredNumber(1.8),
+  dieselPrice: requiredNumber(1.7),
 });
 
 type Schema = v.GenericSchema<Record<string, unknown>, Record<string, unknown>>;

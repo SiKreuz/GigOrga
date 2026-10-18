@@ -1,4 +1,4 @@
-import type { DealType } from "./labels";
+import type { DealType, FuelType } from "./labels";
 
 export type DealTerms = {
   dealType: DealType;
@@ -12,6 +12,7 @@ export type DealTerms = {
 };
 
 export type Trip = { distanceKm: number | null; tolls: number | null };
+export type FuelPrices = Record<FuelType, number>;
 
 export type Estimate = {
   revenue: number | null;
@@ -24,13 +25,16 @@ export type Estimate = {
 
 export function travelCost(
   trip: Trip,
-  cars: { consumption: number }[],
-  fuelPrice: number,
+  cars: { consumption: number; fuel: FuelType }[],
+  prices: FuelPrices,
 ): number | null {
   const { distanceKm } = trip;
   if (distanceKm === null) return null;
-  const litres = cars.reduce((sum, car) => sum + (distanceKm * 2 * car.consumption) / 100, 0);
-  return round(litres * fuelPrice + (trip.tolls ?? 0));
+  const fuel = cars.reduce(
+    (sum, car) => sum + ((distanceKm * 2 * car.consumption) / 100) * prices[car.fuel],
+    0,
+  );
+  return round(fuel + (trip.tolls ?? 0));
 }
 
 function round(value: number) {

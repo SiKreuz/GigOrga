@@ -97,7 +97,7 @@ describe("parseForm", () => {
   test("falls back to defaults for empty settings", () => {
     expect(parseForm(settingsSchema, form({}))).toEqual({
       success: true,
-      data: { homeAddress: "", bandSize: 4, fuelPrice: 1.8 },
+      data: { homeAddress: "", bandSize: 4, petrolPrice: 1.8, dieselPrice: 1.7 },
     });
   });
 
@@ -113,8 +113,20 @@ describe("parseForm", () => {
 
   test("parses travel with the selected cars", () => {
     expect(
-      parseForm(travelSchema, form({ people: "3", fuelPrice: "1,69", carIds: '["a","b"]' })),
-    ).toMatchObject({ success: true, data: { people: 3, fuelPrice: 1.69, carIds: ["a", "b"] } });
+      parseForm(
+        travelSchema,
+        form({ people: "3", petrolPrice: "1,89", dieselPrice: "1,69", carIds: '["a","b"]' }),
+      ),
+    ).toMatchObject({
+      success: true,
+      data: { people: 3, petrolPrice: 1.89, dieselPrice: 1.69, carIds: ["a", "b"] },
+    });
+  });
+
+  test("parses a car with its fuel type", () => {
+    expect(
+      parseForm(carSchema, form({ name: "Bus", consumption: "9,5", fuel: "benzin" })),
+    ).toMatchObject({ success: true, data: { consumption: 9.5, fuel: "benzin" } });
   });
 
   test("requires a consumption for cars", () => {

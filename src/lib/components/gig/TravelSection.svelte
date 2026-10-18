@@ -2,7 +2,9 @@
   import { enhance } from "$app/forms";
   import Fact from "$lib/components/Fact.svelte";
   import Section from "$lib/components/Section.svelte";
+  import type { FuelPrices } from "$lib/deal";
   import { formatDuration, formatMoney, formatNumber } from "$lib/format";
+  import { fuelTypes } from "$lib/labels";
   import type { CarSummary } from "$lib/server/services/cars";
   import type { GigDetail } from "$lib/server/services/gigs";
   import { Car, ExternalLink, LoaderCircle, Route } from "@lucide/svelte";
@@ -15,17 +17,17 @@
     settings,
     travel,
     people,
-    fuelPrice,
+    prices,
     errors,
     routeError,
     editing = $bindable(false),
   }: {
     gig: GigDetail;
     cars: CarSummary[];
-    settings: { homeAddress: string; bandSize: number; fuelPrice: number };
+    settings: { homeAddress: string; bandSize: number; petrolPrice: number; dieselPrice: number };
     travel: number | null;
     people: number;
-    fuelPrice: number;
+    prices: FuelPrices;
     errors: Record<string, string>;
     routeError?: string;
     editing?: boolean;
@@ -40,6 +42,12 @@
     `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(settings.homeAddress)}&destination=${encodeURIComponent(destination)}`,
   );
   const seats = $derived(gig.cars.reduce((sum, car) => sum + (car.seats ?? 0), 0));
+  const fuels = $derived(
+    gig.cars.length > 0
+      ? [...new Set(gig.cars.map((car) => car.fuel))]
+      : (Object.keys(fuelTypes) as (keyof typeof fuelTypes)[]),
+  );
+  const customPrice = $derived(gig.petrolPrice !== null || gig.dieselPrice !== null);
 </script>
 
 <Section id="fahrt" title="Fahrt" icon={Car} action="?/travel" bind:editing>
@@ -104,7 +112,9 @@
           {/if}
         </Fact>
         <Fact label="Spritpreis">
-          {formatNumber(fuelPrice)} €/l{gig.fuelPrice === null ? "" : " (angepasst)"}
+          {fuels.map((fuel) => `${fuelTypes[fuel]} ${formatNumber(prices[fuel])}`).join(" · ")} €/l{customPrice
+            ? " (angepasst)"
+            : ""}
         </Fact>
         <Fact label="Fahrtkosten">
           <span class="font-semibold">{formatMoney(travel)}</span>

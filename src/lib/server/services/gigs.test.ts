@@ -36,21 +36,40 @@ describe("gigs", () => {
   });
 
   test("preselects the standard cars", async ({ db, insertGig }) => {
-    await createCar(db, { name: "Bus", consumption: 10, seats: 8, standard: 1 });
-    await createCar(db, { name: "Kombi", consumption: 6, seats: 5, standard: 0 });
+    await createCar(db, { name: "Bus", consumption: 10, fuel: "diesel", seats: 8, standard: 1 });
+    await createCar(db, { name: "Kombi", consumption: 6, fuel: "benzin", seats: 5, standard: 0 });
     const { id } = await insertGig();
     expect((await getGig(db, id))?.cars.map((car) => car.name)).toEqual(["Bus"]);
   });
 
-  test("updates travel with people, fuel price and cars", async ({ db, insertGig }) => {
-    const bus = await createCar(db, { name: "Bus", consumption: 10, seats: 8, standard: 1 });
-    const kombi = await createCar(db, { name: "Kombi", consumption: 6, seats: 5, standard: 0 });
+  test("updates travel with people, fuel prices and cars", async ({ db, insertGig }) => {
+    const bus = await createCar(db, {
+      name: "Bus",
+      consumption: 10,
+      fuel: "diesel",
+      seats: 8,
+      standard: 1,
+    });
+    const kombi = await createCar(db, {
+      name: "Kombi",
+      consumption: 6,
+      fuel: "benzin",
+      seats: 5,
+      standard: 0,
+    });
     const { id } = await insertGig();
-    const travel = { distanceKm: 120, durationMin: 90, people: 3, fuelPrice: 1.65, tolls: 5 };
+    const travel = {
+      distanceKm: 120,
+      durationMin: 90,
+      people: 3,
+      petrolPrice: 1.85,
+      dieselPrice: 1.65,
+      tolls: 5,
+    };
     await updateTravel(db, id, { ...travel, carIds: [kombi] });
     const gig = await getGig(db, id);
     expect(gig).toMatchObject(travel);
-    expect(gig?.cars.map((car) => car.id)).toEqual([kombi]);
+    expect(gig?.cars).toMatchObject([{ id: kombi, fuel: "benzin" }]);
     expect(gig?.cars.map((car) => car.id)).not.toContain(bus);
   });
 
