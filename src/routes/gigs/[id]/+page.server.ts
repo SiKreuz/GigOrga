@@ -28,6 +28,7 @@ import {
 } from "$lib/server/services/gigs";
 import { routeToGig } from "$lib/server/services/routing";
 import { getSettings } from "$lib/server/services/settings";
+import { listTours } from "$lib/server/services/tours";
 import { listVenues } from "$lib/server/services/venues";
 import { error, fail, redirect } from "@sveltejs/kit";
 import type * as v from "valibot";
@@ -38,13 +39,14 @@ export const load: PageServerLoad = async ({ params }) => {
   const db = getDb();
   const gig = await getGig(db, params.id);
   if (gig === undefined) error(404, "Gig nicht gefunden");
-  const [venues, contacts, cars, settings] = await Promise.all([
+  const [venues, contacts, cars, settings, tours] = await Promise.all([
     listVenues(db),
     listContacts(db),
     listCars(db),
     getSettings(db),
+    listTours(db),
   ]);
-  return { gig, venues, contacts, cars, settings };
+  return { gig, venues, contacts, cars, settings, tours };
 };
 
 type Schema = Parameters<typeof parseForm>[0];

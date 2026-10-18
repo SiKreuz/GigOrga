@@ -2,11 +2,16 @@ import { getSettings, setHomeLocation, updateSettings } from "$lib/server/servic
 import { test } from "$lib/server/testing";
 import { describe, expect } from "vitest";
 
-const input = { homeAddress: "München", bandSize: 5, fuelPrice: 1.7 };
+const input = { homeAddress: "München", bandSize: 5, petrolPrice: 1.9, dieselPrice: 1.7 };
 
 describe("settings", () => {
   test("starts with defaults", async ({ db }) => {
-    expect(await getSettings(db)).toMatchObject({ homeAddress: "", bandSize: 4, fuelPrice: 1.8 });
+    expect(await getSettings(db)).toMatchObject({
+      homeAddress: "",
+      bandSize: 4,
+      petrolPrice: 1.8,
+      dieselPrice: 1.7,
+    });
   });
 
   test("forgets the home location only when the address changes", async ({ db }) => {

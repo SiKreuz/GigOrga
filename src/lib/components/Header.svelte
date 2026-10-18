@@ -1,11 +1,20 @@
 <script lang="ts">
   import { page } from "$app/state";
-  import { AudioLines, Building2, CalendarDays, Plus, Settings, Users } from "@lucide/svelte";
+  import {
+    AudioLines,
+    Building2,
+    CalendarDays,
+    Plus,
+    Route,
+    Settings,
+    Users,
+  } from "@lucide/svelte";
 
   import ThemeToggle from "./ThemeToggle.svelte";
 
   const links = [
     { href: "/", label: "Gigs", icon: CalendarDays },
+    { href: "/tours", label: "Touren", icon: Route },
     { href: "/venues", label: "Venues", icon: Building2 },
     { href: "/contacts", label: "Kontakte", icon: Users },
     { href: "/settings", label: "Einstellungen", icon: Settings },

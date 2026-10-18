@@ -1,7 +1,8 @@
 <script lang="ts">
   import Field from "$lib/components/Field.svelte";
-  import { travelCost } from "$lib/deal";
+  import { travelCost, tripOf } from "$lib/deal";
   import { formatMoney, formatNumber, parseNumber } from "$lib/format";
+  import { fuelTypes } from "$lib/labels";
   import type { CarSummary } from "$lib/server/services/cars";
   import type { GigDetail } from "$lib/server/services/gigs";
   import { Check, Minus, Plus } from "@lucide/svelte";
@@ -15,15 +16,17 @@
   }: {
     gig: GigDetail;
     cars: CarSummary[];
-    settings: { bandSize: number; fuelPrice: number };
+    settings: { bandSize: number; petrolPrice: number; dieselPrice: number };
     errors: Record<string, string>;
   } = $props();
 
   let trip = $state(
     untrack(() => ({
       distanceKm: formatNumber(gig.distanceKm),
+      returnKm: formatNumber(gig.returnKm),
       tolls: formatNumber(gig.tolls),
-      fuelPrice: formatNumber(gig.fuelPrice),
+      petrolPrice: formatNumber(gig.petrolPrice),
+      dieselPrice: formatNumber(gig.dieselPrice),
       people: gig.people ?? settings.bandSize,
       carIds: gig.cars.map((car) => car.id),
     })),
@@ -31,11 +34,22 @@
 
   const selected = $derived(cars.filter((car) => trip.carIds.includes(car.id)));
   const seats = $derived(selected.reduce((sum, car) => sum + (car.seats ?? 0), 0));
+  const leg = $derived(gig.tourLeg);
   const cost = $derived(
     travelCost(
-      { distanceKm: parseNumber(trip.distanceKm), tolls: parseNumber(trip.tolls) },
+      tripOf(
+        {
+          distanceKm: parseNumber(trip.distanceKm),
+          returnKm: parseNumber(trip.returnKm),
+          tolls: parseNumber(trip.tolls),
+        },
+        leg,
+      ),
       selected,
-      parseNumber(trip.fuelPrice) ?? settings.fuelPrice,
+      {
+        benzin: parseNumber(trip.petrolPrice) ?? settings.petrolPrice,
+        diesel: parseNumber(trip.dieselPrice) ?? settings.dieselPrice,
+      },
     ),
   );
 
@@ -100,7 +114,9 @@
             <span>
               <span class="font-medium">{car.name}</span>
               <span class="block text-xs text-muted">
-                {formatNumber(car.consumption)} l/100 km{car.seats ? ` · ${car.seats} Plätze` : ""}
+                {fuelTypes[car.fuel]} · {formatNumber(car.consumption)} l/100 km{car.seats
+                  ? ` · ${car.seats} Plätze`
+                  : ""}
               </span>
             </span>
           </button>
@@ -119,8 +135,13 @@
   </div>
 </div>
 
-<div class="grid gap-4 sm:grid-cols-4">
-  <Field id="distanceKm" label="Strecke (km, einfach)" error={errors.distanceKm}>
+<div class="grid gap-4 sm:grid-cols-3">
+  <Field
+    id="distanceKm"
+    label={leg ? "Anfahrt (km)" : "Strecke (km, einfach)"}
+    error={errors.distanceKm}
+    hint={leg ? `von ${leg.from?.title ?? "zu Hause"}` : undefined}
+  >
     <input
       id="distanceKm"
       name="distanceKm"
@@ -138,22 +159,60 @@
       value={formatNumber(gig.durationMin)}
     />
   </Field>
-  <Field id="fuelPrice" label="Spritpreis (€/l)" error={errors.fuelPrice} hint="Leer = Standard">
-    <input
-      id="fuelPrice"
-      name="fuelPrice"
-      class="input"
-      inputmode="decimal"
-      bind:value={trip.fuelPrice}
-      placeholder={formatNumber(settings.fuelPrice)}
-    />
-  </Field>
+  {#if leg?.returnsHome}
+    <Field id="returnKm" label="Heimfahrt (km)" error={errors.returnKm}>
+      <input
+        id="returnKm"
+        name="returnKm"
+        class="input"
+        inputmode="decimal"
+        bind:value={trip.returnKm}
+      />
+    </Field>
+    <Field id="returnMin" label="Heimfahrt (min)" error={errors.returnMin}>
+      <input
+        id="returnMin"
+        name="returnMin"
+        class="input"
+        inputmode="numeric"
+        value={formatNumber(gig.returnMin)}
+      />
+    </Field>
+  {/if}
   <Field id="tolls" label="Maut / Parken (€)" error={errors.tolls}>
     <input id="tolls" name="tolls" class="input" inputmode="decimal" bind:value={trip.tolls} />
+  </Field>
+  <Field id="dieselPrice" label="Diesel (€/l)" error={errors.dieselPrice} hint="Leer = Standard">
+    <input
+      id="dieselPrice"
+      name="dieselPrice"
+      class="input"
+      inputmode="decimal"
+      bind:value={trip.dieselPrice}
+      placeholder={formatNumber(settings.dieselPrice)}
+    />
+  </Field>
+  <Field id="petrolPrice" label="Benzin (€/l)" error={errors.petrolPrice} hint="Leer = Standard">
+    <input
+      id="petrolPrice"
+      name="petrolPrice"
+      class="input"
+      inputmode="decimal"
+      bind:value={trip.petrolPrice}
+      placeholder={formatNumber(settings.petrolPrice)}
+    />
   </Field>
 </div>
 
 <div class="flex flex-wrap items-baseline justify-between gap-2 rounded-xl bg-accent-soft p-4">
-  <span class="text-xs text-muted">Hin & zurück, je Auto mit eigenem Verbrauch</span>
+  <span class="text-xs text-muted">
+    {#if !leg}
+      Hin & zurück, je Auto mit eigenem Verbrauch
+    {:else if leg.returnsHome}
+      Anfahrt und Heimfahrt, je Auto mit eigenem Verbrauch
+    {:else}
+      Nur Anfahrt – danach geht es zum nächsten Tour-Gig
+    {/if}
+  </span>
   <span class="text-lg font-semibold">{formatMoney(cost)}</span>
 </div>

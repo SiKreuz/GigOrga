@@ -59,6 +59,11 @@ export const backlineProviders = {
   support: "Support stellt",
 } as const;
 
+export const fuelTypes = {
+  diesel: "Diesel",
+  benzin: "Benzin",
+} as const;
+
 export type GigStatus = keyof typeof gigStatuses;
 export type GigType = keyof typeof gigTypes;
 export type DealType = keyof typeof dealTypes;
@@ -66,6 +71,7 @@ export type InvoiceStatus = keyof typeof invoiceStatuses;
 export type AccommodationType = keyof typeof accommodationTypes;
 export type TimetableKind = keyof typeof timetableKinds;
 export type BacklineProvider = keyof typeof backlineProviders;
+export type FuelType = keyof typeof fuelTypes;
 
 export const keys = <T extends Record<string, string>>(labels: T) =>
   Object.keys(labels) as [keyof T & string, ...(keyof T & string)[]];

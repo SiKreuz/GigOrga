@@ -14,6 +14,7 @@ import {
   updateTimetable,
   updateTravel,
 } from "$lib/server/services/gigs";
+import { createTour } from "$lib/server/services/tours";
 import { deleteVenue } from "$lib/server/services/venues";
 import { gigBasics, test } from "$lib/server/testing";
 import { faker } from "@faker-js/faker";
@@ -36,22 +37,70 @@ describe("gigs", () => {
   });
 
   test("preselects the standard cars", async ({ db, insertGig }) => {
-    await createCar(db, { name: "Bus", consumption: 10, seats: 8, standard: 1 });
-    await createCar(db, { name: "Kombi", consumption: 6, seats: 5, standard: 0 });
+    await createCar(db, { name: "Bus", consumption: 10, fuel: "diesel", seats: 8, standard: 1 });
+    await createCar(db, { name: "Kombi", consumption: 6, fuel: "benzin", seats: 5, standard: 0 });
     const { id } = await insertGig();
     expect((await getGig(db, id))?.cars.map((car) => car.name)).toEqual(["Bus"]);
   });
 
-  test("updates travel with people, fuel price and cars", async ({ db, insertGig }) => {
-    const bus = await createCar(db, { name: "Bus", consumption: 10, seats: 8, standard: 1 });
-    const kombi = await createCar(db, { name: "Kombi", consumption: 6, seats: 5, standard: 0 });
+  test("updates travel with people, fuel prices and cars", async ({ db, insertGig }) => {
+    const bus = await createCar(db, {
+      name: "Bus",
+      consumption: 10,
+      fuel: "diesel",
+      seats: 8,
+      standard: 1,
+    });
+    const kombi = await createCar(db, {
+      name: "Kombi",
+      consumption: 6,
+      fuel: "benzin",
+      seats: 5,
+      standard: 0,
+    });
     const { id } = await insertGig();
-    const travel = { distanceKm: 120, durationMin: 90, people: 3, fuelPrice: 1.65, tolls: 5 };
+    const travel = {
+      distanceKm: 120,
+      durationMin: 90,
+      returnKm: 110,
+      returnMin: 80,
+      people: 3,
+      petrolPrice: 1.85,
+      dieselPrice: 1.65,
+      tolls: 5,
+    };
     await updateTravel(db, id, { ...travel, carIds: [kombi] });
     const gig = await getGig(db, id);
     expect(gig).toMatchObject(travel);
-    expect(gig?.cars.map((car) => car.id)).toEqual([kombi]);
+    expect(gig?.cars).toMatchObject([{ id: kombi, fuel: "benzin" }]);
     expect(gig?.cars.map((car) => car.id)).not.toContain(bus);
+  });
+
+  test("knows where a tour stop arrives from and whether it returns home", async ({
+    db,
+    insertGig,
+    insertVenue,
+  }) => {
+    const tour = await createTour(db, { name: "Herbsttour" });
+    const venue = await insertVenue({ name: "Ampere", city: "München" });
+    const first = await insertGig({ date: "2026-11-01", venueId: venue.id });
+    const second = await insertGig({ date: "2026-11-02" });
+    const { id: firstId, ...firstBasics } = first;
+    const { id: secondId, ...secondBasics } = second;
+    await updateGig(db, firstId, gigBasics({ ...firstBasics, tourId: tour }));
+    await updateGig(db, secondId, gigBasics({ ...secondBasics, tourId: tour }));
+
+    expect((await getGig(db, first.id))?.tourLeg).toEqual({
+      tour: { id: tour, name: "Herbsttour" },
+      from: null,
+      returnsHome: false,
+    });
+    expect((await getGig(db, second.id))?.tourLeg).toEqual({
+      tour: { id: tour, name: "Herbsttour" },
+      from: { id: first.id, title: first.title, venue: { name: "Ampere", city: "München" } },
+      returnsHome: true,
+    });
+    expect((await insertGig().then(({ id }) => getGig(db, id)))?.tourLeg).toBeNull();
   });
 
   test("returns undefined for unknown gigs", async ({ db }) => {

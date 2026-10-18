@@ -1,5 +1,7 @@
 import { type Db, transaction } from "../db";
-import { setHomeLocation, getSettings } from "./settings";
+import { getGig } from "./gigs";
+import { getSettings, setHomeLocation } from "./settings";
+import { getTour } from "./tours";
 import { setVenueLocation } from "./venues";
 
 export type Point = { lat: number; lon: number };
@@ -7,6 +9,15 @@ export type RoutingConfig = { geocoderUrl: string; routerUrl: string; fetch: typ
 export type RouteResult =
   | { ok: true; distanceKm: number; durationMin: number }
   | { ok: false; message: string };
+
+type Venue = {
+  id: string;
+  name: string;
+  address: string;
+  city: string;
+  lat: number | null;
+  lon: number | null;
+};
 
 const headers = { "User-Agent": "GigOrga/1.0 (self-hosted gig planner)", "Accept-Language": "de" };
 
@@ -34,40 +45,82 @@ export async function drivingRoute(config: RoutingConfig, from: Point, to: Point
   };
 }
 
+async function locateHome(db: Db, config: RoutingConfig): Promise<Point | string> {
+  const settings = await getSettings(db);
+  if (!settings.homeAddress) {
+    return "Bitte zuerst die Startadresse in den Einstellungen eintragen.";
+  }
+  if (settings.homeLat !== null && settings.homeLon !== null) {
+    return { lat: settings.homeLat, lon: settings.homeLon };
+  }
+  const home = await geocode(config, settings.homeAddress);
+  if (!home) return "Die Startadresse wurde nicht gefunden.";
+  await setHomeLocation(db, home.lat, home.lon);
+  return home;
+}
+
+async function locateVenue(db: Db, config: RoutingConfig, venue: Venue): Promise<Point | string> {
+  if (venue.lat !== null && venue.lon !== null) return { lat: venue.lat, lon: venue.lon };
+  const query = [venue.address, venue.city].filter(Boolean).join(", ") || venue.name;
+  const point = await geocode(config, query);
+  if (!point) return `Die Adresse der Venue ${venue.name} wurde nicht gefunden.`;
+  await setVenueLocation(db, venue.id, point.lat, point.lon);
+  return point;
+}
+
+async function locateOrigin(db: Db, config: RoutingConfig, fromGigId: string | undefined) {
+  if (fromGigId === undefined) return locateHome(db, config);
+  const previous = await db.orm.Gig.where({ id: fromGigId }).include("venue").first();
+  if (!previous?.venue) return "Der vorherige Gig der Tour hat keine Venue.";
+  return locateVenue(db, config, previous.venue);
+}
+
+const noRoute = { ok: false, message: "Es konnte keine Route berechnet werden." } as const;
+
 export async function routeToGig(
   db: Db,
   config: RoutingConfig,
   gigId: string,
 ): Promise<RouteResult> {
-  const gig = await db.orm.Gig.where({ id: gigId }).include("venue").first();
-  const venue = gig?.venue;
-  if (!venue) return { ok: false, message: "Dem Gig ist keine Venue zugeordnet." };
-  const settings = await getSettings(db);
-  if (!settings.homeAddress) {
-    return { ok: false, message: "Bitte zuerst die Startadresse in den Einstellungen eintragen." };
+  const gig = await getGig(db, gigId);
+  if (!gig?.venue) return { ok: false, message: "Dem Gig ist keine Venue zugeordnet." };
+  const leg = gig.tourLeg;
+
+  const origin = await locateOrigin(db, config, leg?.from?.id);
+  if (typeof origin === "string") return { ok: false, message: origin };
+  const target = await locateVenue(db, config, gig.venue);
+  if (typeof target === "string") {
+    return { ok: false, message: "Die Adresse der Venue wurde nicht gefunden." };
   }
 
-  let home =
-    settings.homeLat === null || settings.homeLon === null
-      ? undefined
-      : { lat: settings.homeLat, lon: settings.homeLon };
-  if (!home) {
-    home = await geocode(config, settings.homeAddress);
-    if (!home) return { ok: false, message: "Die Startadresse wurde nicht gefunden." };
-    await setHomeLocation(db, home.lat, home.lon);
-  }
-
-  let target =
-    venue.lat === null || venue.lon === null ? undefined : { lat: venue.lat, lon: venue.lon };
-  if (!target) {
-    const query = [venue.address, venue.city].filter(Boolean).join(", ") || venue.name;
-    target = await geocode(config, query);
-    if (!target) return { ok: false, message: "Die Adresse der Venue wurde nicht gefunden." };
-    await setVenueLocation(db, venue.id, target.lat, target.lon);
-  }
-
-  const route = await drivingRoute(config, home, target);
-  if (!route) return { ok: false, message: "Es konnte keine Route berechnet werden." };
+  const route = await drivingRoute(config, origin, target);
+  if (!route) return noRoute;
   await transaction(db, (tx) => tx.orm.Gig.where({ id: gigId }).update(route));
+
+  if (leg?.returnsHome === true) {
+    const home = await locateHome(db, config);
+    if (typeof home === "string") return { ok: false, message: home };
+    const back = await drivingRoute(config, target, home);
+    if (!back) return noRoute;
+    await transaction(db, (tx) =>
+      tx.orm.Gig.where({ id: gigId }).update({
+        returnKm: back.distanceKm,
+        returnMin: back.durationMin,
+      }),
+    );
+  }
   return { ok: true, ...route };
+}
+
+export async function routeTour(
+  db: Db,
+  config: RoutingConfig,
+  tourId: string,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const tour = await getTour(db, tourId);
+  for (const stop of tour?.stops ?? []) {
+    const result = await routeToGig(db, config, stop.id);
+    if (!result.ok) return { ok: false, message: `${stop.title}: ${result.message}` };
+  }
+  return { ok: true };
 }

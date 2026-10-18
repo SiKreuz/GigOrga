@@ -55,6 +55,7 @@ export const gigBasics = (overrides: Partial<GigBasics> = {}): GigBasics => ({
   status: "anfrage",
   type: "club",
   venueId: null,
+  tourId: null,
   notes: "",
   ...overrides,
 });

@@ -3,7 +3,8 @@ import { type Db, transaction } from "../db";
 export type SettingsInput = {
   homeAddress: string;
   bandSize: number;
-  fuelPrice: number;
+  petrolPrice: number;
+  dieselPrice: number;
 };
 
 const id = "default";

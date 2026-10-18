@@ -9,17 +9,20 @@
   import TravelSection from "$lib/components/gig/TravelSection.svelte";
   import VenueContactsSection from "$lib/components/gig/VenueContactsSection.svelte";
   import StatusChip from "$lib/components/StatusChip.svelte";
-  import { estimate, travelCost } from "$lib/deal";
+  import { estimate, travelCost, tripOf } from "$lib/deal";
   import { formatMoney, formatNumber, relativeDay, todayIso } from "$lib/format";
   import { gigTypes, timetableKinds } from "$lib/labels";
-  import { ArrowLeft, Lock, MapPin, Pencil, Plus } from "@lucide/svelte";
+  import { ArrowLeft, Lock, MapPin, Pencil, Plus, Route } from "@lucide/svelte";
 
   let { data, form } = $props();
 
   const gig = $derived(data.gig);
   const people = $derived(gig.people ?? data.settings.bandSize);
-  const fuelPrice = $derived(gig.fuelPrice ?? data.settings.fuelPrice);
-  const travel = $derived(travelCost(gig, gig.cars, fuelPrice));
+  const prices = $derived({
+    benzin: gig.petrolPrice ?? data.settings.petrolPrice,
+    diesel: gig.dieselPrice ?? data.settings.dieselPrice,
+  });
+  const travel = $derived(travelCost(tripOf(gig, gig.tourLeg), gig.cars, prices));
   const net = $derived(estimate(gig, travel, people).net);
 
   let editingBasics = $state(false);
@@ -111,6 +114,14 @@
               </span>
             {/if}
             <span>{gigTypes[gig.type]}</span>
+            {#if gig.tourLeg}
+              <a
+                href="/tours/{gig.tourLeg.tour.id}"
+                class="flex items-center gap-1 text-accent hover:underline"
+              >
+                <Route class="size-3.5" />{gig.tourLeg.tour.name}
+              </a>
+            {/if}
           </div>
         </div>
         {#if !editingBasics}
@@ -149,6 +160,7 @@
       <BasicsForm
         {gig}
         venues={data.venues}
+        tours={data.tours}
         errors={errorsFor("basics")}
         onclose={() => (editingBasics = false)}
       />
@@ -170,7 +182,7 @@
       settings={data.settings}
       {travel}
       {people}
-      {fuelPrice}
+      {prices}
       errors={errorsFor("travel")}
       {routeError}
       bind:editing={editing.fahrt}

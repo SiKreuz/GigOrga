@@ -68,13 +68,20 @@ enum BacklineProvider {
   support = "support"
 }
 
+enum FuelType {
+  @@type("sqlite/text@1")
+  benzin = "benzin"
+  diesel = "diesel"
+}
+
 model Settings {
   id          String @id
   homeAddress String @default("") @map("home_address")
   homeLat     Float? @map("home_lat")
   homeLon     Float? @map("home_lon")
   bandSize    Int    @default(4) @map("band_size")
-  fuelPrice   Float  @default(1.8) @map("fuel_price")
+  petrolPrice Float  @default(1.8) @map("petrol_price")
+  dieselPrice Float  @default(1.7) @map("diesel_price")
 
   @@map("settings")
 }
@@ -83,6 +90,7 @@ model Car {
   id          String       @id
   name        String
   consumption Float
+  fuel        FuelType     @default(diesel)
   seats       Int?
   standard    Int          @default(1)
   createdAt   DateTime     @default(now()) @map("created_at")
@@ -100,6 +108,15 @@ model GigCar {
   @@id([gigId, carId])
   @@index([carId])
   @@map("gig_cars")
+}
+
+model Tour {
+  id        String   @id
+  name      String
+  createdAt DateTime @default(now()) @map("created_at")
+  gigs      Gig[]
+
+  @@map("tours")
 }
 
 model Venue {
@@ -141,6 +158,8 @@ model Gig {
   type               GigType           @default(club)
   venueId            String?           @map("venue_id")
   venue              Venue?            @relation(fields: [venueId], references: [id], onDelete: SetNull)
+  tourId             String?           @map("tour_id")
+  tour               Tour?             @relation(fields: [tourId], references: [id], onDelete: SetNull)
   notes              String            @default("")
   dealType           DealType          @default(festgage) @map("deal_type")
   fee                Float?
@@ -156,8 +175,11 @@ model Gig {
   dealNotes          String            @default("") @map("deal_notes")
   distanceKm         Float?            @map("distance_km")
   durationMin        Int?              @map("duration_min")
+  returnKm           Float?            @map("return_km")
+  returnMin          Int?              @map("return_min")
   people             Int?
-  fuelPrice          Float?            @map("fuel_price")
+  petrolPrice        Float?            @map("petrol_price")
+  dieselPrice        Float?            @map("diesel_price")
   tolls              Float?
   ownFoh             Int               @default(0) @map("own_foh")
   riderSent          Int               @default(0) @map("rider_sent")
@@ -186,6 +208,7 @@ model Gig {
   presaleLinks       PresaleLink[]
 
   @@index([venueId])
+  @@index([tourId])
   @@index([date])
   @@map("gigs")
 }
