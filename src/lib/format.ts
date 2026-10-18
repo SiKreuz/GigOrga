@@ -22,7 +22,10 @@ const moneyFormat = new Intl.NumberFormat("de-DE", {
 const parse = (isoDate: string) => new Date(`${isoDate}T00:00:00Z`);
 
 export function formatDate(isoDate: string): string {
-  return dateFormat.format(parse(isoDate));
+  const parts = dateFormat.formatToParts(parse(isoDate));
+  const part = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((entry) => entry.type === type)?.value ?? "";
+  return `${part("weekday")} ${part("day")}.${part("month")}.${part("year")}`;
 }
 
 export function formatMonth(isoDate: string): string {
