@@ -1,0 +1,38 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    ":semanticCommits",
+    ":semanticCommitTypeAll(chore)",
+    ":rebaseStalePrs"
+  ],
+  "rangeStrategy": "pin",
+  "schedule": ["before 6am on monday"],
+  "packageRules": [
+    {
+      "description": "TypeScript 6 stays for the Svelte tooling; TypeScript 7 comes in via @typescript/native",
+      "matchDepNames": ["typescript"],
+      "allowedVersions": "<7"
+    },
+    {
+      "groupName": "Bun",
+      "matchPackageNames": ["bun", "oven/bun", "@types/bun"]
+    },
+    {
+      "groupName": "Vite+",
+      "matchPackageNames": ["vite-plus", "@voidzero-dev/vite-plus-core"]
+    },
+    {
+      "groupName": "Prisma",
+      "matchPackageNames": ["prisma", "@prisma/**"]
+    },
+    {
+      "groupName": "Svelte",
+      "matchPackageNames": ["svelte", "svelte-check", "svelte-adapter-bun", "@sveltejs/**"]
+    },
+    {
+      "groupName": "Tailwind CSS",
+      "matchPackageNames": ["tailwindcss", "@tailwindcss/**"]
+    }
+  ]
+}

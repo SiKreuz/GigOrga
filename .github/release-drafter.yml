@@ -1,0 +1,32 @@
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+change-template: "- $TITLE (#$NUMBER) $AUTHORS"
+change-title-escapes: '\<*_&'
+categories:
+  - title: "💥 Breaking Changes"
+    semver-increment: major
+    exclusive: true
+    when:
+      conventional:
+        breaking: true
+  - title: "🚀 Features"
+    semver-increment: minor
+    exclusive: true
+    when:
+      conventional:
+        type: feat
+  - title: "🐛 Bug Fixes"
+    exclusive: true
+    when:
+      conventional:
+        type: fix
+  - title: "🧰 Maintenance"
+  - title: "⬆️ Dependencies"
+    collapse-after: 3
+    when:
+      conventional:
+        scope: deps
+template: |
+  ## What's Changed
+
+  $CHANGES

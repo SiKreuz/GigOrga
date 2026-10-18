@@ -1,0 +1,159 @@
+<script lang="ts">
+  import Field from "$lib/components/Field.svelte";
+  import { travelCost } from "$lib/deal";
+  import { formatMoney, formatNumber, parseNumber } from "$lib/format";
+  import type { CarSummary } from "$lib/server/services/cars";
+  import type { GigDetail } from "$lib/server/services/gigs";
+  import { Check, Minus, Plus } from "@lucide/svelte";
+  import { untrack } from "svelte";
+
+  let {
+    gig,
+    cars,
+    settings,
+    errors,
+  }: {
+    gig: GigDetail;
+    cars: CarSummary[];
+    settings: { bandSize: number; fuelPrice: number };
+    errors: Record<string, string>;
+  } = $props();
+
+  let trip = $state(
+    untrack(() => ({
+      distanceKm: formatNumber(gig.distanceKm),
+      tolls: formatNumber(gig.tolls),
+      fuelPrice: formatNumber(gig.fuelPrice),
+      people: gig.people ?? settings.bandSize,
+      carIds: gig.cars.map((car) => car.id),
+    })),
+  );
+
+  const selected = $derived(cars.filter((car) => trip.carIds.includes(car.id)));
+  const seats = $derived(selected.reduce((sum, car) => sum + (car.seats ?? 0), 0));
+  const cost = $derived(
+    travelCost(
+      { distanceKm: parseNumber(trip.distanceKm), tolls: parseNumber(trip.tolls) },
+      selected,
+      parseNumber(trip.fuelPrice) ?? settings.fuelPrice,
+    ),
+  );
+
+  function toggle(id: string) {
+    trip.carIds = trip.carIds.includes(id)
+      ? trip.carIds.filter((carId) => carId !== id)
+      : [...trip.carIds, id];
+  }
+</script>
+
+<input type="hidden" name="carIds" value={JSON.stringify(trip.carIds)} />
+<input type="hidden" name="people" value={trip.people} />
+
+<div class="grid gap-5 sm:grid-cols-[auto_1fr]">
+  <div class="flex flex-col gap-1.5">
+    <span class="label">Personen</span>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="btn w-10 btn-ghost px-0"
+        onclick={() => (trip.people = Math.max(1, trip.people - 1))}
+        aria-label="Weniger"
+      >
+        <Minus class="size-4" />
+      </button>
+      <span class="w-8 text-center text-lg font-semibold tabular-nums">{trip.people}</span>
+      <button
+        type="button"
+        class="btn w-10 btn-ghost px-0"
+        onclick={() => (trip.people += 1)}
+        aria-label="Mehr"
+      >
+        <Plus class="size-4" />
+      </button>
+    </div>
+    <span class="text-xs text-muted">Band: {settings.bandSize}</span>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <span class="label">Autos</span>
+    {#if cars.length > 0}
+      <div class="flex flex-wrap gap-2">
+        {#each cars as car (car.id)}
+          {@const active = trip.carIds.includes(car.id)}
+          <button
+            type="button"
+            class={[
+              "flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition-colors",
+              active ? "border-accent bg-accent-soft" : "border-border hover:bg-surface-2",
+            ]}
+            onclick={() => toggle(car.id)}
+            aria-pressed={active}
+          >
+            <span
+              class={[
+                "flex size-4 items-center justify-center rounded border",
+                active ? "border-accent bg-accent text-accent-contrast" : "border-border",
+              ]}
+            >
+              {#if active}<Check class="size-3" />{/if}
+            </span>
+            <span>
+              <span class="font-medium">{car.name}</span>
+              <span class="block text-xs text-muted">
+                {formatNumber(car.consumption)} l/100 km{car.seats ? ` · ${car.seats} Plätze` : ""}
+              </span>
+            </span>
+          </button>
+        {/each}
+      </div>
+      {#if seats > 0 && seats < trip.people}
+        <span class="text-xs text-warning">Nur {seats} Sitzplätze für {trip.people} Personen.</span>
+      {/if}
+    {:else}
+      <p class="text-sm text-muted">
+        Noch keine Autos angelegt – <a href="/settings" class="text-accent hover:underline"
+          >in den Einstellungen hinzufügen</a
+        >.
+      </p>
+    {/if}
+  </div>
+</div>
+
+<div class="grid gap-4 sm:grid-cols-4">
+  <Field id="distanceKm" label="Strecke (km, einfach)" error={errors.distanceKm}>
+    <input
+      id="distanceKm"
+      name="distanceKm"
+      class="input"
+      inputmode="decimal"
+      bind:value={trip.distanceKm}
+    />
+  </Field>
+  <Field id="durationMin" label="Fahrzeit (min)" error={errors.durationMin}>
+    <input
+      id="durationMin"
+      name="durationMin"
+      class="input"
+      inputmode="numeric"
+      value={formatNumber(gig.durationMin)}
+    />
+  </Field>
+  <Field id="fuelPrice" label="Spritpreis (€/l)" error={errors.fuelPrice} hint="Leer = Standard">
+    <input
+      id="fuelPrice"
+      name="fuelPrice"
+      class="input"
+      inputmode="decimal"
+      bind:value={trip.fuelPrice}
+      placeholder={formatNumber(settings.fuelPrice)}
+    />
+  </Field>
+  <Field id="tolls" label="Maut / Parken (€)" error={errors.tolls}>
+    <input id="tolls" name="tolls" class="input" inputmode="decimal" bind:value={trip.tolls} />
+  </Field>
+</div>
+
+<div class="flex flex-wrap items-baseline justify-between gap-2 rounded-xl bg-accent-soft p-4">
+  <span class="text-xs text-muted">Hin & zurück, je Auto mit eigenem Verbrauch</span>
+  <span class="text-lg font-semibold">{formatMoney(cost)}</span>
+</div>

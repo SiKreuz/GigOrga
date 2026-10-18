@@ -1,0 +1,258 @@
+// use prisma-8
+
+enum GigStatus {
+  @@type("sqlite/text@1")
+  anfrage    = "anfrage"
+  option     = "option"
+  bestaetigt = "bestaetigt"
+  vertrag    = "vertrag"
+  gespielt   = "gespielt"
+  abgesagt   = "abgesagt"
+}
+
+enum GigType {
+  @@type("sqlite/text@1")
+  club      = "club"
+  festival  = "festival"
+  privat    = "privat"
+  support   = "support"
+  headliner = "headliner"
+}
+
+enum DealType {
+  @@type("sqlite/text@1")
+  festgage  = "festgage"
+  tuerdeal  = "tuerdeal"
+  versus    = "versus"
+  saalmiete = "saalmiete"
+  hut       = "hut"
+  unbezahlt = "unbezahlt"
+}
+
+enum InvoiceStatus {
+  @@type("sqlite/text@1")
+  offen    = "offen"
+  gestellt = "gestellt"
+  bezahlt  = "bezahlt"
+}
+
+enum AccommodationType {
+  @@type("sqlite/text@1")
+  keine       = "keine"
+  hotel       = "hotel"
+  pension     = "pension"
+  privat      = "privat"
+  veranstalter = "veranstalter"
+}
+
+enum TimetableKind {
+  @@type("sqlite/text@1")
+  abfahrt    = "abfahrt"
+  getin      = "getin"
+  aufbau     = "aufbau"
+  soundcheck = "soundcheck"
+  einlass    = "einlass"
+  support    = "support"
+  show       = "show"
+  umbau      = "umbau"
+  curfew     = "curfew"
+  abbau      = "abbau"
+  sonstiges  = "sonstiges"
+}
+
+enum BacklineProvider {
+  @@type("sqlite/text@1")
+  unklar  = "unklar"
+  venue   = "venue"
+  wir     = "wir"
+  support = "support"
+}
+
+model Settings {
+  id          String @id
+  homeAddress String @default("") @map("home_address")
+  homeLat     Float? @map("home_lat")
+  homeLon     Float? @map("home_lon")
+  bandSize    Int    @default(4) @map("band_size")
+  fuelPrice   Float  @default(1.8) @map("fuel_price")
+
+  @@map("settings")
+}
+
+model Car {
+  id          String       @id
+  name        String
+  consumption Float
+  seats       Int?
+  standard    Int          @default(1)
+  createdAt   DateTime     @default(now()) @map("created_at")
+  gigs        GigCar[]
+
+  @@map("cars")
+}
+
+model GigCar {
+  gigId String @map("gig_id")
+  gig   Gig    @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  carId String @map("car_id")
+  car   Car    @relation(fields: [carId], references: [id], onDelete: Cascade)
+
+  @@id([gigId, carId])
+  @@index([carId])
+  @@map("gig_cars")
+}
+
+model Venue {
+  id        String   @id
+  name      String
+  address   String   @default("")
+  city      String   @default("")
+  capacity  Int?
+  website   String   @default("")
+  loadIn    String   @default("") @map("load_in")
+  stage     String   @default("")
+  notes     String   @default("")
+  lat       Float?
+  lon       Float?
+  createdAt DateTime @default(now()) @map("created_at")
+  gigs      Gig[]
+
+  @@map("venues")
+}
+
+model Contact {
+  id        String       @id
+  name      String
+  company   String       @default("")
+  phone     String       @default("")
+  email     String       @default("")
+  notes     String       @default("")
+  createdAt DateTime     @default(now()) @map("created_at")
+  gigs      GigContact[]
+
+  @@map("contacts")
+}
+
+model Gig {
+  id                 String            @id
+  title              String
+  date               String
+  status             GigStatus         @default(anfrage)
+  type               GigType           @default(club)
+  venueId            String?           @map("venue_id")
+  venue              Venue?            @relation(fields: [venueId], references: [id], onDelete: SetNull)
+  notes              String            @default("")
+  dealType           DealType          @default(festgage) @map("deal_type")
+  fee                Float?
+  doorPercent        Float?            @map("door_percent")
+  costs              Float?
+  rent               Float?
+  deposit            Float?
+  ticketPresale      Float?            @map("ticket_presale")
+  ticketDoor         Float?            @map("ticket_door")
+  expectedAttendance Int?              @map("expected_attendance")
+  invoiceStatus      InvoiceStatus     @default(offen) @map("invoice_status")
+  gemaReported       Int               @default(0) @map("gema_reported")
+  dealNotes          String            @default("") @map("deal_notes")
+  distanceKm         Float?            @map("distance_km")
+  durationMin        Int?              @map("duration_min")
+  people             Int?
+  fuelPrice          Float?            @map("fuel_price")
+  tolls              Float?
+  ownFoh             Int               @default(0) @map("own_foh")
+  riderSent          Int               @default(0) @map("rider_sent")
+  stagePlotSent      Int               @default(0) @map("stage_plot_sent")
+  inputListSent      Int               @default(0) @map("input_list_sent")
+  techNotes          String            @default("") @map("tech_notes")
+  catering           Int               @default(0)
+  drinks             String            @default("")
+  buyout             Float?
+  hospitalityNotes   String            @default("") @map("hospitality_notes")
+  accommodationType  AccommodationType @default(keine) @map("accommodation_type")
+  accommodationName  String            @default("") @map("accommodation_name")
+  accommodationAddress String          @default("") @map("accommodation_address")
+  accommodationLink  String            @default("") @map("accommodation_link")
+  beds               Int?
+  checkIn            String            @default("") @map("check_in")
+  breakfast          Int               @default(0)
+  accommodationPaid  Int               @default(0) @map("accommodation_paid")
+  accommodationNotes String            @default("") @map("accommodation_notes")
+  createdAt          DateTime          @default(now()) @map("created_at")
+  contacts           GigContact[]
+  cars               GigCar[]
+  timetable          TimetableEntry[]
+  supportActs        SupportAct[]
+  backline           BacklineItem[]
+  presaleLinks       PresaleLink[]
+
+  @@index([venueId])
+  @@index([date])
+  @@map("gigs")
+}
+
+model GigContact {
+  gigId     String  @map("gig_id")
+  gig       Gig     @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  contactId String  @map("contact_id")
+  contact   Contact @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  role      String  @default("")
+
+  @@id([gigId, contactId])
+  @@index([contactId])
+  @@map("gig_contacts")
+}
+
+model TimetableEntry {
+  id       String        @id
+  gigId    String        @map("gig_id")
+  gig      Gig           @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  position Int
+  kind     TimetableKind
+  start    String        @default("")
+  end      String        @default("")
+  label    String        @default("")
+  fixed    Int           @default(0)
+
+  @@index([gigId])
+  @@map("timetable_entries")
+}
+
+model SupportAct {
+  id             String  @id
+  gigId          String  @map("gig_id")
+  gig            Gig     @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  position       Int
+  name           String
+  link           String  @default("")
+  contact        String  @default("")
+  stageTime      String  @default("") @map("stage_time")
+  sharesBackline Int     @default(0) @map("shares_backline")
+
+  @@index([gigId])
+  @@map("support_acts")
+}
+
+model BacklineItem {
+  id       String           @id
+  gigId    String           @map("gig_id")
+  gig      Gig              @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  position Int
+  name     String
+  provider BacklineProvider @default(unklar)
+  note     String           @default("")
+
+  @@index([gigId])
+  @@map("backline_items")
+}
+
+model PresaleLink {
+  id       String @id
+  gigId    String @map("gig_id")
+  gig      Gig    @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  position Int
+  label    String @default("")
+  url      String
+
+  @@index([gigId])
+  @@map("presale_links")
+}

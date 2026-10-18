@@ -1,0 +1,126 @@
+import { describe, expect, test } from "vitest";
+
+import {
+  carSchema,
+  dealSchema,
+  gigBasicsSchema,
+  newGigSchema,
+  parseForm,
+  settingsSchema,
+  techSchema,
+  travelSchema,
+} from "./forms";
+
+const form = (values: Record<string, string>) => {
+  const data = new FormData();
+  for (const [key, value] of Object.entries(values)) data.set(key, value);
+  return data;
+};
+
+describe("parseForm", () => {
+  test("parses gig basics and maps an empty venue to null", () => {
+    const result = parseForm(
+      gigBasicsSchema,
+      form({ title: " Club ", date: "2026-12-11", status: "option", type: "club", venueId: "" }),
+    );
+    expect(result).toEqual({
+      success: true,
+      data: {
+        title: "Club",
+        date: "2026-12-11",
+        status: "option",
+        type: "club",
+        venueId: null,
+        notes: "",
+      },
+    });
+  });
+
+  test("reports German errors per field", () => {
+    const result = parseForm(
+      gigBasicsSchema,
+      form({ title: "", date: "", status: "x", type: "club" }),
+    );
+    expect(result).toMatchObject({
+      success: false,
+      errors: { title: "Bitte einen Namen angeben", date: "Bitte ein Datum angeben" },
+    });
+  });
+
+  test("accepts decimal commas, empty numbers and checkboxes", () => {
+    const result = parseForm(
+      dealSchema,
+      form({
+        dealType: "tuerdeal",
+        doorPercent: "70",
+        ticketPresale: "12,50",
+        fee: "",
+        invoiceStatus: "offen",
+        gemaReported: "on",
+        presaleLinks: '[{"label":"Eventim","url":"https://example.com"}]',
+      }),
+    );
+    expect(result).toMatchObject({
+      success: true,
+      data: {
+        doorPercent: 70,
+        ticketPresale: 12.5,
+        fee: null,
+        gemaReported: 1,
+        presaleLinks: [{ label: "Eventim", url: "https://example.com" }],
+      },
+    });
+  });
+
+  test("rejects invalid numbers and percentages", () => {
+    const result = parseForm(
+      dealSchema,
+      form({ dealType: "tuerdeal", doorPercent: "120", fee: "abc", invoiceStatus: "offen" }),
+    );
+    expect(result).toMatchObject({
+      success: false,
+      errors: { doorPercent: "Höchstens 100 %", fee: "Keine gültige Zahl" },
+    });
+  });
+
+  test("parses list sections from JSON", () => {
+    const result = parseForm(
+      techSchema,
+      form({ backline: '[{"name":"Drumset","provider":"venue","note":""}]' }),
+    );
+    expect(result).toMatchObject({
+      success: true,
+      data: { ownFoh: 0, backline: [{ name: "Drumset", provider: "venue" }] },
+    });
+  });
+
+  test("falls back to defaults for empty settings", () => {
+    expect(parseForm(settingsSchema, form({}))).toEqual({
+      success: true,
+      data: { homeAddress: "", bandSize: 4, fuelPrice: 1.8 },
+    });
+  });
+
+  test("needs a venue or a title for a new gig", () => {
+    expect(parseForm(newGigSchema, form({ date: "2026-12-11", status: "anfrage" }))).toMatchObject({
+      success: false,
+      errors: { venueName: "Bitte Venue oder Namen angeben" },
+    });
+    expect(
+      parseForm(newGigSchema, form({ date: "2026-12-11", status: "option", venueName: "Ampere" })),
+    ).toMatchObject({ success: true, data: { title: "", venueName: "Ampere" } });
+  });
+
+  test("parses travel with the selected cars", () => {
+    expect(
+      parseForm(travelSchema, form({ people: "3", fuelPrice: "1,69", carIds: '["a","b"]' })),
+    ).toMatchObject({ success: true, data: { people: 3, fuelPrice: 1.69, carIds: ["a", "b"] } });
+  });
+
+  test("requires a consumption for cars", () => {
+    expect(parseForm(carSchema, form({ name: "Bus" }))).toMatchObject({
+      success: false,
+      errors: { consumption: "Bitte den Verbrauch angeben" },
+    });
+  });
+});

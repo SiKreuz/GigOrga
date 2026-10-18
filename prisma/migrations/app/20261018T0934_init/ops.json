@@ -1,0 +1,863 @@
+[
+  {
+    "id": "table.backline_items",
+    "label": "Create table backline_items",
+    "summary": "Creates table backline_items with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "backline_items"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"backline_items\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "backline_items"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"backline_items\"",
+        "sql": "CREATE TABLE \"backline_items\" (\n  \"gig_id\" TEXT NOT NULL,\n  \"id\" TEXT NOT NULL,\n  \"name\" TEXT NOT NULL,\n  \"note\" TEXT NOT NULL DEFAULT '',\n  \"position\" INTEGER NOT NULL,\n  \"provider\" TEXT NOT NULL DEFAULT 'unklar',\n  PRIMARY KEY (\"id\"),\n  FOREIGN KEY (\"gig_id\") REFERENCES \"gigs\" (\"id\") ON DELETE CASCADE\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"backline_items\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "backline_items"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.cars",
+    "label": "Create table cars",
+    "summary": "Creates table cars with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "cars"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"cars\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "cars"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"cars\"",
+        "sql": "CREATE TABLE \"cars\" (\n  \"consumption\" REAL NOT NULL,\n  \"created_at\" TEXT NOT NULL DEFAULT (datetime('now')),\n  \"id\" TEXT NOT NULL,\n  \"name\" TEXT NOT NULL,\n  \"seats\" INTEGER,\n  \"standard\" INTEGER NOT NULL DEFAULT 1,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"cars\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "cars"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.contacts",
+    "label": "Create table contacts",
+    "summary": "Creates table contacts with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "contacts"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"contacts\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "contacts"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"contacts\"",
+        "sql": "CREATE TABLE \"contacts\" (\n  \"company\" TEXT NOT NULL DEFAULT '',\n  \"created_at\" TEXT NOT NULL DEFAULT (datetime('now')),\n  \"email\" TEXT NOT NULL DEFAULT '',\n  \"id\" TEXT NOT NULL,\n  \"name\" TEXT NOT NULL,\n  \"notes\" TEXT NOT NULL DEFAULT '',\n  \"phone\" TEXT NOT NULL DEFAULT '',\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"contacts\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "contacts"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.gig_cars",
+    "label": "Create table gig_cars",
+    "summary": "Creates table gig_cars with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "gig_cars"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"gig_cars\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gig_cars"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"gig_cars\"",
+        "sql": "CREATE TABLE \"gig_cars\" (\n  \"car_id\" TEXT NOT NULL,\n  \"gig_id\" TEXT NOT NULL,\n  PRIMARY KEY (\"gig_id\", \"car_id\"),\n  FOREIGN KEY (\"gig_id\") REFERENCES \"gigs\" (\"id\") ON DELETE CASCADE,\n  FOREIGN KEY (\"car_id\") REFERENCES \"cars\" (\"id\") ON DELETE CASCADE\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"gig_cars\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gig_cars"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.gig_contacts",
+    "label": "Create table gig_contacts",
+    "summary": "Creates table gig_contacts with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "gig_contacts"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"gig_contacts\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gig_contacts"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"gig_contacts\"",
+        "sql": "CREATE TABLE \"gig_contacts\" (\n  \"contact_id\" TEXT NOT NULL,\n  \"gig_id\" TEXT NOT NULL,\n  \"role\" TEXT NOT NULL DEFAULT '',\n  PRIMARY KEY (\"gig_id\", \"contact_id\"),\n  FOREIGN KEY (\"gig_id\") REFERENCES \"gigs\" (\"id\") ON DELETE CASCADE,\n  FOREIGN KEY (\"contact_id\") REFERENCES \"contacts\" (\"id\") ON DELETE CASCADE\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"gig_contacts\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gig_contacts"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.gigs",
+    "label": "Create table gigs",
+    "summary": "Creates table gigs with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"gigs\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gigs"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"gigs\"",
+        "sql": "CREATE TABLE \"gigs\" (\n  \"accommodation_address\" TEXT NOT NULL DEFAULT '',\n  \"accommodation_link\" TEXT NOT NULL DEFAULT '',\n  \"accommodation_name\" TEXT NOT NULL DEFAULT '',\n  \"accommodation_notes\" TEXT NOT NULL DEFAULT '',\n  \"accommodation_paid\" INTEGER NOT NULL DEFAULT 0,\n  \"accommodation_type\" TEXT NOT NULL DEFAULT 'keine',\n  \"beds\" INTEGER,\n  \"breakfast\" INTEGER NOT NULL DEFAULT 0,\n  \"buyout\" REAL,\n  \"catering\" INTEGER NOT NULL DEFAULT 0,\n  \"check_in\" TEXT NOT NULL DEFAULT '',\n  \"costs\" REAL,\n  \"created_at\" TEXT NOT NULL DEFAULT (datetime('now')),\n  \"date\" TEXT NOT NULL,\n  \"deal_notes\" TEXT NOT NULL DEFAULT '',\n  \"deal_type\" TEXT NOT NULL DEFAULT 'festgage',\n  \"deposit\" REAL,\n  \"distance_km\" REAL,\n  \"door_percent\" REAL,\n  \"drinks\" TEXT NOT NULL DEFAULT '',\n  \"duration_min\" INTEGER,\n  \"expected_attendance\" INTEGER,\n  \"fee\" REAL,\n  \"fuel_price\" REAL,\n  \"gema_reported\" INTEGER NOT NULL DEFAULT 0,\n  \"hospitality_notes\" TEXT NOT NULL DEFAULT '',\n  \"id\" TEXT NOT NULL,\n  \"input_list_sent\" INTEGER NOT NULL DEFAULT 0,\n  \"invoice_status\" TEXT NOT NULL DEFAULT 'offen',\n  \"notes\" TEXT NOT NULL DEFAULT '',\n  \"own_foh\" INTEGER NOT NULL DEFAULT 0,\n  \"people\" INTEGER,\n  \"rent\" REAL,\n  \"rider_sent\" INTEGER NOT NULL DEFAULT 0,\n  \"stage_plot_sent\" INTEGER NOT NULL DEFAULT 0,\n  \"status\" TEXT NOT NULL DEFAULT 'anfrage',\n  \"tech_notes\" TEXT NOT NULL DEFAULT '',\n  \"ticket_door\" REAL,\n  \"ticket_presale\" REAL,\n  \"title\" TEXT NOT NULL,\n  \"tolls\" REAL,\n  \"type\" TEXT NOT NULL DEFAULT 'club',\n  \"venue_id\" TEXT,\n  PRIMARY KEY (\"id\"),\n  FOREIGN KEY (\"venue_id\") REFERENCES \"venues\" (\"id\") ON DELETE SET NULL\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"gigs\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gigs"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.presale_links",
+    "label": "Create table presale_links",
+    "summary": "Creates table presale_links with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "presale_links"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"presale_links\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "presale_links"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"presale_links\"",
+        "sql": "CREATE TABLE \"presale_links\" (\n  \"gig_id\" TEXT NOT NULL,\n  \"id\" TEXT NOT NULL,\n  \"label\" TEXT NOT NULL DEFAULT '',\n  \"position\" INTEGER NOT NULL,\n  \"url\" TEXT NOT NULL,\n  PRIMARY KEY (\"id\"),\n  FOREIGN KEY (\"gig_id\") REFERENCES \"gigs\" (\"id\") ON DELETE CASCADE\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"presale_links\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "presale_links"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.settings",
+    "label": "Create table settings",
+    "summary": "Creates table settings with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "settings"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"settings\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "settings"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"settings\"",
+        "sql": "CREATE TABLE \"settings\" (\n  \"band_size\" INTEGER NOT NULL DEFAULT 4,\n  \"fuel_price\" REAL NOT NULL DEFAULT 1.8,\n  \"home_address\" TEXT NOT NULL DEFAULT '',\n  \"home_lat\" REAL,\n  \"home_lon\" REAL,\n  \"id\" TEXT NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"settings\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "settings"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.support_acts",
+    "label": "Create table support_acts",
+    "summary": "Creates table support_acts with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "support_acts"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"support_acts\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "support_acts"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"support_acts\"",
+        "sql": "CREATE TABLE \"support_acts\" (\n  \"contact\" TEXT NOT NULL DEFAULT '',\n  \"gig_id\" TEXT NOT NULL,\n  \"id\" TEXT NOT NULL,\n  \"link\" TEXT NOT NULL DEFAULT '',\n  \"name\" TEXT NOT NULL,\n  \"position\" INTEGER NOT NULL,\n  \"shares_backline\" INTEGER NOT NULL DEFAULT 0,\n  \"stage_time\" TEXT NOT NULL DEFAULT '',\n  PRIMARY KEY (\"id\"),\n  FOREIGN KEY (\"gig_id\") REFERENCES \"gigs\" (\"id\") ON DELETE CASCADE\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"support_acts\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "support_acts"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.timetable_entries",
+    "label": "Create table timetable_entries",
+    "summary": "Creates table timetable_entries with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "timetable_entries"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"timetable_entries\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "timetable_entries"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"timetable_entries\"",
+        "sql": "CREATE TABLE \"timetable_entries\" (\n  \"end\" TEXT NOT NULL DEFAULT '',\n  \"fixed\" INTEGER NOT NULL DEFAULT 0,\n  \"gig_id\" TEXT NOT NULL,\n  \"id\" TEXT NOT NULL,\n  \"kind\" TEXT NOT NULL,\n  \"label\" TEXT NOT NULL DEFAULT '',\n  \"position\" INTEGER NOT NULL,\n  \"start\" TEXT NOT NULL DEFAULT '',\n  PRIMARY KEY (\"id\"),\n  FOREIGN KEY (\"gig_id\") REFERENCES \"gigs\" (\"id\") ON DELETE CASCADE\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"timetable_entries\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "timetable_entries"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.venues",
+    "label": "Create table venues",
+    "summary": "Creates table venues with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "venues"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"venues\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "venues"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"venues\"",
+        "sql": "CREATE TABLE \"venues\" (\n  \"address\" TEXT NOT NULL DEFAULT '',\n  \"capacity\" INTEGER,\n  \"city\" TEXT NOT NULL DEFAULT '',\n  \"created_at\" TEXT NOT NULL DEFAULT (datetime('now')),\n  \"id\" TEXT NOT NULL,\n  \"lat\" REAL,\n  \"load_in\" TEXT NOT NULL DEFAULT '',\n  \"lon\" REAL,\n  \"name\" TEXT NOT NULL,\n  \"notes\" TEXT NOT NULL DEFAULT '',\n  \"stage\" TEXT NOT NULL DEFAULT '',\n  \"website\" TEXT NOT NULL DEFAULT '',\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"venues\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "venues"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.backline_items.backline_items_gig_id_idx_f99649af",
+    "label": "Create index backline_items_gig_id_idx_f99649af on backline_items",
+    "summary": "Creates index backline_items_gig_id_idx_f99649af on backline_items",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "backline_items_gig_id_idx_f99649af",
+        "table": "backline_items"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"backline_items_gig_id_idx_f99649af\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "backline_items_gig_id_idx_f99649af"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"backline_items_gig_id_idx_f99649af\"",
+        "sql": "CREATE INDEX \"backline_items_gig_id_idx_f99649af\" ON \"backline_items\" (\"gig_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"backline_items_gig_id_idx_f99649af\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "backline_items_gig_id_idx_f99649af"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.gig_cars.gig_cars_car_id_idx_4e7b9f04",
+    "label": "Create index gig_cars_car_id_idx_4e7b9f04 on gig_cars",
+    "summary": "Creates index gig_cars_car_id_idx_4e7b9f04 on gig_cars",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "gig_cars_car_id_idx_4e7b9f04",
+        "table": "gig_cars"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"gig_cars_car_id_idx_4e7b9f04\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gig_cars_car_id_idx_4e7b9f04"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"gig_cars_car_id_idx_4e7b9f04\"",
+        "sql": "CREATE INDEX \"gig_cars_car_id_idx_4e7b9f04\" ON \"gig_cars\" (\"car_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"gig_cars_car_id_idx_4e7b9f04\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gig_cars_car_id_idx_4e7b9f04"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.gig_cars.gig_cars_gig_id_idx_f99649af",
+    "label": "Create index gig_cars_gig_id_idx_f99649af on gig_cars",
+    "summary": "Creates index gig_cars_gig_id_idx_f99649af on gig_cars",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "gig_cars_gig_id_idx_f99649af",
+        "table": "gig_cars"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"gig_cars_gig_id_idx_f99649af\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gig_cars_gig_id_idx_f99649af"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"gig_cars_gig_id_idx_f99649af\"",
+        "sql": "CREATE INDEX \"gig_cars_gig_id_idx_f99649af\" ON \"gig_cars\" (\"gig_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"gig_cars_gig_id_idx_f99649af\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gig_cars_gig_id_idx_f99649af"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.gig_contacts.gig_contacts_contact_id_idx_f6f6ad79",
+    "label": "Create index gig_contacts_contact_id_idx_f6f6ad79 on gig_contacts",
+    "summary": "Creates index gig_contacts_contact_id_idx_f6f6ad79 on gig_contacts",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "gig_contacts_contact_id_idx_f6f6ad79",
+        "table": "gig_contacts"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"gig_contacts_contact_id_idx_f6f6ad79\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gig_contacts_contact_id_idx_f6f6ad79"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"gig_contacts_contact_id_idx_f6f6ad79\"",
+        "sql": "CREATE INDEX \"gig_contacts_contact_id_idx_f6f6ad79\" ON \"gig_contacts\" (\"contact_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"gig_contacts_contact_id_idx_f6f6ad79\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gig_contacts_contact_id_idx_f6f6ad79"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.gig_contacts.gig_contacts_gig_id_idx_f99649af",
+    "label": "Create index gig_contacts_gig_id_idx_f99649af on gig_contacts",
+    "summary": "Creates index gig_contacts_gig_id_idx_f99649af on gig_contacts",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "gig_contacts_gig_id_idx_f99649af",
+        "table": "gig_contacts"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"gig_contacts_gig_id_idx_f99649af\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gig_contacts_gig_id_idx_f99649af"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"gig_contacts_gig_id_idx_f99649af\"",
+        "sql": "CREATE INDEX \"gig_contacts_gig_id_idx_f99649af\" ON \"gig_contacts\" (\"gig_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"gig_contacts_gig_id_idx_f99649af\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gig_contacts_gig_id_idx_f99649af"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.gigs.gigs_date_idx_b4ca319c",
+    "label": "Create index gigs_date_idx_b4ca319c on gigs",
+    "summary": "Creates index gigs_date_idx_b4ca319c on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "gigs_date_idx_b4ca319c",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"gigs_date_idx_b4ca319c\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gigs_date_idx_b4ca319c"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"gigs_date_idx_b4ca319c\"",
+        "sql": "CREATE INDEX \"gigs_date_idx_b4ca319c\" ON \"gigs\" (\"date\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"gigs_date_idx_b4ca319c\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gigs_date_idx_b4ca319c"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.gigs.gigs_venue_id_idx_7506cf3f",
+    "label": "Create index gigs_venue_id_idx_7506cf3f on gigs",
+    "summary": "Creates index gigs_venue_id_idx_7506cf3f on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "gigs_venue_id_idx_7506cf3f",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"gigs_venue_id_idx_7506cf3f\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gigs_venue_id_idx_7506cf3f"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"gigs_venue_id_idx_7506cf3f\"",
+        "sql": "CREATE INDEX \"gigs_venue_id_idx_7506cf3f\" ON \"gigs\" (\"venue_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"gigs_venue_id_idx_7506cf3f\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gigs_venue_id_idx_7506cf3f"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.presale_links.presale_links_gig_id_idx_f99649af",
+    "label": "Create index presale_links_gig_id_idx_f99649af on presale_links",
+    "summary": "Creates index presale_links_gig_id_idx_f99649af on presale_links",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "presale_links_gig_id_idx_f99649af",
+        "table": "presale_links"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"presale_links_gig_id_idx_f99649af\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "presale_links_gig_id_idx_f99649af"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"presale_links_gig_id_idx_f99649af\"",
+        "sql": "CREATE INDEX \"presale_links_gig_id_idx_f99649af\" ON \"presale_links\" (\"gig_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"presale_links_gig_id_idx_f99649af\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "presale_links_gig_id_idx_f99649af"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.support_acts.support_acts_gig_id_idx_f99649af",
+    "label": "Create index support_acts_gig_id_idx_f99649af on support_acts",
+    "summary": "Creates index support_acts_gig_id_idx_f99649af on support_acts",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "support_acts_gig_id_idx_f99649af",
+        "table": "support_acts"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"support_acts_gig_id_idx_f99649af\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "support_acts_gig_id_idx_f99649af"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"support_acts_gig_id_idx_f99649af\"",
+        "sql": "CREATE INDEX \"support_acts_gig_id_idx_f99649af\" ON \"support_acts\" (\"gig_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"support_acts_gig_id_idx_f99649af\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "support_acts_gig_id_idx_f99649af"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.timetable_entries.timetable_entries_gig_id_idx_f99649af",
+    "label": "Create index timetable_entries_gig_id_idx_f99649af on timetable_entries",
+    "summary": "Creates index timetable_entries_gig_id_idx_f99649af on timetable_entries",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "timetable_entries_gig_id_idx_f99649af",
+        "table": "timetable_entries"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"timetable_entries_gig_id_idx_f99649af\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "timetable_entries_gig_id_idx_f99649af"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"timetable_entries_gig_id_idx_f99649af\"",
+        "sql": "CREATE INDEX \"timetable_entries_gig_id_idx_f99649af\" ON \"timetable_entries\" (\"gig_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"timetable_entries_gig_id_idx_f99649af\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "timetable_entries_gig_id_idx_f99649af"
+        ]
+      }
+    ]
+  }
+]

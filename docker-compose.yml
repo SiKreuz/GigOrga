@@ -1,0 +1,12 @@
+services:
+  gigorga:
+    build: .
+    image: gigorga
+    ports:
+      - "3000:3000"
+    volumes:
+      - gigorga-data:/data
+    restart: unless-stopped
+
+volumes:
+  gigorga-data:

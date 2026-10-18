@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+@custom-variant dark {
+  &:where([data-theme="dark"], [data-theme="dark"] *) {
+    @slot;
+  }
+  @media (prefers-color-scheme: dark) {
+    &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) {
+      @slot;
+    }
+  }
+}
+
+:root {
+  color-scheme: light dark;
+  --bg: light-dark(oklch(0.985 0.004 335), oklch(0.18 0.012 335));
+  --surface: light-dark(oklch(1 0 0), oklch(0.215 0.016 335));
+  --surface-2: light-dark(oklch(0.962 0.01 335), oklch(0.26 0.02 335));
+  --border: light-dark(oklch(0.91 0.014 335), oklch(0.32 0.022 335));
+  --text: light-dark(oklch(0.24 0.02 335), oklch(0.95 0.008 335));
+  --muted: light-dark(oklch(0.5 0.025 335), oklch(0.72 0.02 335));
+  --accent: light-dark(oklch(0.5 0.144 335), oklch(0.72 0.13 335));
+  --accent-hover: light-dark(oklch(0.451 0.128 334), oklch(0.78 0.11 335));
+  --accent-soft: light-dark(oklch(0.959 0.018 335), oklch(0.32 0.07 335));
+  --accent-contrast: light-dark(oklch(1 0 0), oklch(0.2 0.05 335));
+  --brand-deep: oklch(0.349 0.11 333);
+  --danger: light-dark(oklch(0.55 0.2 25), oklch(0.7 0.17 25));
+  --success: light-dark(oklch(0.52 0.12 150), oklch(0.75 0.13 150));
+  --success-soft: light-dark(oklch(0.95 0.04 150), oklch(0.3 0.05 150));
+  --warning: light-dark(oklch(0.58 0.13 70), oklch(0.8 0.13 80));
+  --warning-soft: light-dark(oklch(0.96 0.05 85), oklch(0.32 0.05 80));
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-contrast: var(--accent-contrast);
+  --color-brand-deep: var(--brand-deep);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 8rem;
+  }
+
+  body {
+    @apply min-h-dvh bg-bg font-sans text-text;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  *,
+  ::after,
+  ::before {
+    border-color: var(--border);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
+
+@utility btn {
+  @apply inline-flex h-10 cursor-pointer items-center justify-center gap-2 rounded-lg px-4 text-sm font-medium whitespace-nowrap transition-colors select-none disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@utility btn-primary {
+  @apply bg-accent text-accent-contrast hover:bg-accent-hover;
+}
+
+@utility btn-ghost {
+  @apply border border-border bg-transparent text-text hover:bg-surface-2;
+}
+
+@utility btn-danger {
+  @apply border border-border bg-transparent text-danger hover:border-danger hover:bg-surface-2;
+}
+
+@utility btn-icon {
+  @apply inline-flex size-9 shrink-0 cursor-pointer items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-text;
+}
+
+@utility input {
+  @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm leading-6 text-text transition-colors outline-none placeholder:text-muted focus:border-accent focus:ring-3 focus:ring-accent/25;
+}
+
+@utility card {
+  @apply rounded-xl border border-border bg-surface;
+}
+
+@utility chip {
+  @apply inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-xs font-medium text-text;
+}
+
+@utility label {
+  @apply text-sm font-medium;
+}
