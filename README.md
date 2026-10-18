@@ -1,6 +1,6 @@
 # GigOrga
 
-Selbst gehostete Gig-Planung für die Band: Venue, Kontakte, Zeitplan (mit verbindlichem Get-in), Support Acts, Technik/Backline, Deal & Tickets mit Live-Kalkulation, Fahrtkosten-Überschlag mit automatischer Route, Hospitality und Übernachtung.
+Selbst gehostete Gig-Planung für die Band: Venue, Kontakte, Zeitplan (mit verbindlichem Get-in), Support Acts, Technik/Backline, Deal & Tickets mit Live-Kalkulation, Fahrtkosten-Überschlag mit automatischer Route (auch über Touren mit mehreren Gigs, getrennt nach Diesel und Benzin), Hospitality und Übernachtung.
 
 Eine Authentifizierung gibt es in der App nicht; den Zugang regelst du über Basic Auth am Reverse Proxy.
 
