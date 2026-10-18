@@ -9,11 +9,13 @@
   let {
     gig,
     venues,
+    tours,
     errors,
     onclose,
   }: {
     gig: GigDetail;
     venues: { id: string; name: string; city: string }[];
+    tours: { id: string; name: string }[];
     errors: Record<string, string>;
     onclose: () => void;
   } = $props();
@@ -43,6 +45,14 @@
       </Field>
       <Field id="type" label="Art">
         <Select id="type" options={gigTypes} value={gig.type} />
+      </Field>
+      <Field id="tourId" label="Tour" hint="Auf Tour fährt ihr von Gig zu Gig statt nach Hause.">
+        <select id="tourId" name="tourId" class="input" value={gig.tourId ?? ""}>
+          <option value="">– keine –</option>
+          {#each tours as tour (tour.id)}
+            <option value={tour.id}>{tour.name}</option>
+          {/each}
+        </select>
       </Field>
       <div class="sm:col-span-2">
         <Field id="notes" label="Notizen">

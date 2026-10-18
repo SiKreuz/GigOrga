@@ -8,6 +8,7 @@ import type {
   InvoiceStatus,
   TimetableKind,
 } from "$lib/labels";
+import { legOf } from "$lib/tour";
 
 import { type Db, type Reader, transaction, type Tx } from "../db";
 
@@ -17,6 +18,7 @@ export type GigBasics = {
   status: GigStatus;
   type: GigType;
   venueId: string | null;
+  tourId: string | null;
   notes: string;
 };
 
@@ -60,6 +62,8 @@ export type DealInput = {
 export type TravelInput = {
   distanceKm: number | null;
   durationMin: number | null;
+  returnKm: number | null;
+  returnMin: number | null;
   people: number | null;
   petrolPrice: number | null;
   dieselPrice: number | null;
@@ -218,10 +222,21 @@ export async function getGig(db: Reader, id: string) {
     .include("supportActs")
     .include("backline")
     .include("presaleLinks")
+    .include("tour", (tour) =>
+      tour
+        .select("id", "name")
+        .include("gigs", (stop) =>
+          stop
+            .select("id", "title", "date")
+            .include("venue", (venue) => venue.select("name", "city")),
+        ),
+    )
     .first();
   if (!gig) return;
+  const { tour, ...rest } = gig;
   return {
-    ...gig,
+    ...rest,
+    tourLeg: tour ? tourLegOf(tour, gig.id) : null,
     status: gig.status as GigStatus,
     type: gig.type as GigType,
     dealType: gig.dealType as DealType,
@@ -239,6 +254,27 @@ export async function getGig(db: Reader, id: string) {
       .toSorted(byPosition)
       .map((item) => ({ ...item, provider: item.provider as BacklineProvider })),
     presaleLinks: gig.presaleLinks.toSorted(byPosition),
+  };
+}
+
+function tourLegOf(
+  tour: {
+    id: string;
+    name: string;
+    gigs: {
+      id: string;
+      title: string;
+      date: string;
+      venue: { name: string; city: string } | null;
+    }[];
+  },
+  gigId: string,
+) {
+  const { from, returnsHome } = legOf(tour.gigs, gigId);
+  return {
+    tour: { id: tour.id, name: tour.name },
+    from: from === null ? null : { id: from.id, title: from.title, venue: from.venue },
+    returnsHome,
   };
 }
 

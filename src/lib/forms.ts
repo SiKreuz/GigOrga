@@ -38,6 +38,10 @@ const requiredNumber = (fallback: number) =>
 const jsonList = <T extends v.GenericSchema>(item: T) =>
   v.pipe(v.optional(v.string(), "[]"), v.parseJson(), v.array(item));
 const flagValue = v.picklist([0, 1]);
+const optionalId = v.pipe(
+  v.optional(v.string(), ""),
+  v.transform((value) => (value === "" ? null : value)),
+);
 
 export const newGigSchema = v.pipe(
   v.object({
@@ -57,11 +61,13 @@ export const gigBasicsSchema = v.object({
   date: v.pipe(v.string(), v.isoDate("Bitte ein Datum angeben")),
   status: v.picklist(keys(gigStatuses)),
   type: v.picklist(keys(gigTypes)),
-  venueId: v.pipe(
-    v.optional(v.string(), ""),
-    v.transform((value) => (value === "" ? null : value)),
-  ),
+  venueId: optionalId,
+  tourId: optionalId,
   notes: text(5000),
+});
+
+export const tourSchema = v.object({
+  name: required("Bitte einen Namen angeben"),
 });
 
 export const timetableSchema = v.object({
@@ -124,6 +130,8 @@ export const dealSchema = v.object({
 export const travelSchema = v.object({
   distanceKm: number,
   durationMin: integer,
+  returnKm: number,
+  returnMin: integer,
   people: integer,
   petrolPrice: number,
   dieselPrice: number,

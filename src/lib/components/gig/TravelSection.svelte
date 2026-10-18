@@ -38,8 +38,14 @@
   const destination = $derived(
     gig.venue ? [gig.venue.name, gig.venue.address, gig.venue.city].filter(Boolean).join(", ") : "",
   );
+  const leg = $derived(gig.tourLeg);
+  const origin = $derived(
+    leg?.from
+      ? [leg.from.venue?.name, leg.from.venue?.city].filter(Boolean).join(", ")
+      : settings.homeAddress,
+  );
   const mapsUrl = $derived(
-    `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(settings.homeAddress)}&destination=${encodeURIComponent(destination)}`,
+    `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(origin)}&destination=${encodeURIComponent(destination)}`,
   );
   const seats = $derived(gig.cars.reduce((sum, car) => sum + (car.seats ?? 0), 0));
   const fuels = $derived(
@@ -59,7 +65,18 @@
             <div class="text-lg font-semibold">
               {formatNumber(gig.distanceKm)} km · {formatDuration(gig.durationMin)}
             </div>
-            <div class="text-xs text-muted">einfache Strecke</div>
+            <div class="text-xs text-muted">
+              {leg ? `Anfahrt von ${leg.from?.title ?? "zu Hause"}` : "einfache Strecke"}
+            </div>
+            {#if leg?.returnsHome}
+              <div class="mt-1 text-sm">
+                {#if gig.returnKm === null}
+                  <span class="text-warning">Heimfahrt fehlt – Route berechnen</span>
+                {:else}
+                  + {formatNumber(gig.returnKm)} km · {formatDuration(gig.returnMin)} Heimfahrt
+                {/if}
+              </div>
+            {/if}
           {:else}
             <div class="text-sm text-muted">Noch keine Strecke.</div>
           {/if}
@@ -82,7 +99,7 @@
             Route berechnen
           </button>
         </form>
-        {#if gig.venue && settings.homeAddress}
+        {#if gig.venue && origin}
           <a
             href={mapsUrl}
             target="_blank"

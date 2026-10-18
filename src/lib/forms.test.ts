@@ -8,6 +8,7 @@ import {
   parseForm,
   settingsSchema,
   techSchema,
+  tourSchema,
   travelSchema,
 } from "./forms";
 
@@ -31,6 +32,7 @@ describe("parseForm", () => {
         status: "option",
         type: "club",
         venueId: null,
+        tourId: null,
         notes: "",
       },
     });
@@ -115,11 +117,24 @@ describe("parseForm", () => {
     expect(
       parseForm(
         travelSchema,
-        form({ people: "3", petrolPrice: "1,89", dieselPrice: "1,69", carIds: '["a","b"]' }),
+        form({
+          people: "3",
+          returnKm: "88,5",
+          petrolPrice: "1,89",
+          dieselPrice: "1,69",
+          carIds: '["a","b"]',
+        }),
       ),
     ).toMatchObject({
       success: true,
-      data: { people: 3, petrolPrice: 1.89, dieselPrice: 1.69, carIds: ["a", "b"] },
+      data: {
+        people: 3,
+        returnKm: 88.5,
+        returnMin: null,
+        petrolPrice: 1.89,
+        dieselPrice: 1.69,
+        carIds: ["a", "b"],
+      },
     });
   });
 
@@ -127,6 +142,25 @@ describe("parseForm", () => {
     expect(
       parseForm(carSchema, form({ name: "Bus", consumption: "9,5", fuel: "benzin" })),
     ).toMatchObject({ success: true, data: { consumption: 9.5, fuel: "benzin" } });
+  });
+
+  test("parses gig basics with an optional tour", () => {
+    const basics = { title: "Ampere", date: "2026-12-11", status: "option", type: "club" };
+    expect(parseForm(gigBasicsSchema, form({ ...basics, tourId: "" }))).toMatchObject({
+      success: true,
+      data: { tourId: null },
+    });
+    expect(parseForm(gigBasicsSchema, form({ ...basics, tourId: "t1" }))).toMatchObject({
+      success: true,
+      data: { tourId: "t1" },
+    });
+  });
+
+  test("requires a tour name", () => {
+    expect(parseForm(tourSchema, form({ name: " " }))).toMatchObject({
+      success: false,
+      errors: { name: "Bitte einen Namen angeben" },
+    });
   });
 
   test("requires a consumption for cars", () => {

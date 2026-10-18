@@ -1,8 +1,9 @@
-import { getGig } from "$lib/server/services/gigs";
-import { routeToGig, type RoutingConfig } from "$lib/server/services/routing";
+import { getGig, updateGig } from "$lib/server/services/gigs";
+import { routeToGig, routeTour, type RoutingConfig } from "$lib/server/services/routing";
 import { getSettings, updateSettings } from "$lib/server/services/settings";
+import { createTour } from "$lib/server/services/tours";
 import { getVenue } from "$lib/server/services/venues";
-import { test } from "$lib/server/testing";
+import { gigBasics, test } from "$lib/server/testing";
 import { describe, expect, vi } from "vitest";
 
 const settings = {
@@ -78,6 +79,60 @@ describe("routeToGig", () => {
     expect(await routeToGig(db, config, id)).toEqual({
       ok: false,
       message: "Die Adresse der Venue wurde nicht gefunden.",
+    });
+  });
+
+  test("drives a tour from stop to stop and home after the last one", async ({
+    db,
+    insertGig,
+    insertVenue,
+  }) => {
+    await updateSettings(db, settings);
+    const tour = await createTour(db, { name: "Herbsttour" });
+    const augsburg = await insertVenue({ address: "Hauptstr. 1", city: "Augsburg" });
+    const ulm = await insertVenue({ address: "Donauweg 2", city: "Ulm" });
+    const stops: string[] = [];
+    for (const [date, venue] of [
+      ["2026-11-01", augsburg],
+      ["2026-11-02", ulm],
+    ] as const) {
+      const { id } = await insertGig({ date, venueId: venue.id });
+      await updateGig(db, id, gigBasics({ date, venueId: venue.id, tourId: tour }));
+      stops.push(id);
+    }
+    const { config, calls } = fakeServices({
+      "Proberaum, München": [48.1, 11.5],
+      "Hauptstr. 1, Augsburg": [48.3, 10.9],
+      "Donauweg 2, Ulm": [48.4, 10],
+    });
+
+    expect(await routeTour(db, config, tour)).toEqual({ ok: true });
+    expect(calls.filter((path) => path.startsWith("/route"))).toEqual([
+      "/route/v1/driving/11.5,48.1;10.9,48.3",
+      "/route/v1/driving/10.9,48.3;10,48.4",
+      "/route/v1/driving/10,48.4;11.5,48.1",
+    ]);
+    const [first, last] = await Promise.all(stops.map((id) => getGig(db, id)));
+    expect(first).toMatchObject({ distanceKm: 123.5 });
+    expect(last).toMatchObject({ distanceKm: 123.5, returnKm: 123.5, returnMin: 91 });
+  });
+
+  test("needs a venue at the previous tour stop", async ({ db, insertGig, insertVenue }) => {
+    await updateSettings(db, settings);
+    const tour = await createTour(db, { name: "Herbsttour" });
+    const venue = await insertVenue();
+    const first = await insertGig({ date: "2026-11-01" });
+    const second = await insertGig({ date: "2026-11-02", venueId: venue.id });
+    await updateGig(db, first.id, gigBasics({ date: first.date, tourId: tour }));
+    await updateGig(
+      db,
+      second.id,
+      gigBasics({ date: second.date, venueId: venue.id, tourId: tour }),
+    );
+    const { config } = fakeServices({});
+    expect(await routeToGig(db, config, second.id)).toEqual({
+      ok: false,
+      message: "Der vorherige Gig der Tour hat keine Venue.",
     });
   });
 });
