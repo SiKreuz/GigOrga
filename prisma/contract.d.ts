@@ -17,7 +17,7 @@ import type {
 } from '@prisma/orm-sqlite/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'97dc7e08346af0e4eb8dada17252120b0cafa109c00bb7871dae2c43b4ecd265'>;
+  StorageHashBase<'5eb55c7d8dc2244916bbf755d83df68cb32989e09d0adccecff00a529754d67d'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'260b8608d1aacaf1f690779a6cff39a12947c599597c5ba464ca75b9e775df53'>;
@@ -259,11 +259,13 @@ export type FieldOutputTypes = {
       readonly name: CodecTypes['sqlite/text@1']['output'];
     };
     readonly User: {
+      readonly active: CodecTypes['sqlite/integer@1']['output'];
       readonly createdAt: CodecTypes['sqlite/datetime@1']['output'];
       readonly email: CodecTypes['sqlite/text@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly lastLoginAt: CodecTypes['sqlite/datetime@1']['output'];
       readonly name: CodecTypes['sqlite/text@1']['output'];
+      readonly role: CodecTypes['sqlite/text@1']['output'];
       readonly subject: CodecTypes['sqlite/text@1']['output'];
     };
     readonly Venue: {
@@ -415,11 +417,13 @@ export type FieldInputTypes = {
       readonly name: CodecTypes['sqlite/text@1']['input'];
     };
     readonly User: {
+      readonly active: CodecTypes['sqlite/integer@1']['input'];
       readonly createdAt: CodecTypes['sqlite/datetime@1']['input'];
       readonly email: CodecTypes['sqlite/text@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly lastLoginAt: CodecTypes['sqlite/datetime@1']['input'];
       readonly name: CodecTypes['sqlite/text@1']['input'];
+      readonly role: CodecTypes['sqlite/text@1']['input'];
       readonly subject: CodecTypes['sqlite/text@1']['input'];
     };
     readonly Venue: {
@@ -571,11 +575,13 @@ export type StorageColumnTypes = {
       readonly name: CodecTypes['sqlite/text@1']['output'];
     };
     readonly users: {
+      readonly active: CodecTypes['sqlite/integer@1']['output'];
       readonly created_at: CodecTypes['sqlite/datetime@1']['output'];
       readonly email: CodecTypes['sqlite/text@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly last_login_at: CodecTypes['sqlite/datetime@1']['output'];
       readonly name: CodecTypes['sqlite/text@1']['output'];
+      readonly role: CodecTypes['sqlite/text@1']['output'];
       readonly subject: CodecTypes['sqlite/text@1']['output'];
     };
     readonly venues: {
@@ -727,11 +733,13 @@ export type StorageColumnInputTypes = {
       readonly name: CodecTypes['sqlite/text@1']['input'];
     };
     readonly users: {
+      readonly active: CodecTypes['sqlite/integer@1']['input'];
       readonly created_at: CodecTypes['sqlite/datetime@1']['input'];
       readonly email: CodecTypes['sqlite/text@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly last_login_at: CodecTypes['sqlite/datetime@1']['input'];
       readonly name: CodecTypes['sqlite/text@1']['input'];
+      readonly role: CodecTypes['sqlite/text@1']['input'];
       readonly subject: CodecTypes['sqlite/text@1']['input'];
     };
     readonly venues: {
@@ -923,11 +931,13 @@ export namespace Models {
     readonly [RelationKeys]?: 'gigs';
   };
   export type User = {
+    active: CodecTypes['sqlite/integer@1']['output'];
     createdAt: CodecTypes['sqlite/datetime@1']['output'];
     email: CodecTypes['sqlite/text@1']['output'];
     id: CodecTypes['sqlite/text@1']['output'];
     lastLoginAt: CodecTypes['sqlite/datetime@1']['output'];
     name: CodecTypes['sqlite/text@1']['output'];
+    role: CodecTypes['sqlite/text@1']['output'];
     subject: CodecTypes['sqlite/text@1']['output'];
     sessions: Session[];
     readonly [RelationKeys]?: 'sessions';
@@ -2017,6 +2027,15 @@ type ContractBase = Omit<
             };
             readonly users: {
               columns: {
+                readonly active: {
+                  readonly nativeType: 'integer';
+                  readonly codecId: 'sqlite/integer@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'sqlite/integer@1', 1>;
+                  };
+                };
                 readonly created_at: {
                   readonly nativeType: 'text';
                   readonly codecId: 'sqlite/datetime@1';
@@ -2050,6 +2069,15 @@ type ContractBase = Omit<
                   readonly default: {
                     readonly kind: 'literal';
                     readonly value: DefaultLiteralValue<'sqlite/text@1', ''>;
+                  };
+                };
+                readonly role: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'sqlite/text@1', 'viewer'>;
                   };
                 };
                 readonly subject: {
@@ -2199,6 +2227,10 @@ type ContractBase = Omit<
             readonly InvoiceStatus: {
               readonly kind: 'valueSet';
               readonly values: readonly ['offen', 'gestellt', 'bezahlt'];
+            };
+            readonly Role: {
+              readonly kind: 'valueSet';
+              readonly values: readonly ['admin', 'editor', 'viewer'];
             };
             readonly TimetableKind: {
               readonly kind: 'valueSet';
@@ -3179,6 +3211,10 @@ type ContractBase = Omit<
           };
           readonly User: {
             readonly fields: {
+              readonly active: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/integer@1' };
+              };
               readonly createdAt: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/datetime@1' };
@@ -3196,6 +3232,10 @@ type ContractBase = Omit<
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/datetime@1' };
               };
               readonly name: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly role: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
               };
@@ -3221,11 +3261,13 @@ type ContractBase = Omit<
               readonly table: 'users';
               readonly namespaceId: '__unbound__';
               readonly fields: {
+                readonly active: { readonly column: 'active' };
                 readonly createdAt: { readonly column: 'created_at' };
                 readonly email: { readonly column: 'email' };
                 readonly id: { readonly column: 'id' };
                 readonly lastLoginAt: { readonly column: 'last_login_at' };
                 readonly name: { readonly column: 'name' };
+                readonly role: { readonly column: 'role' };
                 readonly subject: { readonly column: 'subject' };
               };
             };
@@ -3379,6 +3421,14 @@ type ContractBase = Omit<
               { readonly name: 'offen'; readonly value: 'offen' },
               { readonly name: 'gestellt'; readonly value: 'gestellt' },
               { readonly name: 'bezahlt'; readonly value: 'bezahlt' },
+            ];
+          };
+          readonly Role: {
+            readonly codecId: 'sqlite/text@1';
+            readonly members: readonly [
+              { readonly name: 'admin'; readonly value: 'admin' },
+              { readonly name: 'editor'; readonly value: 'editor' },
+              { readonly name: 'viewer'; readonly value: 'viewer' },
             ];
           };
           readonly TimetableKind: {

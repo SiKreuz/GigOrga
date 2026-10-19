@@ -74,6 +74,13 @@ enum FuelType {
   diesel = "diesel"
 }
 
+enum Role {
+  @@type("sqlite/text@1")
+  admin  = "admin"
+  editor = "editor"
+  viewer = "viewer"
+}
+
 model Settings {
   id          String @id
   homeAddress String @default("") @map("home_address")
@@ -285,6 +292,8 @@ model User {
   subject     String    @unique
   email       String    @default("")
   name        String    @default("")
+  role        Role      @default(viewer)
+  active      Int       @default(1)
   createdAt   DateTime  @default(now()) @map("created_at")
   lastLoginAt DateTime  @default(now()) @map("last_login_at")
   sessions    Session[]
