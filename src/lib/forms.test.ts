@@ -10,6 +10,7 @@ import {
   techSchema,
   tourSchema,
   travelSchema,
+  userChangeSchema,
 } from "./forms";
 
 const form = (values: Record<string, string>) => {
@@ -168,5 +169,17 @@ describe("parseForm", () => {
       success: false,
       errors: { consumption: "Bitte den Verbrauch angeben" },
     });
+  });
+
+  test("parses a role change and an activation flag", () => {
+    expect(parseForm(userChangeSchema, form({ id: "u1", role: "editor" }))).toEqual({
+      success: true,
+      data: { id: "u1", role: "editor" },
+    });
+    expect(parseForm(userChangeSchema, form({ id: "u1", active: "0" }))).toEqual({
+      success: true,
+      data: { id: "u1", active: 0 },
+    });
+    expect(parseForm(userChangeSchema, form({ id: "u1", role: "chef" })).success).toBe(false);
   });
 });
