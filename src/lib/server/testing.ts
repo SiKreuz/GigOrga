@@ -10,6 +10,7 @@ import contractJson from "../../../prisma/contract.json" with { type: "json" };
 import { createDb } from "./db";
 import { type ContactInput, createContact } from "./services/contacts";
 import { createGig, type GigBasics, type NewGig } from "./services/gigs";
+import { upsertUserFromClaims, type UserClaims } from "./services/users";
 import { createVenue, type VenueInput } from "./services/venues";
 
 const migrationsDir = join(process.cwd(), "prisma/migrations");
@@ -60,6 +61,13 @@ export const gigBasics = (overrides: Partial<GigBasics> = {}): GigBasics => ({
   ...overrides,
 });
 
+export const userClaims = (overrides: Partial<UserClaims> = {}): UserClaims => ({
+  sub: faker.string.uuid(),
+  email: faker.internet.email(),
+  name: faker.person.fullName(),
+  ...overrides,
+});
+
 export const test = base
   .extend("root", async ({ task }, { onCleanup }) => {
     const root = await mkdtemp(join(tmpdir(), `gigorga-${task.id}-`));
@@ -85,4 +93,8 @@ export const test = base
     const { title, date, status, venueId } = gigBasics(overrides);
     const input = { title, date, status, venueId };
     return { id: await createGig(db, input), ...input };
+  })
+  .extend("insertUser", ({ db }) => async (overrides: Partial<UserClaims> = {}) => {
+    const claims = userClaims(overrides);
+    return { id: await upsertUserFromClaims(db, claims), ...claims };
   });
