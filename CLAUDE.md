@@ -1,6 +1,6 @@
 # GigOrga
 
-Gig planner for the band twiceasmad. Each gig holds everything around it: venue, contacts, timetable (with fixed times such as get-in), support acts, tech/backline, deal & tickets with a live income estimate, travel cost (route via Nominatim + OSRM, also across tours of several gigs), hospitality and accommodation. Single user; basic auth sits in front of the app (reverse proxy), so the app has no auth.
+Gig planner for the band twiceasmad. Each gig holds everything around it: venue, contacts, timetable (with fixed times such as get-in), support acts, tech/backline, deal & tickets with a live income estimate, travel cost (route via Nominatim + OSRM, also across tours of several gigs), hospitality and accommodation. Band members log in through Pocket ID (OIDC, deployed separately); Pocket ID decides who may use the app at all.
 
 The UI is German (hardcoded strings, labels in `src/lib/labels.ts`). Code, identifiers and commits are English.
 
@@ -40,7 +40,9 @@ There are no `package.json` scripts; tasks live in `vite.config.ts` under `run.t
 ## Architecture
 
 - Server-only code lives in `src/lib/server/`. Routes stay thin: `load` and form actions call services in `src/lib/server/services/`.
-- Mutations use SvelteKit form actions with Valibot validation and `use:enhance`. `+server.ts` is only for non-form endpoints (`/healthz`).
+- Mutations use SvelteKit form actions with Valibot validation and `use:enhance`. `+server.ts` is only for non-form endpoints (`/healthz`, `/auth/callback`).
+- Auth: `hooks.server.ts` validates the session cookie and sets `locals.user`; every route except `/login`, `/auth/callback` and `/healthz` requires a session. Sessions live in SQLite and store only the SHA-256 hash of the token. The OIDC flow (`openid-client`) is wrapped in `src/lib/server/oidc.ts`.
+- `compose.dev.yml` runs a local Pocket ID for development only; production infra is not part of this repo.
 - Database:
   - Every connection sets these pragmas: `journal_mode=WAL`, `synchronous=NORMAL`, `foreign_keys=ON`, `busy_timeout=5000`.
   - Use a single connection.
