@@ -17,7 +17,7 @@ import type {
 } from '@prisma/orm-sqlite/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'3726f55cbe4786c3411f56927b04f305f32d94eca7e1f65930ef2efc74435292'>;
+  StorageHashBase<'97dc7e08346af0e4eb8dada17252120b0cafa109c00bb7871dae2c43b4ecd265'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'260b8608d1aacaf1f690779a6cff39a12947c599597c5ba464ca75b9e775df53'>;
@@ -219,6 +219,11 @@ export type FieldOutputTypes = {
       readonly position: CodecTypes['sqlite/integer@1']['output'];
       readonly url: CodecTypes['sqlite/text@1']['output'];
     };
+    readonly Session: {
+      readonly expiresAt: CodecTypes['sqlite/datetime@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly userId: CodecTypes['sqlite/text@1']['output'];
+    };
     readonly Settings: {
       readonly bandSize: CodecTypes['sqlite/integer@1']['output'];
       readonly dieselPrice: CodecTypes['sqlite/real@1']['output'];
@@ -252,6 +257,14 @@ export type FieldOutputTypes = {
       readonly createdAt: CodecTypes['sqlite/datetime@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly name: CodecTypes['sqlite/text@1']['output'];
+    };
+    readonly User: {
+      readonly createdAt: CodecTypes['sqlite/datetime@1']['output'];
+      readonly email: CodecTypes['sqlite/text@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly lastLoginAt: CodecTypes['sqlite/datetime@1']['output'];
+      readonly name: CodecTypes['sqlite/text@1']['output'];
+      readonly subject: CodecTypes['sqlite/text@1']['output'];
     };
     readonly Venue: {
       readonly address: CodecTypes['sqlite/text@1']['output'];
@@ -362,6 +375,11 @@ export type FieldInputTypes = {
       readonly position: CodecTypes['sqlite/integer@1']['input'];
       readonly url: CodecTypes['sqlite/text@1']['input'];
     };
+    readonly Session: {
+      readonly expiresAt: CodecTypes['sqlite/datetime@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly userId: CodecTypes['sqlite/text@1']['input'];
+    };
     readonly Settings: {
       readonly bandSize: CodecTypes['sqlite/integer@1']['input'];
       readonly dieselPrice: CodecTypes['sqlite/real@1']['input'];
@@ -395,6 +413,14 @@ export type FieldInputTypes = {
       readonly createdAt: CodecTypes['sqlite/datetime@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly name: CodecTypes['sqlite/text@1']['input'];
+    };
+    readonly User: {
+      readonly createdAt: CodecTypes['sqlite/datetime@1']['input'];
+      readonly email: CodecTypes['sqlite/text@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly lastLoginAt: CodecTypes['sqlite/datetime@1']['input'];
+      readonly name: CodecTypes['sqlite/text@1']['input'];
+      readonly subject: CodecTypes['sqlite/text@1']['input'];
     };
     readonly Venue: {
       readonly address: CodecTypes['sqlite/text@1']['input'];
@@ -505,6 +531,11 @@ export type StorageColumnTypes = {
       readonly position: CodecTypes['sqlite/integer@1']['output'];
       readonly url: CodecTypes['sqlite/text@1']['output'];
     };
+    readonly sessions: {
+      readonly expires_at: CodecTypes['sqlite/datetime@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly user_id: CodecTypes['sqlite/text@1']['output'];
+    };
     readonly settings: {
       readonly band_size: CodecTypes['sqlite/integer@1']['output'];
       readonly diesel_price: CodecTypes['sqlite/real@1']['output'];
@@ -538,6 +569,14 @@ export type StorageColumnTypes = {
       readonly created_at: CodecTypes['sqlite/datetime@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly name: CodecTypes['sqlite/text@1']['output'];
+    };
+    readonly users: {
+      readonly created_at: CodecTypes['sqlite/datetime@1']['output'];
+      readonly email: CodecTypes['sqlite/text@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly last_login_at: CodecTypes['sqlite/datetime@1']['output'];
+      readonly name: CodecTypes['sqlite/text@1']['output'];
+      readonly subject: CodecTypes['sqlite/text@1']['output'];
     };
     readonly venues: {
       readonly address: CodecTypes['sqlite/text@1']['output'];
@@ -648,6 +687,11 @@ export type StorageColumnInputTypes = {
       readonly position: CodecTypes['sqlite/integer@1']['input'];
       readonly url: CodecTypes['sqlite/text@1']['input'];
     };
+    readonly sessions: {
+      readonly expires_at: CodecTypes['sqlite/datetime@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly user_id: CodecTypes['sqlite/text@1']['input'];
+    };
     readonly settings: {
       readonly band_size: CodecTypes['sqlite/integer@1']['input'];
       readonly diesel_price: CodecTypes['sqlite/real@1']['input'];
@@ -681,6 +725,14 @@ export type StorageColumnInputTypes = {
       readonly created_at: CodecTypes['sqlite/datetime@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly name: CodecTypes['sqlite/text@1']['input'];
+    };
+    readonly users: {
+      readonly created_at: CodecTypes['sqlite/datetime@1']['input'];
+      readonly email: CodecTypes['sqlite/text@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly last_login_at: CodecTypes['sqlite/datetime@1']['input'];
+      readonly name: CodecTypes['sqlite/text@1']['input'];
+      readonly subject: CodecTypes['sqlite/text@1']['input'];
     };
     readonly venues: {
       readonly address: CodecTypes['sqlite/text@1']['input'];
@@ -822,6 +874,13 @@ export namespace Models {
     gig: Gig;
     readonly [RelationKeys]?: 'gig';
   };
+  export type Session = {
+    expiresAt: CodecTypes['sqlite/datetime@1']['output'];
+    id: CodecTypes['sqlite/text@1']['output'];
+    userId: CodecTypes['sqlite/text@1']['output'];
+    user: User;
+    readonly [RelationKeys]?: 'user';
+  };
   export type Settings = {
     bandSize: CodecTypes['sqlite/integer@1']['output'];
     dieselPrice: CodecTypes['sqlite/real@1']['output'];
@@ -863,6 +922,16 @@ export namespace Models {
     gigs: Gig[];
     readonly [RelationKeys]?: 'gigs';
   };
+  export type User = {
+    createdAt: CodecTypes['sqlite/datetime@1']['output'];
+    email: CodecTypes['sqlite/text@1']['output'];
+    id: CodecTypes['sqlite/text@1']['output'];
+    lastLoginAt: CodecTypes['sqlite/datetime@1']['output'];
+    name: CodecTypes['sqlite/text@1']['output'];
+    subject: CodecTypes['sqlite/text@1']['output'];
+    sessions: Session[];
+    readonly [RelationKeys]?: 'sessions';
+  };
   export type Venue = {
     address: CodecTypes['sqlite/text@1']['output'];
     capacity: CodecTypes['sqlite/integer@1']['output'] | null;
@@ -889,10 +958,12 @@ export declare const models: {
   GigCar: Models.GigCar;
   GigContact: Models.GigContact;
   PresaleLink: Models.PresaleLink;
+  Session: Models.Session;
   Settings: Models.Settings;
   SupportAct: Models.SupportAct;
   TimetableEntry: Models.TimetableEntry;
   Tour: Models.Tour;
+  User: Models.User;
   Venue: Models.Venue;
 };
 
@@ -1650,6 +1721,49 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly sessions: {
+              columns: {
+                readonly expires_at: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/datetime@1';
+                  readonly nullable: false;
+                };
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+                readonly user_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'sessions_user_id_idx_6c952402';
+                  readonly prefix: 'sessions_user_id_idx';
+                  readonly columns: readonly ['user_id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: '__unbound__' & NamespaceId;
+                    readonly tableName: 'sessions';
+                    readonly columns: readonly ['user_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: '__unbound__' & NamespaceId;
+                    readonly tableName: 'users';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
             readonly settings: {
               columns: {
                 readonly band_size: {
@@ -1901,6 +2015,54 @@ type ContractBase = Omit<
               indexes: readonly [];
               foreignKeys: readonly [];
             };
+            readonly users: {
+              columns: {
+                readonly created_at: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/datetime@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly email: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'sqlite/text@1', ''>;
+                  };
+                };
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+                readonly last_login_at: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/datetime@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly name: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'sqlite/text@1', ''>;
+                  };
+                };
+                readonly subject: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [{ readonly columns: readonly ['subject'] }];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
             readonly venues: {
               columns: {
                 readonly address: {
@@ -2087,6 +2249,10 @@ type ContractBase = Omit<
       readonly namespace: '__unbound__' & NamespaceId;
       readonly model: 'PresaleLink';
     };
+    readonly sessions: {
+      readonly namespace: '__unbound__' & NamespaceId;
+      readonly model: 'Session';
+    };
     readonly settings: {
       readonly namespace: '__unbound__' & NamespaceId;
       readonly model: 'Settings';
@@ -2100,6 +2266,7 @@ type ContractBase = Omit<
       readonly model: 'TimetableEntry';
     };
     readonly tours: { readonly namespace: '__unbound__' & NamespaceId; readonly model: 'Tour' };
+    readonly users: { readonly namespace: '__unbound__' & NamespaceId; readonly model: 'User' };
     readonly venues: { readonly namespace: '__unbound__' & NamespaceId; readonly model: 'Venue' };
   };
   readonly domain: {
@@ -2759,6 +2926,45 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly Session: {
+            readonly fields: {
+              readonly expiresAt: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/datetime@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly userId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+            };
+            readonly relations: {
+              readonly user: {
+                readonly to: {
+                  readonly namespace: '__unbound__' & NamespaceId;
+                  readonly model: 'User';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['userId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'sessions';
+              readonly namespaceId: '__unbound__';
+              readonly fields: {
+                readonly expiresAt: { readonly column: 'expires_at' };
+                readonly id: { readonly column: 'id' };
+                readonly userId: { readonly column: 'user_id' };
+              };
+            };
+          };
           readonly Settings: {
             readonly fields: {
               readonly bandSize: {
@@ -2968,6 +3174,59 @@ type ContractBase = Omit<
                 readonly createdAt: { readonly column: 'created_at' };
                 readonly id: { readonly column: 'id' };
                 readonly name: { readonly column: 'name' };
+              };
+            };
+          };
+          readonly User: {
+            readonly fields: {
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/datetime@1' };
+              };
+              readonly email: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly lastLoginAt: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/datetime@1' };
+              };
+              readonly name: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly subject: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+            };
+            readonly relations: {
+              readonly sessions: {
+                readonly to: {
+                  readonly namespace: '__unbound__' & NamespaceId;
+                  readonly model: 'Session';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['userId'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'users';
+              readonly namespaceId: '__unbound__';
+              readonly fields: {
+                readonly createdAt: { readonly column: 'created_at' };
+                readonly email: { readonly column: 'email' };
+                readonly id: { readonly column: 'id' };
+                readonly lastLoginAt: { readonly column: 'last_login_at' };
+                readonly name: { readonly column: 'name' };
+                readonly subject: { readonly column: 'subject' };
               };
             };
           };
