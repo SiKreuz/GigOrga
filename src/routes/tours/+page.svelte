@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { allowed } from "$lib/access.svelte";
   import Field from "$lib/components/Field.svelte";
   import { formatDate } from "$lib/format";
   import { ChevronRight, Plus, Route } from "@lucide/svelte";
@@ -15,7 +16,7 @@
 <div class="flex flex-col gap-6">
   <div class="flex items-center justify-between gap-4">
     <h1 class="text-2xl font-semibold tracking-tight">Touren</h1>
-    {#if !creating && !form}
+    {#if !creating && !form && allowed("edit")}
       <button class="btn btn-primary" onclick={() => (creating = true)}
         ><Plus class="size-4" /> Neue Tour</button
       >

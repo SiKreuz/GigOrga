@@ -1,3 +1,4 @@
+import { can, requiredAction } from "$lib/permissions";
 import { deleteSessionCookie, getSessionToken, setSessionCookie } from "$lib/server/auth-cookies";
 import { getDb } from "$lib/server/context";
 import { validateSession } from "$lib/server/services/sessions";
@@ -23,6 +24,10 @@ export const handle: Handle = async ({ event, resolve }) => {
     const target =
       event.request.method === "GET" ? event.url.pathname + event.url.search : event.url.pathname;
     redirect(303, `/login?redirectTo=${encodeURIComponent(target)}`);
+  }
+  const action = requiredAction(event.request.method, event.url.pathname);
+  if (action && !can(auth?.user.role, action)) {
+    return new Response("Keine Berechtigung", { status: 403 });
   }
   return resolve(event);
 };

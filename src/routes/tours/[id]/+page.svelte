@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { allowed } from "$lib/access.svelte";
   import ConfirmButton from "$lib/components/ConfirmButton.svelte";
   import Field from "$lib/components/Field.svelte";
   import SectionForm from "$lib/components/SectionForm.svelte";
@@ -77,9 +78,11 @@
     {:else}
       <div class="flex flex-wrap items-center gap-3">
         <h1 class="flex-1 text-2xl font-semibold tracking-tight">{tour.name}</h1>
-        <button class="btn h-9 btn-ghost px-3" onclick={() => (editing = true)}>
-          <Pencil class="size-3.5" /> Bearbeiten
-        </button>
+        {#if allowed("edit")}
+          <button class="btn h-9 btn-ghost px-3" onclick={() => (editing = true)}>
+            <Pencil class="size-3.5" /> Bearbeiten
+          </button>
+        {/if}
       </div>
     {/if}
   </div>
@@ -103,7 +106,7 @@
           };
         }}
       >
-        <button class="btn h-9 btn-ghost px-3" disabled={routing}>
+        <button class="btn h-9 btn-ghost px-3" disabled={routing || !allowed("edit")}>
           {#if routing}<LoaderCircle class="size-4 animate-spin" />{:else}<Route
               class="size-4"
             />{/if}

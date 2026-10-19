@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { allowed } from "$lib/access.svelte";
   import Fact from "$lib/components/Fact.svelte";
   import Section from "$lib/components/Section.svelte";
   import type { FuelPrices } from "$lib/deal";
@@ -92,7 +93,10 @@
             };
           }}
         >
-          <button class="btn h-9 btn-ghost px-3" disabled={!gig.venue || routing}>
+          <button
+            class="btn h-9 btn-ghost px-3"
+            disabled={!gig.venue || routing || !allowed("edit")}
+          >
             {#if routing}<LoaderCircle class="size-4 animate-spin" />{:else}<Route
                 class="size-4"
               />{/if}

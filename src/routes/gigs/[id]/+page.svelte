@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { allowed } from "$lib/access.svelte";
   import AccommodationSection from "$lib/components/gig/AccommodationSection.svelte";
   import BasicsForm from "$lib/components/gig/BasicsForm.svelte";
   import DealSection from "$lib/components/gig/DealSection.svelte";
@@ -124,7 +125,7 @@
             {/if}
           </div>
         </div>
-        {#if !editingBasics}
+        {#if !editingBasics && allowed("edit")}
           <button class="btn h-9 btn-ghost px-3" onclick={() => (editingBasics = true)}>
             <Pencil class="size-3.5" /> Bearbeiten
           </button>
@@ -206,7 +207,7 @@
       />
     {/if}
 
-    {#if addable.length > 0}
+    {#if addable.length > 0 && allowed("edit")}
       <div
         class="flex flex-wrap items-center gap-2 rounded-xl border border-dashed border-border p-4"
       >

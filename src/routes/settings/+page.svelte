@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { allowed } from "$lib/access.svelte";
   import Checkbox from "$lib/components/Checkbox.svelte";
   import ConfirmButton from "$lib/components/ConfirmButton.svelte";
   import Field from "$lib/components/Field.svelte";
@@ -148,31 +149,33 @@
         {#if !adding}<p class="text-sm text-muted">Noch keine Autos angelegt.</p>{/if}
       {/each}
 
-      {#if adding || (form?.form === "new" && !form.success)}
-        <form
-          method="POST"
-          action="?/createCar"
-          class="flex flex-col gap-4 rounded-xl border border-accent/40 p-4"
-          use:enhance={() =>
-            async ({ result, update }) => {
-              await update();
-              if (result.type === "success") adding = false;
-            }}
-        >
-          {@render carFields(undefined, errorsFor("new"), "new")}
-          <div class="flex justify-end gap-2">
-            <button type="button" class="btn btn-ghost" onclick={() => (adding = false)}
-              >Abbrechen</button
-            >
-            <button class="btn btn-primary">Auto anlegen</button>
-          </div>
-        </form>
-      {:else}
-        <div>
-          <button class="btn btn-ghost" onclick={() => (adding = true)}
-            ><Plus class="size-4" /> Auto hinzufügen</button
+      {#if allowed("edit")}
+        {#if adding || (form?.form === "new" && !form.success)}
+          <form
+            method="POST"
+            action="?/createCar"
+            class="flex flex-col gap-4 rounded-xl border border-accent/40 p-4"
+            use:enhance={() =>
+              async ({ result, update }) => {
+                await update();
+                if (result.type === "success") adding = false;
+              }}
           >
-        </div>
+            {@render carFields(undefined, errorsFor("new"), "new")}
+            <div class="flex justify-end gap-2">
+              <button type="button" class="btn btn-ghost" onclick={() => (adding = false)}
+                >Abbrechen</button
+              >
+              <button class="btn btn-primary">Auto anlegen</button>
+            </div>
+          </form>
+        {:else}
+          <div>
+            <button class="btn btn-ghost" onclick={() => (adding = true)}
+              ><Plus class="size-4" /> Auto hinzufügen</button
+            >
+          </div>
+        {/if}
       {/if}
     </div>
   </SectionCard>

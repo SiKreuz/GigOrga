@@ -6,6 +6,9 @@ declare global {
       user: Auth["user"] | null;
       session: Auth["session"] | null;
     }
+    interface PageData {
+      user: Auth["user"] | null;
+    }
   }
 }
 

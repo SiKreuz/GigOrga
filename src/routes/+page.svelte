@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import { allowed } from "$lib/access.svelte";
   import EmptyState from "$lib/components/EmptyState.svelte";
   import StatusChip from "$lib/components/StatusChip.svelte";
   import { formatMonth, relativeDay, todayIso } from "$lib/format";
@@ -132,7 +133,9 @@
         title="Noch keine Gigs"
         description="Leg den ersten Gig an – Venue, Zeiten und Deal kannst du danach ergänzen."
       >
-        <a href="/gigs/new" class="btn btn-primary"><Plus class="size-4" /> Neuer Gig</a>
+        {#if allowed("edit")}
+          <a href="/gigs/new" class="btn btn-primary"><Plus class="size-4" /> Neuer Gig</a>
+        {/if}
       </EmptyState>
     </div>
   {:else if upcoming.length === 0}
