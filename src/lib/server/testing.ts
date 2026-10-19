@@ -96,5 +96,5 @@ export const test = base
   })
   .extend("insertUser", ({ db }) => async (overrides: Partial<UserClaims> = {}) => {
     const claims = userClaims(overrides);
-    return { id: await upsertUserFromClaims(db, claims), ...claims };
+    return { ...(await upsertUserFromClaims(db, claims)), ...claims };
   });

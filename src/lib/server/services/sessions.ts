@@ -1,3 +1,5 @@
+import type { Role } from "$lib/labels";
+
 import { type Db, transaction } from "../db";
 
 const lifetime = 30 * 24 * 60 * 60 * 1000;
@@ -19,11 +21,11 @@ export function createSession(db: Db, userId: string, now = new Date()) {
 export async function validateSession(db: Db, token: string, now = new Date()) {
   const id = hashToken(token);
   const found = await db.orm.Session.where({ id })
-    .include("user", (user) => user.select("id", "email", "name"))
+    .include("user", (user) => user.select("id", "email", "name", "role", "active"))
     .first();
   if (!found) return null;
-  const { user, ...session } = found;
-  if (now >= session.expiresAt) {
+  const { user: row, ...session } = found;
+  if (row === null || row.active === 0 || now >= session.expiresAt) {
     await invalidateSession(db, id);
     return null;
   }
@@ -33,7 +35,8 @@ export async function validateSession(db: Db, token: string, now = new Date()) {
       tx.orm.Session.where({ id }).update({ expiresAt: session.expiresAt }),
     );
   }
-  return { user, session };
+  const { active: _active, ...user } = row;
+  return { user: { ...user, role: user.role as Role }, session };
 }
 
 export type Auth = NonNullable<Awaited<ReturnType<typeof validateSession>>>;

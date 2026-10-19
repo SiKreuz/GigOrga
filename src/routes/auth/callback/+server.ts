@@ -1,4 +1,5 @@
 import { setSessionCookie, takeLoginCookie } from "$lib/server/auth-cookies";
+import { config } from "$lib/server/config";
 import { getDb, getOidc, redirectUri } from "$lib/server/context";
 import { createSession } from "$lib/server/services/sessions";
 import { upsertUserFromClaims } from "$lib/server/services/users";
@@ -19,8 +20,9 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
   }
 
   const db = getDb();
-  const userId = await upsertUserFromClaims(db, claims);
-  const { token, expiresAt } = await createSession(db, userId);
+  const user = await upsertUserFromClaims(db, claims, config.adminEmail);
+  if (user.active === 0) redirect(303, "/login?fehler");
+  const { token, expiresAt } = await createSession(db, user.id);
   setSessionCookie(cookies, token, expiresAt);
   redirect(303, login.redirectTo);
 };
