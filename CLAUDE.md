@@ -42,6 +42,7 @@ There are no `package.json` scripts; tasks live in `vite.config.ts` under `run.t
 - Server-only code lives in `src/lib/server/`. Routes stay thin: `load` and form actions call services in `src/lib/server/services/`.
 - Mutations use SvelteKit form actions with Valibot validation and `use:enhance`. `+server.ts` is only for non-form endpoints (`/healthz`, `/auth/callback`).
 - Auth: `hooks.server.ts` validates the session cookie and sets `locals.user`; every route except `/login`, `/auth/callback` and `/healthz` requires a session. Sessions live in SQLite and store only the SHA-256 hash of the token. The OIDC flow (`openid-client`) is wrapped in `src/lib/server/oidc.ts`.
+- Roles (`admin`, `editor`, `viewer`) live in the app, not in Pocket ID. `requiredAction` in `src/lib/permissions.ts` decides centrally in the hook which request needs which permission (every non-GET needs `edit`, `/benutzer` needs `manageUsers`). Components hide editing UI with `allowed()` from `src/lib/access.svelte.ts`. New users start as `viewer`; `ADMIN_EMAIL` becomes `admin` on login.
 - Pocket ID is hosted separately and is not part of this repo, not even for development.
 - Database:
   - Every connection sets these pragmas: `journal_mode=WAL`, `synchronous=NORMAL`, `foreign_keys=ON`, `busy_timeout=5000`.
