@@ -1,0 +1,19 @@
+name: ⚙️ Task
+description: Maintenance, refactoring, dependencies, docs or setup
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What and why
+      placeholder: Bump Prisma to the latest 8.x.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Done when
+      description: Observable from the outside (output, behavior), not the code you expect
+      placeholder: |
+        - [ ] Migrations apply on a fresh database
+        - [ ] Tests and check pass

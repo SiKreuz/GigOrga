@@ -1,0 +1,36 @@
+name: 🐛 Bug
+description: Something is broken or behaves unexpectedly
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened
+      description: What went wrong, where, and how often
+      placeholder: Saving the timetable on the gig page drops the get-in time, every time.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open a gig
+        2. Edit the timetable
+        3. Save
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Notes
+      description: Screenshots, logs, workaround
