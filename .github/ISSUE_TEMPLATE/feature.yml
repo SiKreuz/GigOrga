@@ -1,0 +1,28 @@
+name: ✨ Feature
+description: New feature or intentional behavior change
+labels: [enhancement]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What and why
+      placeholder: Show the travel cost per person on the tour overview, so splitting costs with the band is quick.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: One `Given … when … then …` per case, including empty state and failure path
+      placeholder: |
+        - [ ] Given a tour with travel costs, when I open it, then the cost per person is shown
+        - [ ] Given a tour without any gigs, when I open it, then no cost is shown
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Notes
+      description: Sketches, related issues, technical considerations
