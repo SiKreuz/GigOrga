@@ -3,6 +3,8 @@
   "compilerOptions": {
     "strict": true,
     "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "types": ["bun"]
   }
