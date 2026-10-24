@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { type GigStatus, gigStatuses } from "$lib/labels";
+  import { gigStatuses } from "$lib/labels";
+  import type { GigStatus } from "$lib/labels";
 
   let { status }: { status: GigStatus } = $props();
 

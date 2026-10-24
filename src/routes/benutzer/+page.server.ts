@@ -1,7 +1,12 @@
 import { parseForm, userChangeSchema } from "$lib/forms";
 import { config } from "$lib/server/config";
 import { getDb } from "$lib/server/context";
-import { changeUser, deleteUser, listUsers, UserChangeRefused } from "$lib/server/services/users";
+import {
+  changeUser,
+  deleteUser,
+  listUsers,
+  UserChangeRefusedError,
+} from "$lib/server/services/users";
 import { fail } from "@sveltejs/kit";
 
 import type { Actions, PageServerLoad } from "./$types";
@@ -16,7 +21,7 @@ async function refusable(fn: () => Promise<void>) {
     await fn();
     return { success: true as const };
   } catch (error) {
-    if (error instanceof UserChangeRefused) return fail(400, { message: error.message });
+    if (error instanceof UserChangeRefusedError) return fail(400, { message: error.message });
     throw error;
   }
 }

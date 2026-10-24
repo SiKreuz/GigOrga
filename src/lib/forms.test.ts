@@ -28,7 +28,7 @@ describe("parseForm", () => {
       gigBasicsSchema,
       form({ title: " Club ", date: "2026-12-11", status: "option", type: "club", venueId: "" }),
     );
-    expect(result).toEqual({
+    expect(result).toStrictEqual({
       success: true,
       data: {
         title: "Club",
@@ -101,7 +101,7 @@ describe("parseForm", () => {
   });
 
   test("falls back to defaults for empty settings", () => {
-    expect(parseForm(settingsSchema, form({}))).toEqual({
+    expect(parseForm(settingsSchema, form({}))).toStrictEqual({
       success: true,
       data: { homeAddress: "", bandSize: 4, petrolPrice: 1.8, dieselPrice: 1.7 },
     });
@@ -168,7 +168,9 @@ describe("parseForm", () => {
   });
 
   test("parses a sound engineer and requires a name", () => {
-    expect(parseForm(soundEngineerSchema, form({ name: " Kim ", phone: "0171 123456" }))).toEqual({
+    expect(
+      parseForm(soundEngineerSchema, form({ name: " Kim ", phone: "0171 123456" })),
+    ).toStrictEqual({
       success: true,
       data: { name: "Kim", phone: "0171 123456", email: "" },
     });
@@ -194,11 +196,11 @@ describe("parseForm", () => {
   });
 
   test("parses a role change and an activation flag", () => {
-    expect(parseForm(userChangeSchema, form({ id: "u1", role: "editor" }))).toEqual({
+    expect(parseForm(userChangeSchema, form({ id: "u1", role: "editor" }))).toStrictEqual({
       success: true,
       data: { id: "u1", role: "editor" },
     });
-    expect(parseForm(userChangeSchema, form({ id: "u1", active: "0" }))).toEqual({
+    expect(parseForm(userChangeSchema, form({ id: "u1", active: "0" }))).toStrictEqual({
       success: true,
       data: { id: "u1", active: 0 },
     });
@@ -206,7 +208,7 @@ describe("parseForm", () => {
   });
 
   test("parses a song with its duration in minutes and seconds", () => {
-    expect(parseForm(songSchema, form({ title: " Intro ", duration: "3:45" }))).toEqual({
+    expect(parseForm(songSchema, form({ title: " Intro ", duration: "3:45" }))).toStrictEqual({
       success: true,
       data: { title: "Intro", durationSec: 225, notes: "" },
     });

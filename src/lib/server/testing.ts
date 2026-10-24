@@ -8,11 +8,14 @@ import { test as base } from "vitest";
 
 import contractJson from "../../../prisma/contract.json" with { type: "json" };
 import { createDb } from "./db";
-import { type ContactInput, createContact } from "./services/contacts";
+import { createContact } from "./services/contacts";
+import type { ContactInput } from "./services/contacts";
 import type { GigBasics, NewGig } from "./services/gigInputs";
 import { createGig } from "./services/gigs";
-import { upsertUserFromClaims, type UserClaims } from "./services/users";
-import { createVenue, type VenueInput } from "./services/venues";
+import { upsertUserFromClaims } from "./services/users";
+import type { UserClaims } from "./services/users";
+import { createVenue } from "./services/venues";
+import type { VenueInput } from "./services/venues";
 
 const migrationsDir = join(process.cwd(), "prisma/migrations");
 

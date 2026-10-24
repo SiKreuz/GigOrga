@@ -1,6 +1,7 @@
 <script lang="ts" generics="T extends object">
   import { ArrowDown, ArrowUp, Plus, Trash2 } from "@lucide/svelte";
-  import { type Snippet, untrack } from "svelte";
+  import { untrack } from "svelte";
+  import type { Snippet } from "svelte";
 
   let {
     name,

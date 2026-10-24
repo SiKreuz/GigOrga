@@ -2,8 +2,10 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 
 import { config } from "./config";
-import { createDb, type Db } from "./db";
-import { createOidc, type Oidc } from "./oidc";
+import { createDb } from "./db";
+import type { Db } from "./db";
+import { createOidc } from "./oidc";
+import type { Oidc } from "./oidc";
 
 let db: Db | undefined;
 let oidc: Oidc | undefined;

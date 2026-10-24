@@ -1,4 +1,4 @@
-import { setSessionCookie, takeLoginCookie } from "$lib/server/auth-cookies";
+import { setSessionCookie, takeLoginCookie } from "$lib/server/authCookies";
 import { config } from "$lib/server/config";
 import { getDb, getOidc, redirectUri } from "$lib/server/context";
 import { createSession } from "$lib/server/services/sessions";

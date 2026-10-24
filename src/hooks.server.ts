@@ -1,8 +1,9 @@
 import { can, requiredAction } from "$lib/permissions";
-import { deleteSessionCookie, getSessionToken, setSessionCookie } from "$lib/server/auth-cookies";
+import { deleteSessionCookie, getSessionToken, setSessionCookie } from "$lib/server/authCookies";
 import { getDb } from "$lib/server/context";
 import { validateSession } from "$lib/server/services/sessions";
-import { type Handle, redirect, type ServerInit } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
+import type { Handle, ServerInit } from "@sveltejs/kit";
 
 export const init: ServerInit = () => {
   getDb();

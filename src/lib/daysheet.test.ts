@@ -10,7 +10,7 @@ describe("timesOf", () => {
       { id: "a", start: "18:00" },
       { id: "b", start: "" },
     ];
-    expect(timesOf({ timetable }).map((entry) => entry.id)).toEqual(["a"]);
+    expect(timesOf({ timetable }).map((entry) => entry.id)).toStrictEqual(["a"]);
   });
 });
 

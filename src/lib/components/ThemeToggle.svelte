@@ -4,7 +4,7 @@
   function isDark() {
     const stored = document.documentElement.dataset.theme;
     if (stored) return stored === "dark";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return globalThis.matchMedia("(prefers-color-scheme: dark)").matches;
   }
 
   function toggle() {

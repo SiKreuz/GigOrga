@@ -1,5 +1,5 @@
 import { safeRedirect } from "$lib/redirect";
-import { deleteSessionCookie, setLoginCookie } from "$lib/server/auth-cookies";
+import { deleteSessionCookie, setLoginCookie } from "$lib/server/authCookies";
 import { getDb, getOidc } from "$lib/server/context";
 import { invalidateSession } from "$lib/server/services/sessions";
 import { redirect } from "@sveltejs/kit";

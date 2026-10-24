@@ -1,6 +1,8 @@
-import { fuelTypes, keyOf, type FuelType } from "$lib/labels";
+import { fuelTypes, keyOf } from "$lib/labels";
+import type { FuelType } from "$lib/labels";
 
-import { type Db, type Reader, transaction } from "../db";
+import { transaction } from "../db";
+import type { Db, Reader } from "../db";
 
 export type CarInput = {
   name: string;

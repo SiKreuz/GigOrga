@@ -1,10 +1,14 @@
-import { keyOf, roles, type Role } from "$lib/labels";
+import { keyOf, roles } from "$lib/labels";
+import type { Role } from "$lib/labels";
 
-import { type Db, type Reader, transaction } from "../db";
+import { transaction } from "../db";
+import type { Db, Reader } from "../db";
 
 export type UserClaims = { sub: string; email: string; name: string };
 
-export class UserChangeRefused extends Error {}
+export class UserChangeRefusedError extends Error {
+  override name = "UserChangeRefusedError";
+}
 
 const isAdminEmail = (email: string, adminEmail: string) =>
   adminEmail !== "" && email.toLowerCase() === adminEmail.toLowerCase();
@@ -47,8 +51,9 @@ export async function listUsers(db: Reader) {
 export type UserSummary = Awaited<ReturnType<typeof listUsers>>[number];
 
 function refuseSelf(actorId: string, id: string) {
-  if (actorId === id)
-    throw new UserChangeRefused("Dein eigenes Konto kannst du hier nicht ändern.");
+  if (actorId === id) {
+    throw new UserChangeRefusedError("Dein eigenes Konto kannst du hier nicht ändern.");
+  }
 }
 
 export async function changeUser(

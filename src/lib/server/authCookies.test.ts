@@ -1,7 +1,7 @@
 import type { Cookies } from "@sveltejs/kit";
 import { describe, expect, test } from "vitest";
 
-import { takeLoginCookie } from "./auth-cookies";
+import { takeLoginCookie } from "./authCookies";
 
 function fakeCookies(login?: string) {
   const jar = new Map(login === undefined ? [] : [["login", login]]);
@@ -16,7 +16,7 @@ const state = { state: "s", nonce: "n", codeVerifier: "c", redirectTo: "/gigs" }
 describe("takeLoginCookie", () => {
   test("returns the stored login state once", () => {
     const cookies = fakeCookies(JSON.stringify(state));
-    expect(takeLoginCookie(cookies)).toEqual(state);
+    expect(takeLoginCookie(cookies)).toStrictEqual(state);
     expect(takeLoginCookie(cookies)).toBeUndefined();
   });
 
