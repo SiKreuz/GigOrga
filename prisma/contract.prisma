@@ -279,3 +279,25 @@ model PresaleLink {
   @@index([gigId])
   @@map("presale_links")
 }
+
+model User {
+  id          String    @id
+  subject     String    @unique
+  email       String    @default("")
+  name        String    @default("")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  lastLoginAt DateTime  @default(now()) @map("last_login_at")
+  sessions    Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id
+  userId    String   @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+
+  @@index([userId])
+  @@map("sessions")
+}

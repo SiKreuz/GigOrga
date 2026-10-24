@@ -4,6 +4,7 @@
     AudioLines,
     Building2,
     CalendarDays,
+    LogOut,
     Plus,
     Route,
     Settings,
@@ -11,6 +12,8 @@
   } from "@lucide/svelte";
 
   import ThemeToggle from "./ThemeToggle.svelte";
+
+  let { user }: { user: { name: string; email: string } | null } = $props();
 
   const links = [
     { href: "/", label: "Gigs", icon: CalendarDays },
@@ -36,35 +39,50 @@
       </span>
       <span class="hidden md:inline">GigOrga</span>
     </a>
-    <nav class="flex min-w-0 items-center gap-1">
-      {#each links as link (link.href)}
-        {@const Icon = link.icon}
-        <a
-          href={link.href}
-          class={[
-            "flex h-9 items-center gap-2 rounded-lg px-2.5 text-sm font-medium transition-colors sm:px-3",
-            active(link.href)
-              ? "bg-accent-soft text-accent"
-              : "text-muted hover:bg-surface-2 hover:text-text",
-          ]}
-          aria-label={link.label}
-          aria-current={active(link.href) ? "page" : undefined}
-        >
-          <Icon class="size-4" />
-          <span class="hidden lg:inline">{link.label}</span>
-        </a>
-      {/each}
-    </nav>
+    {#if user}
+      <nav class="flex min-w-0 items-center gap-1">
+        {#each links as link (link.href)}
+          {@const Icon = link.icon}
+          <a
+            href={link.href}
+            class={[
+              "flex h-9 items-center gap-2 rounded-lg px-2.5 text-sm font-medium transition-colors sm:px-3",
+              active(link.href)
+                ? "bg-accent-soft text-accent"
+                : "text-muted hover:bg-surface-2 hover:text-text",
+            ]}
+            aria-label={link.label}
+            aria-current={active(link.href) ? "page" : undefined}
+          >
+            <Icon class="size-4" />
+            <span class="hidden lg:inline">{link.label}</span>
+          </a>
+        {/each}
+      </nav>
+    {/if}
     <div class="ml-auto flex shrink-0 items-center gap-2">
-      <a
-        href="/gigs/new"
-        class="btn w-10 btn-primary px-0 sm:w-auto sm:px-4"
-        aria-label="Neuer Gig"
-      >
-        <Plus class="size-4" />
-        <span class="hidden sm:inline">Neuer Gig</span>
-      </a>
+      {#if user}
+        <a
+          href="/gigs/new"
+          class="btn w-10 btn-primary px-0 sm:w-auto sm:px-4"
+          aria-label="Neuer Gig"
+        >
+          <Plus class="size-4" />
+          <span class="hidden sm:inline">Neuer Gig</span>
+        </a>
+      {/if}
       <ThemeToggle />
+      {#if user}
+        <form method="POST" action="/login?/logout">
+          <button
+            class="btn w-10 btn-ghost px-0"
+            aria-label="Abmelden"
+            title={`Abmelden (${user.name || user.email})`}
+          >
+            <LogOut class="size-4" />
+          </button>
+        </form>
+      {/if}
     </div>
   </div>
 </header>
