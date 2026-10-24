@@ -10,10 +10,11 @@
   import TravelSection from "$lib/components/gig/TravelSection.svelte";
   import VenueContactsSection from "$lib/components/gig/VenueContactsSection.svelte";
   import StatusChip from "$lib/components/StatusChip.svelte";
+  import { hasAccommodation, hasContacts, hasHospitality } from "$lib/daysheet";
   import { estimate, travelCost, tripOf } from "$lib/deal";
   import { formatMoney, formatNumber, relativeDay, todayIso } from "$lib/format";
   import { gigTypes, timetableKinds } from "$lib/labels";
-  import { ArrowLeft, Lock, MapPin, Pencil, Plus, Route } from "@lucide/svelte";
+  import { ArrowLeft, Lock, MapPin, Pencil, Plus, Printer, Route } from "@lucide/svelte";
 
   let { data, form } = $props();
 
@@ -41,14 +42,10 @@
   type SectionId = keyof typeof editing;
 
   const optional: { id: SectionId; label: string; empty: boolean }[] = $derived([
-    { id: "venue", label: "Kontakte", empty: !gig.venue && gig.contacts.length === 0 },
+    { id: "venue", label: "Kontakte", empty: !hasContacts(gig) },
     { id: "lineup", label: "Line-up", empty: gig.supportActs.length === 0 },
-    {
-      id: "hospitality",
-      label: "Essen & Getränke",
-      empty: !gig.catering && gig.buyout === null && !gig.drinks && !gig.hospitalityNotes,
-    },
-    { id: "uebernachtung", label: "Übernachtung", empty: gig.accommodationType === "keine" },
+    { id: "hospitality", label: "Essen & Getränke", empty: !hasHospitality(gig) },
+    { id: "uebernachtung", label: "Übernachtung", empty: !hasAccommodation(gig) },
   ]);
   const shown = (id: SectionId) =>
     editing[id] === true || optional.find((section) => section.id === id)?.empty === false;
@@ -125,6 +122,9 @@
             {/if}
           </div>
         </div>
+        <a href="/gigs/{gig.id}/tagesplan" class="btn h-9 btn-ghost px-3">
+          <Printer class="size-3.5" /> Tagesplan
+        </a>
         {#if !editingBasics && allowed("edit")}
           <button class="btn h-9 btn-ghost px-3" onclick={() => (editingBasics = true)}>
             <Pencil class="size-3.5" /> Bearbeiten

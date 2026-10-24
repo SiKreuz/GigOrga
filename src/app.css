@@ -40,6 +40,18 @@
   color-scheme: dark;
 }
 
+@media print {
+  :root,
+  :root[data-theme="dark"] {
+    color-scheme: light;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 0;
+}
+
 @theme inline {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --color-bg: var(--bg);
