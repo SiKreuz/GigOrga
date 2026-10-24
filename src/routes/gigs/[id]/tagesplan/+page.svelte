@@ -1,9 +1,9 @@
 <script lang="ts">
   import Fact from "$lib/components/Fact.svelte";
-  import { hasAccommodation, hasContacts, hasHospitality, timesOf } from "$lib/daysheet";
-  import { formatMoney } from "$lib/format";
+  import { hasAccommodation, hasContacts, hasHospitality, playtime, timesOf } from "$lib/daysheet";
+  import { formatDuration, formatMoney } from "$lib/format";
   import { accommodationTypes, timetableKinds } from "$lib/labels";
-  import { ArrowLeft, Lock, Mail, MapPin, Phone, Printer } from "@lucide/svelte";
+  import { ArrowLeft, AudioLines, Lock, Mail, MapPin, Phone, Printer } from "@lucide/svelte";
 
   let { data } = $props();
 
@@ -15,6 +15,17 @@
   );
   const mapsUrl = (query: string) =>
     `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  const startOf = (kind: string) => times.find((entry) => entry.kind === kind)?.start;
+  const highlights = $derived(
+    [
+      { label: "Get-in", value: startOf("getin") },
+      { label: "Show", value: startOf("show") },
+      {
+        label: "Spielzeit",
+        value: playtime(gig) === null ? undefined : formatDuration(playtime(gig)),
+      },
+    ].filter((item) => item.value),
+  );
   const accommodationExtras = $derived(
     [gig.breakfast ? "mit Frühstück" : "", gig.accommodationPaid ? "zahlt Veranstalter" : ""]
       .filter(Boolean)
@@ -23,14 +34,20 @@
 </script>
 
 <svelte:head>
-  <title>Tagesplan {gig.title} · GigOrga</title>
+  <title>twiceasmad · Tagesplan · {gig.title}</title>
 </svelte:head>
 
 {#snippet heading(title: string)}
-  <h2 class="mb-2 text-xs font-semibold tracking-wide text-accent uppercase">{title}</h2>
+  <h2
+    class="mb-3 flex items-center gap-2 text-xs font-semibold tracking-widest text-accent uppercase after:flex-1 after:border-t after:border-border"
+  >
+    {title}
+  </h2>
 {/snippet}
 
-<div class="mx-auto flex max-w-2xl flex-col gap-6 print:max-w-none print:gap-4">
+<div
+  class="mx-auto flex max-w-2xl flex-col gap-6 print:max-w-none print:gap-5 print:box-decoration-clone print:px-[16mm] print:py-[14mm]"
+>
   <div class="flex items-center justify-between gap-3 print:hidden">
     <a
       href="/gigs/{gig.id}"
@@ -43,9 +60,20 @@
     </button>
   </div>
 
-  <header class="border-b border-border pb-4 print:pb-3">
-    <h1 class="text-2xl font-bold tracking-tight">{gig.title}</h1>
-    <p class="mt-1 text-sm text-muted">
+  <header
+    class="rounded-2xl bg-linear-to-br from-accent to-brand-deep p-6 text-white shadow-sm [print-color-adjust:exact] sm:p-8 print:p-7 print:shadow-none"
+  >
+    <div class="flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2 font-semibold tracking-tight">
+        <span class="flex size-7 items-center justify-center rounded-lg bg-white/15">
+          <AudioLines class="size-4" />
+        </span>
+        twiceasmad
+      </div>
+      <span class="text-xs font-semibold tracking-widest text-white/70 uppercase">Tagesplan</span>
+    </div>
+    <h1 class="mt-5 text-3xl font-bold tracking-tight">{gig.title}</h1>
+    <p class="mt-1 text-sm text-white/85">
       {new Date(`${gig.date}T00:00:00Z`).toLocaleDateString("de-DE", {
         weekday: "long",
         day: "numeric",
@@ -55,79 +83,97 @@
       })}
       {#if venue}· {venue.name}{venue.city ? `, ${venue.city}` : ""}{/if}
     </p>
+    {#if highlights.length > 0}
+      <dl class="mt-5 flex flex-wrap gap-2">
+        {#each highlights as item (item.label)}
+          <div class="rounded-xl bg-white/12 px-4 py-2">
+            <dt class="text-[0.65rem] font-semibold tracking-widest text-white/70 uppercase">
+              {item.label}
+            </dt>
+            <dd class="text-lg font-bold tabular-nums">{item.value}</dd>
+          </div>
+        {/each}
+      </dl>
+    {/if}
   </header>
 
-  {#if times.length > 0}
-    <section class="break-inside-avoid">
-      {@render heading("Zeitplan")}
-      <ol class="flex flex-col gap-1">
-        {#each times as entry (entry.id)}
-          <li class={["flex items-baseline gap-3 text-sm", entry.fixed && "font-semibold"]}>
-            <span class="w-24 shrink-0 tabular-nums">
-              {entry.start}{entry.end ? `–${entry.end}` : ""}
-            </span>
-            <span class="flex items-center gap-1.5">
-              {timetableKinds[entry.kind]}
-              {#if entry.fixed}<Lock class="size-3" />{/if}
-            </span>
-            {#if entry.label}<span class="font-normal text-muted">{entry.label}</span>{/if}
-          </li>
-        {/each}
-      </ol>
-    </section>
-  {/if}
+  {#if times.length > 0 || hasContacts(gig)}
+    <div class="grid gap-6 sm:grid-cols-2 print:grid-cols-2 print:gap-8">
+      {#if times.length > 0}
+        <section class="break-inside-avoid">
+          {@render heading("Zeitplan")}
+          <ol class="flex flex-col gap-1">
+            {#each times as entry (entry.id)}
+              <li class={["flex items-baseline gap-3 text-sm", entry.fixed && "font-semibold"]}>
+                <span class="w-24 shrink-0 tabular-nums">
+                  {entry.start}{entry.end ? `–${entry.end}` : ""}
+                </span>
+                <span class="flex items-center gap-1.5">
+                  {timetableKinds[entry.kind]}
+                  {#if entry.fixed}<Lock class="size-3" />{/if}
+                </span>
+                {#if entry.label}<span class="font-normal text-muted">{entry.label}</span>{/if}
+              </li>
+            {/each}
+          </ol>
+        </section>
+      {/if}
 
-  {#if hasContacts(gig)}
-    <section class="break-inside-avoid">
-      {@render heading("Venue & Kontakte")}
-      <div class="flex flex-col gap-3 text-sm">
-        {#if venue}
-          <div>
-            <div class="font-medium">{venue.name}</div>
-            {#if venueAddress}
-              <a
-                href={mapsUrl([venue.name, venueAddress].join(", "))}
-                target="_blank"
-                rel="noreferrer"
-                class="flex items-center gap-1 text-muted hover:text-accent"
-              >
-                <MapPin class="size-3.5" />{venueAddress}
-              </a>
+      {#if hasContacts(gig)}
+        <section class="break-inside-avoid">
+          {@render heading("Venue & Kontakte")}
+          <div class="flex flex-col gap-3 text-sm">
+            {#if venue}
+              <div>
+                <div class="font-medium">{venue.name}</div>
+                {#if venueAddress}
+                  <a
+                    href={mapsUrl([venue.name, venueAddress].join(", "))}
+                    target="_blank"
+                    rel="noreferrer"
+                    class="flex items-center gap-1 text-muted hover:text-accent"
+                  >
+                    <MapPin class="size-3.5" />{venueAddress}
+                  </a>
+                {/if}
+                {#if venue.loadIn}
+                  <p class="mt-1 whitespace-pre-line">
+                    <span class="text-muted">Ladezone / Parken:</span>
+                    {venue.loadIn}
+                  </p>
+                {/if}
+              </div>
             {/if}
-            {#if venue.loadIn}
-              <p class="mt-1 whitespace-pre-line">
-                <span class="text-muted">Ladezone / Parken:</span>
-                {venue.loadIn}
-              </p>
-            {/if}
+            {#each gig.contacts as link (link.contactId)}
+              <div>
+                <span class="font-medium">{link.contact.name}</span>
+                {#if link.role}<span class="text-muted"> · {link.role}</span>{/if}
+                <div class="flex flex-wrap gap-x-4 text-muted">
+                  {#if link.contact.phone}
+                    <a
+                      href="tel:{link.contact.phone}"
+                      class="flex items-center gap-1 hover:text-accent"
+                      ><Phone class="size-3.5" />{link.contact.phone}</a
+                    >
+                  {/if}
+                  {#if link.contact.email}
+                    <a
+                      href="mailto:{link.contact.email}"
+                      class="flex items-center gap-1 hover:text-accent"
+                      ><Mail class="size-3.5" />{link.contact.email}</a
+                    >
+                  {/if}
+                </div>
+              </div>
+            {/each}
           </div>
-        {/if}
-        {#each gig.contacts as link (link.contactId)}
-          <div>
-            <span class="font-medium">{link.contact.name}</span>
-            {#if link.role}<span class="text-muted"> · {link.role}</span>{/if}
-            <div class="flex flex-wrap gap-x-4 text-muted">
-              {#if link.contact.phone}
-                <a href="tel:{link.contact.phone}" class="flex items-center gap-1 hover:text-accent"
-                  ><Phone class="size-3.5" />{link.contact.phone}</a
-                >
-              {/if}
-              {#if link.contact.email}
-                <a
-                  href="mailto:{link.contact.email}"
-                  class="flex items-center gap-1 hover:text-accent"
-                  ><Mail class="size-3.5" />{link.contact.email}</a
-                >
-              {/if}
-            </div>
-          </div>
-        {/each}
-      </div>
-    </section>
+        </section>
+      {/if}
+    </div>
   {/if}
 
   {#if hasHospitality(gig) || hasAccommodation(gig)}
-    <div class="grid gap-6 sm:grid-cols-2 print:grid-cols-2 print:gap-4">
+    <div class="grid gap-6 sm:grid-cols-2 print:grid-cols-2 print:gap-8">
       {#if hasHospitality(gig)}
         <section class="break-inside-avoid">
           {@render heading("Essen & Getränke")}
