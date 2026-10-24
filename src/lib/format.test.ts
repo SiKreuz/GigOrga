@@ -35,6 +35,8 @@ describe("numbers", () => {
     const { formatNumber, parseNumber } = await import("./format");
     expect(formatNumber(12.5)).toBe("12,5");
     expect(formatNumber(null)).toBe("");
+    expect(formatNumber(1925.1999999999998)).toBe("1925,2");
+    expect(formatNumber(1.659)).toBe("1,659");
     expect(parseNumber("12,5")).toBe(12.5);
     expect(parseNumber(" ")).toBeNull();
     expect(parseNumber("abc")).toBeNull();

@@ -19,6 +19,11 @@ const moneyFormat = new Intl.NumberFormat("de-DE", {
   minimumFractionDigits: 0,
 });
 
+const numberFormat = new Intl.NumberFormat("de-DE", {
+  maximumFractionDigits: 3,
+  useGrouping: false,
+});
+
 const parse = (isoDate: string) => new Date(`${isoDate}T00:00:00Z`);
 
 export function formatDate(isoDate: string): string {
@@ -61,7 +66,7 @@ export function todayIso(now = new Date()): string {
 }
 
 export function formatNumber(value: number | null): string {
-  return value === null ? "" : String(value).replace(".", ",");
+  return value === null ? "" : numberFormat.format(value);
 }
 
 export function parseNumber(value: string): number | null {
