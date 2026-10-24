@@ -95,19 +95,29 @@ export const supportActsSchema = v.object({
   ),
 });
 
-export const techSchema = v.object({
-  riderSent: flag,
-  stagePlotSent: flag,
-  inputListSent: flag,
-  techNotes: text(5000),
-  backline: jsonList(
-    v.object({
-      name: required("Bezeichnung fehlt"),
-      provider: v.picklist(keys(backlineProviders)),
-      note: text(500),
-    }),
-  ),
-});
+export const houseEngineer = "haus";
+
+export const techSchema = v.pipe(
+  v.object({
+    soundEngineer: v.optional(v.string(), ""),
+    riderSent: flag,
+    stagePlotSent: flag,
+    inputListSent: flag,
+    techNotes: text(5000),
+    backline: jsonList(
+      v.object({
+        name: required("Bezeichnung fehlt"),
+        provider: v.picklist(keys(backlineProviders)),
+        note: text(500),
+      }),
+    ),
+  }),
+  v.transform(({ soundEngineer, ...tech }) => ({
+    ...tech,
+    soundEngineerId: soundEngineer === "" || soundEngineer === houseEngineer ? null : soundEngineer,
+    houseEngineer: soundEngineer === houseEngineer ? 1 : 0,
+  })),
+);
 
 export const dealSchema = v.object({
   dealType: v.picklist(keys(dealTypes)),
@@ -156,8 +166,6 @@ export const soundEngineerSchema = v.object({
   phone: text(100),
   email: text(200),
 });
-
-export const gigSoundEngineerSchema = v.object({ soundEngineerId: optionalId });
 
 export const hospitalitySchema = v.object({
   catering: flag,

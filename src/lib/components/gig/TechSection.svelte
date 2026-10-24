@@ -3,15 +3,24 @@
   import Field from "$lib/components/Field.svelte";
   import ListEditor from "$lib/components/ListEditor.svelte";
   import Section from "$lib/components/Section.svelte";
+  import Select from "$lib/components/Select.svelte";
+  import { houseEngineer } from "$lib/forms";
   import { type BacklineProvider, backlineProviders } from "$lib/labels";
   import type { BacklineRow, GigDetail } from "$lib/server/services/gigs";
-  import { Check, Drum, X } from "@lucide/svelte";
+  import type { SoundEngineerSummary } from "$lib/server/services/soundEngineers";
+  import { Check, Drum, Headphones, Mail, Phone, X } from "@lucide/svelte";
 
   let {
     gig,
+    soundEngineers,
     errors,
     editing = $bindable(false),
-  }: { gig: GigDetail; errors: Record<string, string>; editing?: boolean } = $props();
+  }: {
+    gig: GigDetail;
+    soundEngineers: SoundEngineerSummary[];
+    errors: Record<string, string>;
+    editing?: boolean;
+  } = $props();
 
   const blank = (): BacklineRow => ({ name: "", provider: "unklar", note: "" });
   const tone: Record<BacklineProvider, string> = {
@@ -20,6 +29,15 @@
     wir: "bg-accent-soft text-accent",
     support: "bg-surface-2 text-text",
   };
+  const engineerOptions = $derived({
+    "": "– offen –",
+    [houseEngineer]: "Haustechniker",
+    ...(gig.soundEngineer && { [gig.soundEngineer.id]: gig.soundEngineer.name }),
+    ...Object.fromEntries(soundEngineers.map((engineer) => [engineer.id, engineer.name])),
+  });
+  const engineerChoice = $derived(
+    gig.soundEngineer?.id ?? (gig.houseEngineer === 1 ? houseEngineer : ""),
+  );
   const checks = $derived([
     { label: "Tech Rider", done: gig.riderSent === 1 },
     { label: "Stageplot", done: gig.stagePlotSent === 1 },
@@ -30,6 +48,32 @@
 <Section id="technik" title="Technik & Backline" icon={Drum} action="?/tech" bind:editing>
   {#snippet summary()}
     <div class="flex flex-col gap-4">
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+        <span class="flex items-center gap-1.5">
+          <Headphones class="size-3.5 text-muted" />
+          {#if gig.soundEngineer}
+            <span class="font-medium">{gig.soundEngineer.name}</span>
+          {:else if gig.houseEngineer === 1}
+            Haustechniker
+          {:else}
+            <span class="text-warning">Tontechnik offen</span>
+          {/if}
+        </span>
+        {#if gig.soundEngineer?.phone}
+          <a
+            href="tel:{gig.soundEngineer.phone}"
+            class="flex items-center gap-1 text-muted hover:text-accent"
+            ><Phone class="size-3.5" />{gig.soundEngineer.phone}</a
+          >
+        {/if}
+        {#if gig.soundEngineer?.email}
+          <a
+            href="mailto:{gig.soundEngineer.email}"
+            class="flex items-center gap-1 text-muted hover:text-accent"
+            ><Mail class="size-3.5" />{gig.soundEngineer.email}</a
+          >
+        {/if}
+      </div>
       {#if gig.backline.length > 0}
         <div class="flex flex-wrap gap-2">
           {#each gig.backline as item (item.id)}
@@ -85,7 +129,18 @@
       {/snippet}
     </ListEditor>
     {#if errors.backline}<span class="text-sm text-danger">{errors.backline}</span>{/if}
-    <div class="grid gap-3 border-t border-border pt-5 sm:grid-cols-2">
+    <div class="border-t border-border pt-5">
+      <Field
+        id="soundEngineer"
+        label="Tontechnik (FOH)"
+        hint={soundEngineers.length === 0
+          ? "Eigene Tontechniker legst du in den Einstellungen an."
+          : undefined}
+      >
+        <Select id="soundEngineer" options={engineerOptions} value={engineerChoice} />
+      </Field>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2">
       <Checkbox name="riderSent" label="Tech Rider verschickt" checked={gig.riderSent === 1} />
       <Checkbox
         name="stagePlotSent"

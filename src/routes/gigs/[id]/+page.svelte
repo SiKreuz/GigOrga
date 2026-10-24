@@ -5,7 +5,6 @@
   import DealSection from "$lib/components/gig/DealSection.svelte";
   import HospitalitySection from "$lib/components/gig/HospitalitySection.svelte";
   import LineupSection from "$lib/components/gig/LineupSection.svelte";
-  import SoundEngineerSection from "$lib/components/gig/SoundEngineerSection.svelte";
   import TechSection from "$lib/components/gig/TechSection.svelte";
   import TimetableSection from "$lib/components/gig/TimetableSection.svelte";
   import TravelSection from "$lib/components/gig/TravelSection.svelte";
@@ -34,7 +33,6 @@
     deal: false,
     fahrt: false,
     technik: false,
-    tontechnik: false,
     lineup: false,
     hospitality: false,
     uebernachtung: false,
@@ -44,7 +42,6 @@
 
   const optional: { id: SectionId; label: string; empty: boolean }[] = $derived([
     { id: "venue", label: "Kontakte", empty: !gig.venue && gig.contacts.length === 0 },
-    { id: "tontechnik", label: "Tontechnik", empty: gig.soundEngineer === null },
     { id: "lineup", label: "Line-up", empty: gig.supportActs.length === 0 },
     {
       id: "hospitality",
@@ -191,14 +188,12 @@
       {routeError}
       bind:editing={editing.fahrt}
     />
-    <TechSection {gig} errors={errorsFor("tech")} bind:editing={editing.technik} />
-    {#if shown("tontechnik")}
-      <SoundEngineerSection
-        {gig}
-        soundEngineers={data.soundEngineers}
-        bind:editing={editing.tontechnik}
-      />
-    {/if}
+    <TechSection
+      {gig}
+      soundEngineers={data.soundEngineers}
+      errors={errorsFor("tech")}
+      bind:editing={editing.technik}
+    />
     {#if shown("lineup")}
       <LineupSection {gig} errors={errorsFor("lineup")} bind:editing={editing.lineup} />
     {/if}

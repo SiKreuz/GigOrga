@@ -2,7 +2,6 @@ import {
   accommodationSchema,
   dealSchema,
   gigBasicsSchema,
-  gigSoundEngineerSchema,
   hospitalitySchema,
   linkContactSchema,
   parseForm,
@@ -78,9 +77,6 @@ export const actions: Actions = {
   tech: section("tech", techSchema, (id, data) => updateTech(getDb(), id, data)),
   deal: section("deal", dealSchema, (id, data) => updateDeal(getDb(), id, data)),
   travel: section("travel", travelSchema, (id, data) => updateTravel(getDb(), id, data)),
-  soundEngineer: section("soundEngineer", gigSoundEngineerSchema, (id, data) =>
-    updateGig(getDb(), id, data),
-  ),
   hospitality: section("hospitality", hospitalitySchema, (id, data) =>
     updateGig(getDb(), id, data),
   ),

@@ -1,3 +1,4 @@
+import type { techSchema } from "$lib/forms";
 import type {
   AccommodationType,
   BacklineProvider,
@@ -9,6 +10,7 @@ import type {
   TimetableKind,
 } from "$lib/labels";
 import { legOf } from "$lib/tour";
+import type * as v from "valibot";
 
 import { type Db, type Reader, transaction, type Tx } from "../db";
 
@@ -71,13 +73,7 @@ export type TravelInput = {
   carIds: string[];
 };
 
-export type TechInput = {
-  riderSent: number;
-  stagePlotSent: number;
-  inputListSent: number;
-  techNotes: string;
-  backline: BacklineRow[];
-};
+export type TechInput = v.InferOutput<typeof techSchema>;
 
 export type HospitalityInput = {
   catering: number;
@@ -158,7 +154,7 @@ export function createGig(db: Db, gig: NewGig): Promise<string> {
 export async function updateGig(
   db: Db,
   id: string,
-  input: GigBasics | HospitalityInput | AccommodationInput | { soundEngineerId: string | null },
+  input: GigBasics | HospitalityInput | AccommodationInput,
 ) {
   await transaction(db, (tx) => tx.orm.Gig.where({ id }).update(input));
 }

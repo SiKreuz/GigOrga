@@ -6,6 +6,7 @@ import {
   getGig,
   linkContact,
   listGigs,
+  type TechInput,
   unlinkContact,
   updateDeal,
   updateGig,
@@ -20,6 +21,16 @@ import { deleteVenue } from "$lib/server/services/venues";
 import { gigBasics, test } from "$lib/server/testing";
 import { faker } from "@faker-js/faker";
 import { describe, expect } from "vitest";
+
+const techInput: TechInput = {
+  soundEngineerId: null,
+  houseEngineer: 0,
+  riderSent: 0,
+  stagePlotSent: 0,
+  inputListSent: 0,
+  techNotes: "",
+  backline: [],
+};
 
 describe("gigs", () => {
   test("creates a gig with the default timetable and backline", async ({ db, insertGig }) => {
@@ -171,16 +182,18 @@ describe("gigs", () => {
 
   test("updates tech and backline", async ({ db, insertGig }) => {
     const { id } = await insertGig();
-    const tech = {
+    const tech: TechInput = {
+      soundEngineerId: null,
+      houseEngineer: 1,
       riderSent: 1,
       stagePlotSent: 0,
       inputListSent: 0,
       techNotes: "IEM",
-      backline: [{ name: "Drumset", provider: "venue" as const, note: "ohne Becken" }],
+      backline: [{ name: "Drumset", provider: "venue", note: "ohne Becken" }],
     };
     await updateTech(db, id, tech);
     const gig = await getGig(db, id);
-    expect(gig).toMatchObject({ riderSent: 1, techNotes: "IEM" });
+    expect(gig).toMatchObject({ houseEngineer: 1, riderSent: 1, techNotes: "IEM" });
     expect(gig?.backline).toMatchObject(tech.backline);
   });
 
@@ -189,10 +202,11 @@ describe("gigs", () => {
     expect((await getGig(db, id))?.soundEngineer).toBeNull();
     const kim = { name: "Kim", phone: "0171 123456", email: "kim@example.com" };
     const engineerId = await createSoundEngineer(db, kim);
-    await updateGig(db, id, { soundEngineerId: engineerId });
+    const tech = { ...techInput, soundEngineerId: engineerId };
+    await updateTech(db, id, tech);
     await archiveSoundEngineer(db, engineerId);
     expect((await getGig(db, id))?.soundEngineer).toEqual({ id: engineerId, ...kim });
-    await updateGig(db, id, { soundEngineerId: null });
+    await updateTech(db, id, { ...tech, soundEngineerId: null });
     expect((await getGig(db, id))?.soundEngineer).toBeNull();
   });
 
