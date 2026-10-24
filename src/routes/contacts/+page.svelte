@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { resolve } from "$app/paths";
   import { allowed } from "$lib/access.svelte";
   import ContactFields from "$lib/components/ContactFields.svelte";
   import { ChevronRight, Mail, Phone, Plus } from "@lucide/svelte";
@@ -16,7 +17,7 @@
   <div class="flex items-center justify-between gap-4">
     <h1 class="text-2xl font-semibold tracking-tight">Kontakte</h1>
     {#if !creating && !form && allowed("edit")}
-      <button class="btn btn-primary" onclick={() => (creating = true)}
+      <button type="button" class="btn btn-primary" onclick={() => (creating = true)}
         ><Plus class="size-4" /> Neuer Kontakt</button
       >
     {/if}
@@ -27,8 +28,10 @@
       <h2 class="font-semibold">Neuer Kontakt</h2>
       <ContactFields values={form?.values} errors={form?.errors} />
       <div class="flex justify-end gap-2">
-        <a href="/contacts" class="btn btn-ghost" onclick={() => (creating = false)}>Abbrechen</a>
-        <button class="btn btn-primary">Anlegen</button>
+        <a href={resolve("/contacts")} class="btn btn-ghost" onclick={() => (creating = false)}
+          >Abbrechen</a
+        >
+        <button type="submit" class="btn btn-primary">Anlegen</button>
       </div>
     </form>
   {/if}
@@ -42,7 +45,7 @@
           >
             {contact.name.slice(0, 1).toUpperCase()}
           </span>
-          <a href="/contacts/{contact.id}" class="min-w-0 flex-1">
+          <a href={resolve("/contacts/[id]", { id: contact.id })} class="min-w-0 flex-1">
             <div class="font-medium">{contact.name}</div>
             {#if contact.company}<div class="text-sm text-muted">{contact.company}</div>{/if}
           </a>
@@ -62,8 +65,10 @@
               title={contact.email}><Mail class="size-4" /></a
             >
           {/if}
-          <a href="/contacts/{contact.id}" class="btn-icon" aria-label="Bearbeiten"
-            ><ChevronRight class="size-4" /></a
+          <a
+            href={resolve("/contacts/[id]", { id: contact.id })}
+            class="btn-icon"
+            aria-label="Bearbeiten"><ChevronRight class="size-4" /></a
           >
         </div>
       {/each}

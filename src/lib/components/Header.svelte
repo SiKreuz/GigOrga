@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import { page } from "$app/state";
   import { allowed } from "$lib/access.svelte";
   import {
@@ -19,14 +20,14 @@
   let { user }: { user: { name: string; email: string } | null } = $props();
 
   const links = [
-    { href: "/", label: "Gigs", icon: CalendarDays },
-    { href: "/tours", label: "Touren", icon: Route },
-    { href: "/venues", label: "Venues", icon: Building2 },
-    { href: "/contacts", label: "Kontakte", icon: Users },
-    { href: "/songs", label: "Songs", icon: Music },
-    { href: "/settings", label: "Einstellungen", icon: Settings },
+    { href: resolve("/"), label: "Gigs", icon: CalendarDays },
+    { href: resolve("/tours"), label: "Touren", icon: Route },
+    { href: resolve("/venues"), label: "Venues", icon: Building2 },
+    { href: resolve("/contacts"), label: "Kontakte", icon: Users },
+    { href: resolve("/songs"), label: "Songs", icon: Music },
+    { href: resolve("/settings"), label: "Einstellungen", icon: Settings },
   ];
-  const adminLinks = [{ href: "/benutzer", label: "Benutzer", icon: UserCog }];
+  const adminLinks = [{ href: resolve("/benutzer"), label: "Benutzer", icon: UserCog }];
 
   const active = (href: string) =>
     href === "/"
@@ -38,7 +39,7 @@
   class="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur-md print:hidden"
 >
   <div class="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4 sm:gap-6 sm:px-6">
-    <a href="/" class="flex shrink-0 items-center gap-2 font-semibold tracking-tight">
+    <a href={resolve("/")} class="flex shrink-0 items-center gap-2 font-semibold tracking-tight">
       <span
         class="flex size-8 items-center justify-center rounded-lg bg-accent text-accent-contrast"
       >
@@ -70,7 +71,7 @@
     <div class="ml-auto flex shrink-0 items-center gap-2">
       {#if user && allowed("edit")}
         <a
-          href="/gigs/new"
+          href={resolve("/gigs/new")}
           class="btn w-10 btn-primary px-0 sm:w-auto sm:px-4"
           aria-label="Neuer Gig"
         >
@@ -82,9 +83,10 @@
       {#if user}
         <form method="POST" action="/login?/logout">
           <button
+            type="submit"
             class="btn w-10 btn-ghost px-0"
             aria-label="Abmelden"
-            title={`Abmelden (${user.name || user.email})`}
+            title="Abmelden ({user.name || user.email})"
           >
             <LogOut class="size-4" />
           </button>

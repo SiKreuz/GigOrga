@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import Field from "$lib/components/Field.svelte";
   import { travelCost, tripOf } from "$lib/deal";
   import { formatMoney, formatNumber, parseNumber } from "$lib/format";
@@ -20,7 +21,7 @@
     errors: Record<string, string>;
   } = $props();
 
-  let trip = $state(
+  const trip = $state(
     untrack(() => ({
       distanceKm: formatNumber(gig.distanceKm),
       returnKm: formatNumber(gig.returnKm),
@@ -127,8 +128,9 @@
       {/if}
     {:else}
       <p class="text-sm text-muted">
-        Noch keine Autos angelegt – <a href="/settings" class="text-accent hover:underline"
-          >in den Einstellungen hinzufügen</a
+        Noch keine Autos angelegt – <a
+          href={resolve("/settings")}
+          class="text-accent hover:underline">in den Einstellungen hinzufügen</a
         >.
       </p>
     {/if}

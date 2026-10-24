@@ -23,7 +23,7 @@
     errors: Record<string, string>;
   } = $props();
 
-  let terms = $state(
+  const terms = $state(
     untrack(() => ({
       dealType: gig.dealType as string,
       fee: formatNumber(gig.fee),

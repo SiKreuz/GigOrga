@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import { ArrowLeft, Printer } from "@lucide/svelte";
 
   let { data } = $props();
@@ -22,14 +23,14 @@
 <div class="mx-auto flex max-w-[210mm] flex-col gap-4 print:max-w-none">
   <div class="flex items-center justify-between gap-3 print:hidden">
     <a
-      href="/gigs/{gig.id}"
+      href={resolve("/gigs/[id]", { id: gig.id })}
       class="inline-flex items-center gap-1 text-sm text-muted hover:text-text"
     >
       <ArrowLeft class="size-4" />
       {gig.title}
     </a>
     {#if data.setlist.length > 0}
-      <button class="btn btn-primary" onclick={() => print()}>
+      <button type="button" class="btn btn-primary" onclick={() => print()}>
         <Printer class="size-4" /> Drucken
       </button>
     {/if}
@@ -38,7 +39,9 @@
   {#if data.setlist.length === 0}
     <p class="card p-6 text-sm text-muted">
       Für diesen Gig gibt es noch keine Setlist.
-      <a href="/gigs/{gig.id}#setlist" class="text-accent hover:underline">Setlist anlegen</a>
+      <a href="{resolve('/gigs/[id]', { id: gig.id })}#setlist" class="text-accent hover:underline"
+        >Setlist anlegen</a
+      >
     </p>
   {:else}
     <article

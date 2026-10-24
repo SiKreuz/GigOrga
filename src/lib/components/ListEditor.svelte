@@ -21,7 +21,7 @@
     footer?: Snippet<[T[]]>;
   } = $props();
 
-  let rows = $state(untrack(() => initial.map((item) => ({ ...item }))));
+  const rows = $state(untrack(() => initial.map((item) => ({ ...item }))));
 
   function move(index: number, offset: number) {
     const target = index + offset;

@@ -1,5 +1,7 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import Fact from "$lib/components/Fact.svelte";
+  import OutboundLink from "$lib/components/OutboundLink.svelte";
   import { hasAccommodation, hasContacts, hasHospitality, playtime, timesOf } from "$lib/daysheet";
   import { formatDuration, formatMoney } from "$lib/format";
   import { accommodationTypes, timetableKinds } from "$lib/labels";
@@ -50,12 +52,12 @@
 >
   <div class="flex items-center justify-between gap-3 print:hidden">
     <a
-      href="/gigs/{gig.id}"
+      href={resolve("/gigs/[id]", { id: gig.id })}
       class="inline-flex items-center gap-1 text-sm text-muted hover:text-text"
     >
       <ArrowLeft class="size-4" /> Zum Gig
     </a>
-    <button class="btn h-9 btn-ghost px-3" onclick={() => window.print()}>
+    <button type="button" class="btn h-9 btn-ghost px-3" onclick={() => window.print()}>
       <Printer class="size-3.5" /> Drucken
     </button>
   </div>
@@ -126,14 +128,12 @@
               <div>
                 <div class="font-medium">{venue.name}</div>
                 {#if venueAddress}
-                  <a
+                  <OutboundLink
                     href={mapsUrl([venue.name, venueAddress].join(", "))}
-                    target="_blank"
-                    rel="noreferrer"
                     class="flex items-center gap-1 text-muted hover:text-accent"
                   >
                     <MapPin class="size-3.5" />{venueAddress}
-                  </a>
+                  </OutboundLink>
                 {/if}
                 {#if venue.loadIn}
                   <p class="mt-1 whitespace-pre-line">
@@ -197,14 +197,12 @@
             >
             {#if gig.accommodationAddress}
               <Fact label="Adresse">
-                <a
+                <OutboundLink
                   href={mapsUrl(gig.accommodationAddress)}
-                  target="_blank"
-                  rel="noreferrer"
                   class="inline-flex items-center gap-1 hover:text-accent"
                 >
                   <MapPin class="size-3.5" />{gig.accommodationAddress}
-                </a>
+                </OutboundLink>
               </Fact>
             {/if}
             {#if gig.checkIn}<Fact label="Check-in ab">{gig.checkIn}</Fact>{/if}

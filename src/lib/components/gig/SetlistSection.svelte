@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import ListEditor from "$lib/components/ListEditor.svelte";
   import Section from "$lib/components/Section.svelte";
   import type { GigDetail } from "$lib/server/services/gigs";
@@ -58,14 +59,14 @@
       {/each}
     </ol>
     <div class="mt-3">{@render totals(totalOf(setlist))}</div>
-    <a href="/gigs/{gig.id}/setlist" class="mt-3 btn h-9 btn-ghost px-3">
+    <a href={resolve("/gigs/[id]/setlist", { id: gig.id })} class="mt-3 btn h-9 btn-ghost px-3">
       <Printer class="size-4" /> Drucken
     </a>
   {/snippet}
   {#snippet form()}
     {#if songs.length === 0}
       <p class="text-sm text-muted">
-        Noch keine Songs angelegt. <a href="/songs" class="text-accent hover:underline"
+        Noch keine Songs angelegt. <a href={resolve("/songs")} class="text-accent hover:underline"
           >Songs anlegen</a
         >
       </p>

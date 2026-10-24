@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { resolve } from "$app/paths";
   import { allowed } from "$lib/access.svelte";
   import VenueFields from "$lib/components/VenueFields.svelte";
   import { Building2, ChevronRight, Plus } from "@lucide/svelte";
@@ -16,7 +17,7 @@
   <div class="flex items-center justify-between gap-4">
     <h1 class="text-2xl font-semibold tracking-tight">Venues</h1>
     {#if !creating && !form && allowed("edit")}
-      <button class="btn btn-primary" onclick={() => (creating = true)}
+      <button type="button" class="btn btn-primary" onclick={() => (creating = true)}
         ><Plus class="size-4" /> Neue Venue</button
       >
     {/if}
@@ -27,8 +28,10 @@
       <h2 class="font-semibold">Neue Venue</h2>
       <VenueFields values={form?.values} errors={form?.errors} />
       <div class="flex justify-end gap-2">
-        <a href="/venues" class="btn btn-ghost" onclick={() => (creating = false)}>Abbrechen</a>
-        <button class="btn btn-primary">Anlegen</button>
+        <a href={resolve("/venues")} class="btn btn-ghost" onclick={() => (creating = false)}
+          >Abbrechen</a
+        >
+        <button type="submit" class="btn btn-primary">Anlegen</button>
       </div>
     </form>
   {/if}
@@ -37,7 +40,7 @@
     <div class="divide-y divide-border overflow-hidden card">
       {#each data.venues as venue (venue.id)}
         <a
-          href="/venues/{venue.id}"
+          href={resolve("/venues/[id]", { id: venue.id })}
           class="group flex items-center gap-4 px-5 py-3.5 hover:bg-surface-2"
         >
           <span

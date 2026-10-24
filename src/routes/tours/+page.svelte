@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { resolve } from "$app/paths";
   import { allowed } from "$lib/access.svelte";
   import Field from "$lib/components/Field.svelte";
   import { formatDate } from "$lib/format";
@@ -17,7 +18,7 @@
   <div class="flex items-center justify-between gap-4">
     <h1 class="text-2xl font-semibold tracking-tight">Touren</h1>
     {#if !creating && !form && allowed("edit")}
-      <button class="btn btn-primary" onclick={() => (creating = true)}
+      <button type="button" class="btn btn-primary" onclick={() => (creating = true)}
         ><Plus class="size-4" /> Neue Tour</button
       >
     {/if}
@@ -36,8 +37,10 @@
         />
       </Field>
       <div class="flex justify-end gap-2">
-        <a href="/tours" class="btn btn-ghost" onclick={() => (creating = false)}>Abbrechen</a>
-        <button class="btn btn-primary">Anlegen</button>
+        <a href={resolve("/tours")} class="btn btn-ghost" onclick={() => (creating = false)}
+          >Abbrechen</a
+        >
+        <button type="submit" class="btn btn-primary">Anlegen</button>
       </div>
     </form>
   {/if}
@@ -45,7 +48,10 @@
   {#if data.tours.length > 0}
     <div class="divide-y divide-border overflow-hidden card">
       {#each data.tours as tour (tour.id)}
-        <a href="/tours/{tour.id}" class="flex items-center gap-4 px-5 py-3.5 hover:bg-surface-2">
+        <a
+          href={resolve("/tours/[id]", { id: tour.id })}
+          class="flex items-center gap-4 px-5 py-3.5 hover:bg-surface-2"
+        >
           <span
             class="flex size-9 items-center justify-center rounded-lg bg-accent-soft text-accent"
             ><Route class="size-4" /></span

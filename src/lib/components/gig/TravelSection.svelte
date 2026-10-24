@@ -1,7 +1,9 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { resolve } from "$app/paths";
   import { allowed } from "$lib/access.svelte";
   import Fact from "$lib/components/Fact.svelte";
+  import OutboundLink from "$lib/components/OutboundLink.svelte";
   import Section from "$lib/components/Section.svelte";
   import type { FuelPrices } from "$lib/deal";
   import { formatDuration, formatMoney, formatNumber } from "$lib/format";
@@ -94,6 +96,7 @@
           }}
         >
           <button
+            type="submit"
             class="btn h-9 btn-ghost px-3"
             disabled={!gig.venue || routing || !allowed("edit")}
           >
@@ -104,23 +107,22 @@
           </button>
         </form>
         {#if gig.venue && origin}
-          <a
+          <OutboundLink
             href={mapsUrl}
-            target="_blank"
-            rel="noreferrer"
             class="btn-icon"
             aria-label="In Google Maps öffnen"
             title="In Google Maps öffnen"
           >
             <ExternalLink class="size-4" />
-          </a>
+          </OutboundLink>
         {/if}
       </div>
       {#if routeError}<p class="text-sm text-danger">{routeError}</p>{/if}
       {#if !settings.homeAddress}
         <p class="text-xs text-muted">
           Für die Route fehlt die Startadresse –
-          <a href="/settings" class="text-accent hover:underline">in den Einstellungen eintragen</a
+          <a href={resolve("/settings")} class="text-accent hover:underline"
+            >in den Einstellungen eintragen</a
           >.
         </p>
       {/if}

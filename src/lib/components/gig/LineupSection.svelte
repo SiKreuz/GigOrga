@@ -1,5 +1,6 @@
 <script lang="ts">
   import ListEditor from "$lib/components/ListEditor.svelte";
+  import OutboundLink from "$lib/components/OutboundLink.svelte";
   import Section from "$lib/components/Section.svelte";
   import type { SupportActRow } from "$lib/server/services/gigInputs";
   import type { GigDetail } from "$lib/server/services/gigs";
@@ -28,15 +29,9 @@
           <span class="w-12 text-muted tabular-nums">{act.stageTime || "–"}</span>
           <span class="font-medium">{act.name}</span>
           {#if act.link}
-            <a
-              href={act.link}
-              target="_blank"
-              rel="noreferrer"
-              class="text-muted hover:text-accent"
-              aria-label="Link"
-            >
+            <OutboundLink href={act.link} class="text-muted hover:text-accent" aria-label="Link">
               <ExternalLink class="size-3.5" />
-            </a>
+            </OutboundLink>
           {/if}
           {#if act.sharesBackline}<span class="chip">teilt Backline</span>{/if}
           {#if act.contact}<span class="text-muted">{act.contact}</span>{/if}

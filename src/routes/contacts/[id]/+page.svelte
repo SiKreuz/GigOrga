@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import ConfirmButton from "$lib/components/ConfirmButton.svelte";
   import ContactFields from "$lib/components/ContactFields.svelte";
   import SectionForm from "$lib/components/SectionForm.svelte";
@@ -14,7 +15,7 @@
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
   <div>
     <a
-      href="/contacts"
+      href={resolve("/contacts")}
       class="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-text"
       ><ArrowLeft class="size-4" /> Alle Kontakte</a
     >

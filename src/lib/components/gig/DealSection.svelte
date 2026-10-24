@@ -1,5 +1,6 @@
 <script lang="ts">
   import Fact from "$lib/components/Fact.svelte";
+  import OutboundLink from "$lib/components/OutboundLink.svelte";
   import Section from "$lib/components/Section.svelte";
   import { estimate } from "$lib/deal";
   import { formatMoney, formatNumber } from "$lib/format";
@@ -99,14 +100,12 @@
           <Fact label="Vorverkauf" wide>
             <span class="flex flex-wrap gap-x-4">
               {#each gig.presaleLinks as link (link.id)}
-                <a
+                <OutboundLink
                   href={link.url}
-                  target="_blank"
-                  rel="noreferrer"
                   class="inline-flex items-center gap-1 text-accent hover:underline"
                 >
                   {link.label || new URL(link.url).hostname}<ExternalLink class="size-3" />
-                </a>
+                </OutboundLink>
               {/each}
             </span>
           </Fact>

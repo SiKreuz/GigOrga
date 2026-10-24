@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { resolve } from "$app/paths";
   import Field from "$lib/components/Field.svelte";
   import { gigStatuses } from "$lib/labels";
   import type { GigStatus } from "$lib/labels";
@@ -81,7 +82,7 @@
       </div>
     </fieldset>
     <div class="flex justify-end gap-2 border-t border-border pt-4">
-      <a href="/" class="btn btn-ghost">Abbrechen</a>
+      <a href={resolve("/")} class="btn btn-ghost">Abbrechen</a>
       <button type="submit" class="btn btn-primary">Gig anlegen</button>
     </div>
   </form>

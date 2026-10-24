@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { resolve } from "$app/paths";
   import { allowed } from "$lib/access.svelte";
   import ConfirmButton from "$lib/components/ConfirmButton.svelte";
   import Field from "$lib/components/Field.svelte";
@@ -51,7 +52,9 @@
 
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
   <div>
-    <a href="/tours" class="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-text"
+    <a
+      href={resolve("/tours")}
+      class="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-text"
       ><ArrowLeft class="size-4" /> Alle Touren</a
     >
     {#if editing}
@@ -79,7 +82,7 @@
       <div class="flex flex-wrap items-center gap-3">
         <h1 class="flex-1 text-2xl font-semibold tracking-tight">{tour.name}</h1>
         {#if allowed("edit")}
-          <button class="btn h-9 btn-ghost px-3" onclick={() => (editing = true)}>
+          <button type="button" class="btn h-9 btn-ghost px-3" onclick={() => (editing = true)}>
             <Pencil class="size-3.5" /> Bearbeiten
           </button>
         {/if}
@@ -106,7 +109,7 @@
           };
         }}
       >
-        <button class="btn h-9 btn-ghost px-3" disabled={routing || !allowed("edit")}>
+        <button type="submit" class="btn h-9 btn-ghost px-3" disabled={routing || !allowed("edit")}>
           {#if routing}<LoaderCircle class="size-4 animate-spin" />{:else}<Route
               class="size-4"
             />{/if}
@@ -122,7 +125,7 @@
           <div class="flex flex-wrap items-center gap-3">
             <span class="w-24 text-sm text-muted tabular-nums">{formatDate(leg.stop.date)}</span>
             <a
-              href="/gigs/{leg.stop.id}"
+              href={resolve("/gigs/[id]", { id: leg.stop.id })}
               class="min-w-0 flex-1 truncate font-medium hover:underline">{leg.stop.title}</a
             >
             <StatusChip status={leg.stop.status} />
