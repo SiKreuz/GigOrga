@@ -46,7 +46,7 @@
     </p>
   {:else}
     <article
-      class="sheet flex aspect-[210/297] w-full flex-col overflow-hidden rounded-sm bg-surface text-text shadow-lg print:aspect-auto print:h-[297mm] print:rounded-none print:shadow-none"
+      class="sheet flex aspect-[210/297] w-full flex-col overflow-hidden rounded-sm bg-surface text-text shadow-lg print:aspect-auto print:h-screen print:break-inside-avoid print:rounded-none print:shadow-none"
       style:--count={data.setlist.length}
     >
       <header
@@ -62,7 +62,7 @@
         </div>
       </header>
 
-      <ol class="songs flex flex-1 flex-col justify-center px-[6cqw] py-[3cqw]">
+      <ol class="songs flex flex-1 flex-col px-[6cqw] py-[5cqw]">
         {#each data.setlist as entry, index (index)}
           <li class="flex items-baseline gap-[0.5em] leading-[1.25]">
             <span
@@ -81,7 +81,8 @@
         <span>{gig.title}</span>
         <span class="tabular-nums">
           {#if show}Show {show.start}{show.end ? `–${show.end}` : ""} ·{/if}
-          {data.setlist.length} Songs · {formatSongDuration(total)}{slot === null
+          {data.setlist.length}
+          {data.setlist.length === 1 ? "Song" : "Songs"} · {formatSongDuration(total)}{slot === null
             ? ""
             : ` / ${formatSongDuration(slot)}`}
         </span>
@@ -98,6 +99,6 @@
   }
 
   .songs {
-    font-size: min(7.5cqh, calc(66cqh / (var(--count) * 1.25)));
+    font-size: min(4.5cqh, calc(66cqh / (var(--count) * 1.25)));
   }
 </style>
