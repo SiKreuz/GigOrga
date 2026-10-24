@@ -111,28 +111,28 @@ const byPosition = (a: { position: number }, b: { position: number }) => a.posit
 
 async function replaceTimetable(tx: Tx, gigId: string, rows: TimetableRow[]) {
   await tx.orm.TimetableEntry.where({ gigId }).deleteAll();
-  for (const [position, row] of rows.entries()) {
-    await tx.orm.TimetableEntry.create({ id: Bun.randomUUIDv7(), gigId, position, ...row });
-  }
+  await tx.orm.TimetableEntry.createAndCount(
+    rows.map((row, position) => ({ id: Bun.randomUUIDv7(), gigId, position, ...row })),
+  );
 }
 
 async function replaceBackline(tx: Tx, gigId: string, rows: BacklineRow[]) {
   await tx.orm.BacklineItem.where({ gigId }).deleteAll();
-  for (const [position, row] of rows.entries()) {
-    await tx.orm.BacklineItem.create({ id: Bun.randomUUIDv7(), gigId, position, ...row });
-  }
+  await tx.orm.BacklineItem.createAndCount(
+    rows.map((row, position) => ({ id: Bun.randomUUIDv7(), gigId, position, ...row })),
+  );
 }
 
 async function replacePresaleLinks(tx: Tx, gigId: string, rows: PresaleLinkRow[]) {
   await tx.orm.PresaleLink.where({ gigId }).deleteAll();
-  for (const [position, row] of rows.entries()) {
-    await tx.orm.PresaleLink.create({ id: Bun.randomUUIDv7(), gigId, position, ...row });
-  }
+  await tx.orm.PresaleLink.createAndCount(
+    rows.map((row, position) => ({ id: Bun.randomUUIDv7(), gigId, position, ...row })),
+  );
 }
 
 async function replaceCars(tx: Tx, gigId: string, carIds: string[]) {
   await tx.orm.GigCar.where({ gigId }).deleteAll();
-  for (const carId of new Set(carIds)) await tx.orm.GigCar.create({ gigId, carId });
+  await tx.orm.GigCar.createAndCount([...new Set(carIds)].map((carId) => ({ gigId, carId })));
 }
 
 export function createGig(db: Db, gig: NewGig): Promise<string> {
@@ -187,9 +187,9 @@ export async function updateTimetable(db: Db, id: string, rows: TimetableRow[]) 
 export async function updateSupportActs(db: Db, gigId: string, rows: SupportActRow[]) {
   await transaction(db, async (tx) => {
     await tx.orm.SupportAct.where({ gigId }).deleteAll();
-    for (const [position, row] of rows.entries()) {
-      await tx.orm.SupportAct.create({ id: Bun.randomUUIDv7(), gigId, position, ...row });
-    }
+    await tx.orm.SupportAct.createAndCount(
+      rows.map((row, position) => ({ id: Bun.randomUUIDv7(), gigId, position, ...row })),
+    );
   });
 }
 

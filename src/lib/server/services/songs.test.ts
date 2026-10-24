@@ -37,4 +37,11 @@ describe("songs", () => {
     await deleteSong(db, first);
     expect((await getSetlist(db, id)).map((entry) => entry.songId)).toEqual([hit]);
   });
+
+  test("clears the setlist", async ({ db, insertGig }) => {
+    const { id } = await insertGig();
+    await updateSetlist(db, id, [await createSong(db, intro)]);
+    await updateSetlist(db, id, []);
+    expect(await getSetlist(db, id)).toEqual([]);
+  });
 });

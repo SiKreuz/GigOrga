@@ -147,6 +147,12 @@ describe("gigs", () => {
     expect((await getGig(db, id))?.timetable).toMatchObject(rows);
   });
 
+  test("clears the timetable", async ({ db, insertGig }) => {
+    const { id } = await insertGig();
+    await updateTimetable(db, id, []);
+    expect((await getGig(db, id))?.timetable).toEqual([]);
+  });
+
   test("replaces support acts", async ({ db, insertGig }) => {
     const { id } = await insertGig();
     const acts = [
