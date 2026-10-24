@@ -28,12 +28,10 @@ export async function listSongs(db: Reader) {
 }
 
 export async function getSetlist(db: Reader, gigId: string) {
-  const entries = await db.orm.SetlistEntry.where({ gigId })
-    .include("song", (song) => song.select("title", "durationSec"))
-    .all();
+  const entries = await db.orm.SetlistEntry.where({ gigId }).include("song").all();
   return entries
     .toSorted((a, b) => a.position - b.position)
-    .map((entry) => ({ songId: entry.songId, ...entry.song }));
+    .map(({ songId, song }) => ({ songId, title: song.title, durationSec: song.durationSec }));
 }
 
 export async function updateSetlist(db: Db, gigId: string, songIds: string[]) {

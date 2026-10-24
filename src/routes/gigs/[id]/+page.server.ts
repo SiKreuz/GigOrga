@@ -5,6 +5,7 @@ import {
   hospitalitySchema,
   linkContactSchema,
   parseForm,
+  setlistSchema,
   supportActsSchema,
   techSchema,
   timetableSchema,
@@ -28,6 +29,7 @@ import {
 } from "$lib/server/services/gigs";
 import { routeToGig } from "$lib/server/services/routing";
 import { getSettings } from "$lib/server/services/settings";
+import { getSetlist, listSongs, updateSetlist } from "$lib/server/services/songs";
 import { listSoundEngineers } from "$lib/server/services/soundEngineers";
 import { listTours } from "$lib/server/services/tours";
 import { listVenues } from "$lib/server/services/venues";
@@ -40,15 +42,18 @@ export const load: PageServerLoad = async ({ params }) => {
   const db = getDb();
   const gig = await getGig(db, params.id);
   if (gig === undefined) error(404, "Gig nicht gefunden");
-  const [venues, contacts, cars, settings, tours, soundEngineers] = await Promise.all([
-    listVenues(db),
-    listContacts(db),
-    listCars(db),
-    getSettings(db),
-    listTours(db),
-    listSoundEngineers(db),
-  ]);
-  return { gig, venues, contacts, cars, settings, tours, soundEngineers };
+  const [venues, contacts, cars, settings, tours, soundEngineers, songs, setlist] =
+    await Promise.all([
+      listVenues(db),
+      listContacts(db),
+      listCars(db),
+      getSettings(db),
+      listTours(db),
+      listSoundEngineers(db),
+      listSongs(db),
+      getSetlist(db, gig.id),
+    ]);
+  return { gig, venues, contacts, cars, settings, tours, soundEngineers, songs, setlist };
 };
 
 type Schema = Parameters<typeof parseForm>[0];
@@ -70,6 +75,13 @@ export const actions: Actions = {
   basics: section("basics", gigBasicsSchema, (id, data) => updateGig(getDb(), id, data)),
   timetable: section("timetable", timetableSchema, (id, data) =>
     updateTimetable(getDb(), id, data.entries),
+  ),
+  setlist: section("setlist", setlistSchema, (id, data) =>
+    updateSetlist(
+      getDb(),
+      id,
+      data.songs.map((song) => song.songId),
+    ),
   ),
   lineup: section("lineup", supportActsSchema, (id, data) =>
     updateSupportActs(getDb(), id, data.acts),
