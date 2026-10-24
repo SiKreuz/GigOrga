@@ -42,7 +42,7 @@ export default defineConfig({
     ],
   },
   lint: {
-    plugins: ["typescript", "unicorn", "oxc", "import", "vitest"],
+    plugins: ["typescript", "unicorn", "oxc", "import", "vitest", "promise"],
     categories: {
       correctness: "error",
       pedantic: "error",

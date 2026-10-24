@@ -15,19 +15,20 @@ const text = (value: unknown) => (typeof value === "string" ? value : "");
 export function createOidc({ issuer, clientId, clientSecret, redirectUri, fetch }: OidcSettings) {
   let configuration: Promise<client.Configuration> | undefined;
 
-  function discover() {
-    configuration ??= client
-      .discovery(new URL(issuer), clientId, clientSecret, undefined, {
+  async function load() {
+    try {
+      return await client.discovery(new URL(issuer), clientId, clientSecret, undefined, {
         ...(fetch && { [client.customFetch]: fetch }),
         // oxlint-disable-next-line typescript/no-deprecated -- plain http only for a local Pocket ID
         execute: issuer.startsWith("http://") ? [client.allowInsecureRequests] : [],
-      })
-      .catch((error: unknown) => {
-        configuration = undefined;
-        throw error;
       });
-    return configuration;
+    } catch (error) {
+      configuration = undefined;
+      throw error;
+    }
   }
+
+  const discover = () => (configuration ??= load());
 
   return {
     async start() {
