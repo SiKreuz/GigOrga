@@ -188,7 +188,12 @@
       {routeError}
       bind:editing={editing.fahrt}
     />
-    <TechSection {gig} errors={errorsFor("tech")} bind:editing={editing.technik} />
+    <TechSection
+      {gig}
+      soundEngineers={data.soundEngineers}
+      errors={errorsFor("tech")}
+      bind:editing={editing.technik}
+    />
     {#if shown("lineup")}
       <LineupSection {gig} errors={errorsFor("lineup")} bind:editing={editing.lineup} />
     {/if}

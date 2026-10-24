@@ -40,6 +40,10 @@
       "model": "Settings",
       "namespace": "__unbound__"
     },
+    "sound_engineers": {
+      "model": "SoundEngineer",
+      "namespace": "__unbound__"
+    },
     "support_acts": {
       "model": "SupportAct",
       "namespace": "__unbound__"
@@ -782,6 +786,13 @@
                   "kind": "scalar"
                 }
               },
+              "houseEngineer": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/integer@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -813,13 +824,6 @@
                 "nullable": false,
                 "type": {
                   "codecId": "sqlite/text@1",
-                  "kind": "scalar"
-                }
-              },
-              "ownFoh": {
-                "nullable": false,
-                "type": {
-                  "codecId": "sqlite/integer@1",
                   "kind": "scalar"
                 }
               },
@@ -862,6 +866,13 @@
                 "nullable": false,
                 "type": {
                   "codecId": "sqlite/integer@1",
+                  "kind": "scalar"
+                }
+              },
+              "soundEngineerId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "sqlite/text@1",
                   "kind": "scalar"
                 }
               },
@@ -1009,6 +1020,22 @@
                   "namespace": "__unbound__"
                 }
               },
+              "soundEngineer": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "soundEngineerId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "SoundEngineer",
+                  "namespace": "__unbound__"
+                }
+              },
               "supportActs": {
                 "cardinality": "1:N",
                 "on": {
@@ -1152,6 +1179,9 @@
                 "hospitalityNotes": {
                   "column": "hospitality_notes"
                 },
+                "houseEngineer": {
+                  "column": "house_engineer"
+                },
                 "id": {
                   "column": "id"
                 },
@@ -1163,9 +1193,6 @@
                 },
                 "notes": {
                   "column": "notes"
-                },
-                "ownFoh": {
-                  "column": "own_foh"
                 },
                 "people": {
                   "column": "people"
@@ -1184,6 +1211,9 @@
                 },
                 "riderSent": {
                   "column": "rider_sent"
+                },
+                "soundEngineerId": {
+                  "column": "sound_engineer_id"
                 },
                 "stagePlotSent": {
                   "column": "stage_plot_sent"
@@ -1573,6 +1603,93 @@
               },
               "namespaceId": "__unbound__",
               "table": "settings"
+            }
+          },
+          "SoundEngineer": {
+            "fields": {
+              "active": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/integer@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/datetime@1",
+                  "kind": "scalar"
+                }
+              },
+              "email": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "name": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "phone": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "gigs": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "soundEngineerId"
+                  ]
+                },
+                "to": {
+                  "model": "Gig",
+                  "namespace": "__unbound__"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "active": {
+                  "column": "active"
+                },
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "email": {
+                  "column": "email"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "name": {
+                  "column": "name"
+                },
+                "phone": {
+                  "column": "phone"
+                }
+              },
+              "namespaceId": "__unbound__",
+              "table": "sound_engineers"
             }
           },
           "SupportAct": {
@@ -2701,6 +2818,15 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "house_engineer": {
+                  "codecId": "sqlite/integer@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "integer",
+                  "nullable": false
+                },
                 "id": {
                   "codecId": "sqlite/text@1",
                   "nativeType": "text",
@@ -2739,15 +2865,6 @@
                   "nativeType": "text",
                   "nullable": false
                 },
-                "own_foh": {
-                  "codecId": "sqlite/integer@1",
-                  "default": {
-                    "kind": "literal",
-                    "value": 0
-                  },
-                  "nativeType": "integer",
-                  "nullable": false
-                },
                 "people": {
                   "codecId": "sqlite/integer@1",
                   "nativeType": "integer",
@@ -2781,6 +2898,11 @@
                   },
                   "nativeType": "integer",
                   "nullable": false
+                },
+                "sound_engineer_id": {
+                  "codecId": "sqlite/text@1",
+                  "nativeType": "text",
+                  "nullable": true
                 },
                 "stage_plot_sent": {
                   "codecId": "sqlite/integer@1",
@@ -2895,6 +3017,23 @@
                     "namespaceId": "__unbound__",
                     "tableName": "tours"
                   }
+                },
+                {
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "sound_engineer_id"
+                    ],
+                    "namespaceId": "__unbound__",
+                    "tableName": "gigs"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "__unbound__",
+                    "tableName": "sound_engineers"
+                  }
                 }
               ],
               "indexes": [
@@ -2904,6 +3043,14 @@
                   ],
                   "name": "gigs_date_idx_b4ca319c",
                   "prefix": "gigs_date_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "sound_engineer_id"
+                  ],
+                  "name": "gigs_sound_engineer_id_idx_19ca55aa",
+                  "prefix": "gigs_sound_engineer_id_idx",
                   "unique": false
                 },
                 {
@@ -3103,6 +3250,64 @@
                     "value": 1.8
                   },
                   "nativeType": "real",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "sound_engineers": {
+              "columns": {
+                "active": {
+                  "codecId": "sqlite/integer@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 1
+                  },
+                  "nativeType": "integer",
+                  "nullable": false
+                },
+                "created_at": {
+                  "codecId": "sqlite/datetime@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "email": {
+                  "codecId": "sqlite/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": ""
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "sqlite/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "name": {
+                  "codecId": "sqlite/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "phone": {
+                  "codecId": "sqlite/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": ""
+                  },
+                  "nativeType": "text",
                   "nullable": false
                 }
               },
@@ -3627,7 +3832,7 @@
         "id": "__unbound__"
       }
     },
-    "storageHash": "5eb55c7d8dc2244916bbf755d83df68cb32989e09d0adccecff00a529754d67d"
+    "storageHash": "f9ae66b901b994fc9269be00421f020070b25dbb02028ff1af35dc1f7fe53f91"
   },
   "capabilities": {
     "sql": {

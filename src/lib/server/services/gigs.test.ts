@@ -6,6 +6,7 @@ import {
   getGig,
   linkContact,
   listGigs,
+  type TechInput,
   unlinkContact,
   updateDeal,
   updateGig,
@@ -14,11 +15,22 @@ import {
   updateTimetable,
   updateTravel,
 } from "$lib/server/services/gigs";
+import { archiveSoundEngineer, createSoundEngineer } from "$lib/server/services/soundEngineers";
 import { createTour } from "$lib/server/services/tours";
 import { deleteVenue } from "$lib/server/services/venues";
 import { gigBasics, test } from "$lib/server/testing";
 import { faker } from "@faker-js/faker";
 import { describe, expect } from "vitest";
+
+const techInput: TechInput = {
+  soundEngineerId: null,
+  houseEngineer: 0,
+  riderSent: 0,
+  stagePlotSent: 0,
+  inputListSent: 0,
+  techNotes: "",
+  backline: [],
+};
 
 describe("gigs", () => {
   test("creates a gig with the default timetable and backline", async ({ db, insertGig }) => {
@@ -170,18 +182,32 @@ describe("gigs", () => {
 
   test("updates tech and backline", async ({ db, insertGig }) => {
     const { id } = await insertGig();
-    const tech = {
-      ownFoh: 1,
+    const tech: TechInput = {
+      soundEngineerId: null,
+      houseEngineer: 1,
       riderSent: 1,
       stagePlotSent: 0,
       inputListSent: 0,
       techNotes: "IEM",
-      backline: [{ name: "Drumset", provider: "venue" as const, note: "ohne Becken" }],
+      backline: [{ name: "Drumset", provider: "venue", note: "ohne Becken" }],
     };
     await updateTech(db, id, tech);
     const gig = await getGig(db, id);
-    expect(gig).toMatchObject({ ownFoh: 1, riderSent: 1, techNotes: "IEM" });
+    expect(gig).toMatchObject({ houseEngineer: 1, riderSent: 1, techNotes: "IEM" });
     expect(gig?.backline).toMatchObject(tech.backline);
+  });
+
+  test("keeps showing a sound engineer after they are archived", async ({ db, insertGig }) => {
+    const { id } = await insertGig();
+    expect((await getGig(db, id))?.soundEngineer).toBeNull();
+    const kim = { name: "Kim", phone: "0171 123456", email: "kim@example.com" };
+    const engineerId = await createSoundEngineer(db, kim);
+    const tech = { ...techInput, soundEngineerId: engineerId };
+    await updateTech(db, id, tech);
+    await archiveSoundEngineer(db, engineerId);
+    expect((await getGig(db, id))?.soundEngineer).toEqual({ id: engineerId, ...kim });
+    await updateTech(db, id, { ...tech, soundEngineerId: null });
+    expect((await getGig(db, id))?.soundEngineer).toBeNull();
   });
 
   test("links and unlinks contacts", async ({ db, insertGig, insertContact }) => {

@@ -95,20 +95,29 @@ export const supportActsSchema = v.object({
   ),
 });
 
-export const techSchema = v.object({
-  ownFoh: flag,
-  riderSent: flag,
-  stagePlotSent: flag,
-  inputListSent: flag,
-  techNotes: text(5000),
-  backline: jsonList(
-    v.object({
-      name: required("Bezeichnung fehlt"),
-      provider: v.picklist(keys(backlineProviders)),
-      note: text(500),
-    }),
-  ),
-});
+export const houseEngineer = "haus";
+
+export const techSchema = v.pipe(
+  v.object({
+    soundEngineer: v.optional(v.string(), ""),
+    riderSent: flag,
+    stagePlotSent: flag,
+    inputListSent: flag,
+    techNotes: text(5000),
+    backline: jsonList(
+      v.object({
+        name: required("Bezeichnung fehlt"),
+        provider: v.picklist(keys(backlineProviders)),
+        note: text(500),
+      }),
+    ),
+  }),
+  v.transform(({ soundEngineer, ...tech }) => ({
+    ...tech,
+    soundEngineerId: soundEngineer === "" || soundEngineer === houseEngineer ? null : soundEngineer,
+    houseEngineer: soundEngineer === houseEngineer ? 1 : 0,
+  })),
+);
 
 export const dealSchema = v.object({
   dealType: v.picklist(keys(dealTypes)),
@@ -150,6 +159,12 @@ export const carSchema = v.object({
   fuel: v.picklist(keys(fuelTypes)),
   seats: integer,
   standard: flag,
+});
+
+export const soundEngineerSchema = v.object({
+  name: required("Bitte einen Namen angeben", 100),
+  phone: text(100),
+  email: text(200),
 });
 
 export const hospitalitySchema = v.object({

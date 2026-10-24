@@ -1,3 +1,4 @@
+import type { techSchema } from "$lib/forms";
 import type {
   AccommodationType,
   BacklineProvider,
@@ -9,6 +10,7 @@ import type {
   TimetableKind,
 } from "$lib/labels";
 import { legOf } from "$lib/tour";
+import type * as v from "valibot";
 
 import { type Db, type Reader, transaction, type Tx } from "../db";
 
@@ -71,14 +73,7 @@ export type TravelInput = {
   carIds: string[];
 };
 
-export type TechInput = {
-  ownFoh: number;
-  riderSent: number;
-  stagePlotSent: number;
-  inputListSent: number;
-  techNotes: string;
-  backline: BacklineRow[];
-};
+export type TechInput = v.InferOutput<typeof techSchema>;
 
 export type HospitalityInput = {
   catering: number;
@@ -222,6 +217,7 @@ export async function getGig(db: Reader, id: string) {
     .include("supportActs")
     .include("backline")
     .include("presaleLinks")
+    .include("soundEngineer", (engineer) => engineer.select("id", "name", "phone", "email"))
     .include("tour", (tour) =>
       tour
         .select("id", "name")

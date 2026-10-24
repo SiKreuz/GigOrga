@@ -7,6 +7,7 @@ import {
   newGigSchema,
   parseForm,
   settingsSchema,
+  soundEngineerSchema,
   techSchema,
   tourSchema,
   travelSchema,
@@ -93,7 +94,7 @@ describe("parseForm", () => {
     );
     expect(result).toMatchObject({
       success: true,
-      data: { ownFoh: 0, backline: [{ name: "Drumset", provider: "venue" }] },
+      data: { riderSent: 0, backline: [{ name: "Drumset", provider: "venue" }] },
     });
   });
 
@@ -162,6 +163,25 @@ describe("parseForm", () => {
       success: false,
       errors: { name: "Bitte einen Namen angeben" },
     });
+  });
+
+  test("parses a sound engineer and requires a name", () => {
+    expect(parseForm(soundEngineerSchema, form({ name: " Kim ", phone: "0171 123456" }))).toEqual({
+      success: true,
+      data: { name: "Kim", phone: "0171 123456", email: "" },
+    });
+    expect(parseForm(soundEngineerSchema, form({ name: "" }))).toMatchObject({
+      success: false,
+      errors: { name: "Bitte einen Namen angeben" },
+    });
+  });
+
+  test.for([
+    ["", { soundEngineerId: null, houseEngineer: 0 }],
+    ["haus", { soundEngineerId: null, houseEngineer: 1 }],
+    ["e1", { soundEngineerId: "e1", houseEngineer: 0 }],
+  ] as const)("maps the sound engineer choice %j", ([soundEngineer, data]) => {
+    expect(parseForm(techSchema, form({ soundEngineer }))).toMatchObject({ success: true, data });
   });
 
   test("requires a consumption for cars", () => {

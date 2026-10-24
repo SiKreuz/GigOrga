@@ -1,0 +1,262 @@
+[
+  {
+    "id": "table.sound_engineers",
+    "label": "Create table sound_engineers",
+    "summary": "Creates table sound_engineers with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "sound_engineers"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"sound_engineers\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "sound_engineers"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"sound_engineers\"",
+        "sql": "CREATE TABLE \"sound_engineers\" (\n  \"active\" INTEGER NOT NULL DEFAULT 1,\n  \"created_at\" TEXT NOT NULL DEFAULT (datetime('now')),\n  \"email\" TEXT NOT NULL DEFAULT '',\n  \"id\" TEXT NOT NULL,\n  \"name\" TEXT NOT NULL,\n  \"phone\" TEXT NOT NULL DEFAULT '',\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"sound_engineers\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "sound_engineers"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "column.gigs.sound_engineer_id",
+    "label": "Add column sound_engineer_id on gigs",
+    "summary": "Adds column sound_engineer_id on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "sound_engineer_id",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"sound_engineer_id\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "sound_engineer_id"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"sound_engineer_id\"",
+        "sql": "ALTER TABLE \"gigs\" ADD COLUMN \"sound_engineer_id\" TEXT"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"sound_engineer_id\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "sound_engineer_id"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.gigs.gigs_sound_engineer_id_idx_19ca55aa",
+    "label": "Create index gigs_sound_engineer_id_idx_19ca55aa on gigs",
+    "summary": "Creates index gigs_sound_engineer_id_idx_19ca55aa on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "gigs_sound_engineer_id_idx_19ca55aa",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"gigs_sound_engineer_id_idx_19ca55aa\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gigs_sound_engineer_id_idx_19ca55aa"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"gigs_sound_engineer_id_idx_19ca55aa\"",
+        "sql": "CREATE INDEX \"gigs_sound_engineer_id_idx_19ca55aa\" ON \"gigs\" (\"sound_engineer_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"gigs_sound_engineer_id_idx_19ca55aa\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "gigs_sound_engineer_id_idx_19ca55aa"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "recreateTable.gigs",
+    "label": "Recreate table gigs",
+    "summary": "Recreates table gigs to apply schema changes: database/gigs/foreign-key:sound_engineer_id->.sound_engineers(id)",
+    "operationClass": "destructive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"gigs\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gigs"
+        ]
+      },
+      {
+        "description": "ensure temp table \"_prisma_new_gigs\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "_prisma_new_gigs"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create new table \"_prisma_new_gigs\" with desired schema",
+        "sql": "CREATE TABLE \"_prisma_new_gigs\" (\n  \"accommodation_address\" TEXT DEFAULT '' NOT NULL,\n  \"accommodation_link\" TEXT DEFAULT '' NOT NULL,\n  \"accommodation_name\" TEXT DEFAULT '' NOT NULL,\n  \"accommodation_notes\" TEXT DEFAULT '' NOT NULL,\n  \"accommodation_paid\" INTEGER DEFAULT 0 NOT NULL,\n  \"accommodation_type\" TEXT DEFAULT 'keine' NOT NULL,\n  \"beds\" INTEGER,\n  \"breakfast\" INTEGER DEFAULT 0 NOT NULL,\n  \"buyout\" REAL,\n  \"catering\" INTEGER DEFAULT 0 NOT NULL,\n  \"check_in\" TEXT DEFAULT '' NOT NULL,\n  \"costs\" REAL,\n  \"created_at\" TEXT DEFAULT (datetime('now')) NOT NULL,\n  \"date\" TEXT NOT NULL,\n  \"deal_notes\" TEXT DEFAULT '' NOT NULL,\n  \"deal_type\" TEXT DEFAULT 'festgage' NOT NULL,\n  \"deposit\" REAL,\n  \"diesel_price\" REAL,\n  \"distance_km\" REAL,\n  \"door_percent\" REAL,\n  \"drinks\" TEXT DEFAULT '' NOT NULL,\n  \"duration_min\" INTEGER,\n  \"expected_attendance\" INTEGER,\n  \"fee\" REAL,\n  \"gema_reported\" INTEGER DEFAULT 0 NOT NULL,\n  \"hospitality_notes\" TEXT DEFAULT '' NOT NULL,\n  \"id\" TEXT NOT NULL,\n  \"input_list_sent\" INTEGER DEFAULT 0 NOT NULL,\n  \"invoice_status\" TEXT DEFAULT 'offen' NOT NULL,\n  \"notes\" TEXT DEFAULT '' NOT NULL,\n  \"people\" INTEGER,\n  \"petrol_price\" REAL,\n  \"rent\" REAL,\n  \"return_km\" REAL,\n  \"return_min\" INTEGER,\n  \"rider_sent\" INTEGER DEFAULT 0 NOT NULL,\n  \"sound_engineer_id\" TEXT,\n  \"stage_plot_sent\" INTEGER DEFAULT 0 NOT NULL,\n  \"status\" TEXT DEFAULT 'anfrage' NOT NULL,\n  \"tech_notes\" TEXT DEFAULT '' NOT NULL,\n  \"ticket_door\" REAL,\n  \"ticket_presale\" REAL,\n  \"title\" TEXT NOT NULL,\n  \"tolls\" REAL,\n  \"tour_id\" TEXT,\n  \"type\" TEXT DEFAULT 'club' NOT NULL,\n  \"venue_id\" TEXT,\n  PRIMARY KEY (\"id\"),\n  FOREIGN KEY (\"venue_id\") REFERENCES \"venues\" (\"id\") ON DELETE SET NULL,\n  FOREIGN KEY (\"tour_id\") REFERENCES \"tours\" (\"id\") ON DELETE SET NULL,\n  FOREIGN KEY (\"sound_engineer_id\") REFERENCES \"sound_engineers\" (\"id\") ON DELETE SET NULL\n)"
+      },
+      {
+        "description": "copy data from \"gigs\" to \"_prisma_new_gigs\"",
+        "sql": "INSERT INTO \"_prisma_new_gigs\" (\"accommodation_address\", \"accommodation_link\", \"accommodation_name\", \"accommodation_notes\", \"accommodation_paid\", \"accommodation_type\", \"beds\", \"breakfast\", \"buyout\", \"catering\", \"check_in\", \"costs\", \"created_at\", \"date\", \"deal_notes\", \"deal_type\", \"deposit\", \"diesel_price\", \"distance_km\", \"door_percent\", \"drinks\", \"duration_min\", \"expected_attendance\", \"fee\", \"gema_reported\", \"hospitality_notes\", \"id\", \"input_list_sent\", \"invoice_status\", \"notes\", \"people\", \"petrol_price\", \"rent\", \"return_km\", \"return_min\", \"rider_sent\", \"stage_plot_sent\", \"status\", \"tech_notes\", \"ticket_door\", \"ticket_presale\", \"title\", \"tolls\", \"tour_id\", \"type\", \"venue_id\") SELECT \"accommodation_address\", \"accommodation_link\", \"accommodation_name\", \"accommodation_notes\", \"accommodation_paid\", \"accommodation_type\", \"beds\", \"breakfast\", \"buyout\", \"catering\", \"check_in\", \"costs\", \"created_at\", \"date\", \"deal_notes\", \"deal_type\", \"deposit\", \"diesel_price\", \"distance_km\", \"door_percent\", \"drinks\", \"duration_min\", \"expected_attendance\", \"fee\", \"gema_reported\", \"hospitality_notes\", \"id\", \"input_list_sent\", \"invoice_status\", \"notes\", \"people\", \"petrol_price\", \"rent\", \"return_km\", \"return_min\", \"rider_sent\", \"stage_plot_sent\", \"status\", \"tech_notes\", \"ticket_door\", \"ticket_presale\", \"title\", \"tolls\", \"tour_id\", \"type\", \"venue_id\" FROM \"gigs\""
+      },
+      {
+        "description": "drop old table \"gigs\"",
+        "sql": "DROP TABLE \"gigs\""
+      },
+      {
+        "description": "rename \"_prisma_new_gigs\" to \"gigs\"",
+        "sql": "ALTER TABLE \"_prisma_new_gigs\" RENAME TO \"gigs\""
+      },
+      {
+        "description": "recreate index \"gigs_date_idx_b4ca319c\" on \"gigs\"",
+        "sql": "CREATE INDEX \"gigs_date_idx_b4ca319c\" ON \"gigs\" (\"date\")"
+      },
+      {
+        "description": "recreate index \"gigs_sound_engineer_id_idx_19ca55aa\" on \"gigs\"",
+        "sql": "CREATE INDEX \"gigs_sound_engineer_id_idx_19ca55aa\" ON \"gigs\" (\"sound_engineer_id\")"
+      },
+      {
+        "description": "recreate index \"gigs_tour_id_idx_be575d54\" on \"gigs\"",
+        "sql": "CREATE INDEX \"gigs_tour_id_idx_be575d54\" ON \"gigs\" (\"tour_id\")"
+      },
+      {
+        "description": "recreate index \"gigs_venue_id_idx_7506cf3f\" on \"gigs\"",
+        "sql": "CREATE INDEX \"gigs_venue_id_idx_7506cf3f\" ON \"gigs\" (\"venue_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"gigs\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "gigs"
+        ]
+      },
+      {
+        "description": "verify temp table \"_prisma_new_gigs\" is gone",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "_prisma_new_gigs"
+        ]
+      },
+      {
+        "description": "verify foreign key (venue_id) → venues(id) on \"gigs\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pragma_foreign_key_list('gigs') f WHERE f.\"table\" = 'venues' GROUP BY f.id HAVING COUNT(*) = 1 AND SUM(CASE WHEN (f.\"from\", f.\"to\") IN (('venue_id', 'id')) THEN 1 ELSE 0 END) = 1)"
+      },
+      {
+        "description": "verify foreign key (tour_id) → tours(id) on \"gigs\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pragma_foreign_key_list('gigs') f WHERE f.\"table\" = 'tours' GROUP BY f.id HAVING COUNT(*) = 1 AND SUM(CASE WHEN (f.\"from\", f.\"to\") IN (('tour_id', 'id')) THEN 1 ELSE 0 END) = 1)"
+      },
+      {
+        "description": "verify foreign key (sound_engineer_id) → sound_engineers(id) on \"gigs\"",
+        "sql": "SELECT EXISTS (SELECT 1 FROM pragma_foreign_key_list('gigs') f WHERE f.\"table\" = 'sound_engineers' GROUP BY f.id HAVING COUNT(*) = 1 AND SUM(CASE WHEN (f.\"from\", f.\"to\") IN (('sound_engineer_id', 'id')) THEN 1 ELSE 0 END) = 1)"
+      }
+    ]
+  },
+  {
+    "id": "dropColumn.gigs.own_foh",
+    "label": "Drop column own_foh on gigs",
+    "summary": "Drops column own_foh on gigs which is not in the contract",
+    "operationClass": "destructive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "own_foh",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"own_foh\" exists on \"gigs\"",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "own_foh"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "drop column \"own_foh\" from \"gigs\"",
+        "sql": "ALTER TABLE \"gigs\" DROP COLUMN \"own_foh\""
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"own_foh\" is gone from \"gigs\"",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "own_foh"
+        ]
+      }
+    ]
+  }
+]
