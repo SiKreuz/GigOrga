@@ -6,7 +6,7 @@
   import { formatMonth, relativeDay, todayIso } from "$lib/format";
   import { type GigStatus, gigStatuses, gigTypes } from "$lib/labels";
   import type { GigSummary } from "$lib/server/services/gigs";
-  import { ChevronRight, Clock, MapPin, Plus } from "@lucide/svelte";
+  import { ChevronRight, Clock, MapPin, Plus, Printer } from "@lucide/svelte";
 
   let { data } = $props();
 
@@ -49,10 +49,9 @@
 </svelte:head>
 
 {#snippet gigRow(gig: GigSummary)}
-  <a
-    href="/gigs/{gig.id}"
+  <div
     class={[
-      "group flex items-center gap-4 px-4 py-3.5 transition-colors hover:bg-surface-2 sm:px-5",
+      "group relative flex items-center gap-4 px-4 py-3.5 transition-colors hover:bg-surface-2 sm:px-5",
       gig.status === "abgesagt" && "opacity-60",
     ]}
   >
@@ -64,7 +63,9 @@
     </div>
     <div class="min-w-0 flex-1">
       <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <span class="truncate font-medium">{gig.title}</span>
+        <a href="/gigs/{gig.id}" class="truncate font-medium after:absolute after:inset-0"
+          >{gig.title}</a
+        >
         <StatusChip status={gig.status} />
       </div>
       <div class="mt-0.5 flex flex-wrap items-center gap-x-4 gap-y-0.5 text-sm text-muted">
@@ -80,22 +81,33 @@
         <span class="hidden sm:inline">{gigTypes[gig.type]}</span>
       </div>
     </div>
+    <a
+      href="/gigs/{gig.id}/tagesplan"
+      class="relative btn-icon hover:bg-surface"
+      aria-label="Tagesplan"
+      title="Tagesplan"
+    >
+      <Printer class="size-4" />
+    </a>
     <ChevronRight
       class="size-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5"
     />
-  </a>
+  </div>
 {/snippet}
 
 <div class="flex flex-col gap-8">
   {#if next}
-    <a
-      href="/gigs/{next.id}"
+    <div
       class="relative overflow-hidden rounded-2xl bg-linear-to-br from-accent to-brand-deep p-6 text-white shadow-sm sm:p-8"
     >
       <div class="text-xs font-semibold tracking-widest text-white/70 uppercase">
         Nächster Gig · {relativeDay(next.date, today)}
       </div>
-      <div class="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">{next.title}</div>
+      <a
+        href="/gigs/{next.id}"
+        class="mt-2 block text-2xl font-bold tracking-tight after:absolute after:inset-0 sm:text-3xl"
+        >{next.title}</a
+      >
       <div class="mt-3 flex flex-wrap gap-x-6 gap-y-1 text-sm text-white/85">
         <span>
           {new Date(`${next.date}T00:00:00Z`).toLocaleDateString("de-DE", {
@@ -110,7 +122,13 @@
         {#if next.getIn}<span>Get-in {next.getIn}</span>{/if}
         {#if next.showTime}<span>Show {next.showTime}</span>{/if}
       </div>
-    </a>
+      <a
+        href="/gigs/{next.id}/tagesplan"
+        class="relative mt-5 inline-flex h-9 items-center gap-1.5 rounded-lg bg-white/15 px-3 text-sm font-medium transition-colors hover:bg-white/25"
+      >
+        <Printer class="size-3.5" /> Tagesplan
+      </a>
+    </div>
   {/if}
 
   <div class="flex flex-wrap items-center gap-2">
