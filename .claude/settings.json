@@ -16,6 +16,18 @@
     "security-guidance@claude-plugins-official": true
   },
   "enabledMcpjsonServers": ["deepwiki", "playwright"],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ \"$CLAUDE_CODE_REMOTE\" != true ] || bun install --cwd \"$CLAUDE_PROJECT_DIR\""
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(bun:*)",
@@ -28,6 +40,8 @@
       "Bash(mkdir:*)",
       "Edit",
       "Write"
-    ]
+    ],
+    "deny": ["Read(**/.env)", "Edit(**/.env)"],
+    "ask": ["Bash(bunx prisma db update*)", "Bash(bunx --bun prisma db update*)"]
   }
 }

@@ -32,7 +32,13 @@ export default defineConfig({
     sortImports: true,
     sortTailwindcss: { stylesheet: "./src/app.css" },
     svelte: true,
-    ignorePatterns: ["build/**", ".svelte-kit/**", "prisma/contract.*", "prisma/migrations/**"],
+    ignorePatterns: [
+      "build/**",
+      ".svelte-kit/**",
+      ".claude/skills/prisma-8/**",
+      "prisma/contract.*",
+      "prisma/migrations/**",
+    ],
   },
   lint: {
     plugins: ["typescript", "unicorn", "oxc", "import", "vitest"],
@@ -63,7 +69,13 @@ export default defineConfig({
         rules: { "import/max-dependencies": ["error", { max: 20 }] },
       },
     ],
-    ignorePatterns: ["build/**", ".svelte-kit/**", "prisma/contract.*", "prisma/migrations/**"],
+    ignorePatterns: [
+      "build/**",
+      ".svelte-kit/**",
+      ".claude/skills/prisma-8/**",
+      "prisma/contract.*",
+      "prisma/migrations/**",
+    ],
     options: {
       typeAware: true,
       typeCheck: true,
