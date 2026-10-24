@@ -6,6 +6,7 @@
     Building2,
     CalendarDays,
     LogOut,
+    Music,
     Plus,
     Route,
     Settings,
@@ -22,6 +23,7 @@
     { href: "/tours", label: "Touren", icon: Route },
     { href: "/venues", label: "Venues", icon: Building2 },
     { href: "/contacts", label: "Kontakte", icon: Users },
+    { href: "/songs", label: "Songs", icon: Music },
     { href: "/settings", label: "Einstellungen", icon: Settings },
   ];
   const adminLinks = [{ href: "/benutzer", label: "Benutzer", icon: UserCog }];

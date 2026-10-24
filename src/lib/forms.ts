@@ -12,6 +12,7 @@ import {
   roles,
   timetableKinds,
 } from "./labels";
+import { parseSongDuration } from "./setlist";
 
 const text = (max: number) => v.optional(v.pipe(v.string(), v.trim(), v.maxLength(max)), "");
 const required = (message: string, max = 200) =>
@@ -165,6 +166,23 @@ export const soundEngineerSchema = v.object({
   name: required("Bitte einen Namen angeben", 100),
   phone: text(100),
   email: text(200),
+});
+
+export const songSchema = v.pipe(
+  v.object({
+    title: required("Bitte einen Titel angeben"),
+    duration: v.pipe(
+      v.optional(v.string(), ""),
+      v.transform(parseSongDuration),
+      v.number("Dauer als m:ss angeben"),
+    ),
+    notes: text(2000),
+  }),
+  v.transform(({ duration, ...song }) => ({ ...song, durationSec: duration })),
+);
+
+export const setlistSchema = v.object({
+  songs: jsonList(v.object({ songId: required("Song fehlt") })),
 });
 
 export const hospitalitySchema = v.object({

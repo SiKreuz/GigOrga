@@ -9,6 +9,7 @@
     row,
     addLabel,
     emptyText,
+    footer,
   }: {
     name: string;
     initial: T[];
@@ -16,6 +17,7 @@
     row: Snippet<[T, number]>;
     addLabel: string;
     emptyText?: string;
+    footer?: Snippet<[T[]]>;
   } = $props();
 
   let rows = $state(untrack(() => initial.map((item) => ({ ...item }))));
@@ -77,4 +79,5 @@
       {addLabel}
     </button>
   </div>
+  {@render footer?.(rows)}
 </div>

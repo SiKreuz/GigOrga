@@ -5,6 +5,7 @@
   import DealSection from "$lib/components/gig/DealSection.svelte";
   import HospitalitySection from "$lib/components/gig/HospitalitySection.svelte";
   import LineupSection from "$lib/components/gig/LineupSection.svelte";
+  import SetlistSection from "$lib/components/gig/SetlistSection.svelte";
   import TechSection from "$lib/components/gig/TechSection.svelte";
   import TimetableSection from "$lib/components/gig/TimetableSection.svelte";
   import TravelSection from "$lib/components/gig/TravelSection.svelte";
@@ -30,6 +31,7 @@
   let editingBasics = $state(false);
   let editing = $state({
     zeitplan: false,
+    setlist: false,
     venue: false,
     deal: false,
     fahrt: false,
@@ -43,6 +45,7 @@
 
   const optional: { id: SectionId; label: string; empty: boolean }[] = $derived([
     { id: "venue", label: "Kontakte", empty: !hasContacts(gig) },
+    { id: "setlist", label: "Setlist", empty: data.setlist.length === 0 },
     { id: "lineup", label: "Line-up", empty: gig.supportActs.length === 0 },
     { id: "hospitality", label: "Essen & Getränke", empty: !hasHospitality(gig) },
     { id: "uebernachtung", label: "Übernachtung", empty: !hasAccommodation(gig) },
@@ -168,6 +171,15 @@
     {/if}
 
     <TimetableSection {gig} errors={errorsFor("timetable")} bind:editing={editing.zeitplan} />
+    {#if shown("setlist")}
+      <SetlistSection
+        {gig}
+        songs={data.songs}
+        setlist={data.setlist}
+        errors={errorsFor("setlist")}
+        bind:editing={editing.setlist}
+      />
+    {/if}
     {#if shown("venue")}
       <VenueContactsSection
         {gig}

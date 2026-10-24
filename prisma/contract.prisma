@@ -227,6 +227,7 @@ model Gig {
   supportActs        SupportAct[]
   backline           BacklineItem[]
   presaleLinks       PresaleLink[]
+  setlist            SetlistEntry[]
 
   @@index([venueId])
   @@index([tourId])
@@ -300,6 +301,30 @@ model PresaleLink {
 
   @@index([gigId])
   @@map("presale_links")
+}
+
+model Song {
+  id             String         @id
+  title          String
+  durationSec    Int            @map("duration_sec")
+  notes          String         @default("")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  setlistEntries SetlistEntry[]
+
+  @@map("songs")
+}
+
+model SetlistEntry {
+  id       String @id
+  gigId    String @map("gig_id")
+  gig      Gig    @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  songId   String @map("song_id")
+  song     Song   @relation(fields: [songId], references: [id], onDelete: Cascade)
+  position Int
+
+  @@index([gigId])
+  @@index([songId])
+  @@map("setlist_entries")
 }
 
 model User {
