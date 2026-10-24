@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { formatSongDuration, showSlot } from "$lib/setlist";
+  import { formatSongDuration, slotOf } from "$lib/setlist";
   import { ArrowLeft, Printer } from "@lucide/svelte";
 
   let { data } = $props();
@@ -7,7 +7,7 @@
   const gig = $derived(data.gig);
   const total = $derived(data.setlist.reduce((sum, entry) => sum + entry.durationSec, 0));
   const show = $derived(gig.timetable.find((entry) => entry.kind === "show" && entry.start));
-  const slot = $derived(showSlot(gig.timetable));
+  const slot = $derived(slotOf(gig));
   const date = $derived(
     new Date(`${gig.date}T00:00:00Z`).toLocaleDateString("de-DE", {
       weekday: "long",

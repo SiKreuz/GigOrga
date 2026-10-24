@@ -3,7 +3,7 @@
   import Section from "$lib/components/Section.svelte";
   import type { GigDetail } from "$lib/server/services/gigs";
   import type { SetlistEntry, SongSummary } from "$lib/server/services/songs";
-  import { formatSongDuration, overrun, showSlot } from "$lib/setlist";
+  import { formatSongDuration, overrun, slotOf } from "$lib/setlist";
   import { ListMusic, Printer } from "@lucide/svelte";
 
   let {
@@ -22,7 +22,7 @@
 
   type Row = { songId: string };
 
-  const slot = $derived(showSlot(gig.timetable));
+  const slot = $derived(slotOf(gig));
   const durations = $derived(new Map(songs.map((song) => [song.id, song.durationSec])));
   const totalOf = (rows: Row[]) =>
     rows.reduce((sum, row) => sum + (durations.get(row.songId) ?? 0), 0);

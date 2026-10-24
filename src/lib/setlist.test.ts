@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { formatSongDuration, overrun, parseSongDuration, showSlot } from "./setlist";
+import { formatSongDuration, overrun, parseSongDuration, slotOf } from "./setlist";
 
 const entry = (kind: string, start: string, end: string) => ({ kind, start, end });
 
@@ -24,23 +24,17 @@ describe("setlist", () => {
     expect(formatSongDuration(3725)).toBe("62:05");
   });
 
-  test("takes the slot from the first show with start and end", () => {
+  test("takes the slot in seconds from the playtime of all shows", () => {
     expect(
-      showSlot([
-        entry("getin", "17:00", "18:00"),
-        entry("show", "21:00", ""),
-        entry("show", "21:00", "21:45"),
-      ]),
-    ).toBe(2700);
-  });
-
-  test("handles a show running past midnight", () => {
-    expect(showSlot([entry("show", "23:30", "00:45")])).toBe(4500);
-  });
-
-  test("has no slot without a complete show entry", () => {
-    expect(showSlot([entry("show", "21:00", "")])).toBeNull();
-    expect(showSlot([])).toBeNull();
+      slotOf({
+        timetable: [
+          entry("getin", "17:00", "18:00"),
+          entry("show", "21:00", "21:45"),
+          entry("show", "23:30", "00:15"),
+        ],
+      }),
+    ).toBe(5400);
+    expect(slotOf({ timetable: [entry("show", "21:00", "")] })).toBeNull();
   });
 
   test("reports only a positive overrun", () => {
