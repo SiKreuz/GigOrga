@@ -61,36 +61,35 @@
   </div>
 
   <header
-    class="rounded-2xl bg-linear-to-br from-accent to-brand-deep p-6 text-white shadow-sm [print-color-adjust:exact] sm:p-8 print:p-7 print:shadow-none"
+    class="flex flex-col gap-4 border-b-2 border-accent pb-4 sm:flex-row sm:items-end sm:justify-between print:flex-row print:items-end print:justify-between"
   >
-    <div class="flex items-center justify-between gap-3">
-      <div class="flex items-center gap-2 font-semibold tracking-tight">
-        <span class="flex size-7 items-center justify-center rounded-lg bg-white/15">
-          <AudioLines class="size-4" />
-        </span>
-        twiceasmad
+    <div class="min-w-0">
+      <div
+        class="flex items-center gap-1.5 text-xs font-semibold tracking-widest text-accent uppercase"
+      >
+        <AudioLines class="size-3.5" /> twiceasmad
+        <span class="font-medium text-muted">· Tagesplan</span>
       </div>
-      <span class="text-xs font-semibold tracking-widest text-white/70 uppercase">Tagesplan</span>
+      <h1 class="mt-1.5 text-2xl font-bold tracking-tight">{gig.title}</h1>
+      <p class="mt-0.5 text-sm text-muted">
+        {new Date(`${gig.date}T00:00:00Z`).toLocaleDateString("de-DE", {
+          weekday: "long",
+          day: "numeric",
+          month: "long",
+          year: "numeric",
+          timeZone: "UTC",
+        })}
+        {#if venue}· {venue.name}{venue.city ? `, ${venue.city}` : ""}{/if}
+      </p>
     </div>
-    <h1 class="mt-5 text-3xl font-bold tracking-tight">{gig.title}</h1>
-    <p class="mt-1 text-sm text-white/85">
-      {new Date(`${gig.date}T00:00:00Z`).toLocaleDateString("de-DE", {
-        weekday: "long",
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        timeZone: "UTC",
-      })}
-      {#if venue}· {venue.name}{venue.city ? `, ${venue.city}` : ""}{/if}
-    </p>
     {#if highlights.length > 0}
-      <dl class="mt-5 flex flex-wrap gap-2">
+      <dl class="flex shrink-0 gap-6">
         {#each highlights as item (item.label)}
-          <div class="rounded-xl bg-white/12 px-4 py-2">
-            <dt class="text-[0.65rem] font-semibold tracking-widest text-white/70 uppercase">
+          <div>
+            <dt class="text-[0.65rem] font-semibold tracking-widest text-muted uppercase">
               {item.label}
             </dt>
-            <dd class="text-lg font-bold tabular-nums">{item.value}</dd>
+            <dd class="text-lg leading-tight font-bold tabular-nums">{item.value}</dd>
           </div>
         {/each}
       </dl>
