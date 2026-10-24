@@ -1,13 +1,9 @@
 <script lang="ts">
-  import { formatSongDuration, slotOf } from "$lib/setlist";
   import { ArrowLeft, Printer } from "@lucide/svelte";
 
   let { data } = $props();
 
   const gig = $derived(data.gig);
-  const total = $derived(data.setlist.reduce((sum, entry) => sum + entry.durationSec, 0));
-  const show = $derived(gig.timetable.find((entry) => entry.kind === "show" && entry.start));
-  const slot = $derived(slotOf(gig));
   const date = $derived(
     new Date(`${gig.date}T00:00:00Z`).toLocaleDateString("de-DE", {
       weekday: "long",
@@ -74,19 +70,6 @@
           </li>
         {/each}
       </ol>
-
-      <footer
-        class="flex justify-between gap-4 border-t-[0.4cqw] border-accent px-[6cqw] pt-[2.5cqw] pb-[4.5cqw] text-[2.2cqw] text-muted"
-      >
-        <span>{gig.title}</span>
-        <span class="tabular-nums">
-          {#if show}Show {show.start}{show.end ? `–${show.end}` : ""} ·{/if}
-          {data.setlist.length}
-          {data.setlist.length === 1 ? "Song" : "Songs"} · {formatSongDuration(total)}{slot === null
-            ? ""
-            : ` / ${formatSongDuration(slot)}`}
-        </span>
-      </footer>
     </article>
   {/if}
 </div>
