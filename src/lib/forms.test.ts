@@ -6,7 +6,9 @@ import {
   gigBasicsSchema,
   newGigSchema,
   parseForm,
+  setlistSchema,
   settingsSchema,
+  songSchema,
   soundEngineerSchema,
   techSchema,
   tourSchema,
@@ -201,5 +203,26 @@ describe("parseForm", () => {
       data: { id: "u1", active: 0 },
     });
     expect(parseForm(userChangeSchema, form({ id: "u1", role: "chef" })).success).toBe(false);
+  });
+
+  test("parses a song with its duration in minutes and seconds", () => {
+    expect(parseForm(songSchema, form({ title: " Intro ", duration: "3:45" }))).toEqual({
+      success: true,
+      data: { title: "Intro", durationSec: 225, notes: "" },
+    });
+  });
+
+  test("requires a valid song duration", () => {
+    expect(parseForm(songSchema, form({ title: "Intro", duration: "3:99" }))).toMatchObject({
+      success: false,
+      errors: { duration: "Dauer als m:ss angeben" },
+    });
+  });
+
+  test("parses a setlist from JSON", () => {
+    expect(
+      parseForm(setlistSchema, form({ songs: '[{"songId":"a"},{"songId":"b"}]' })),
+    ).toMatchObject({ success: true, data: { songs: [{ songId: "a" }, { songId: "b" }] } });
+    expect(parseForm(setlistSchema, form({ songs: '[{"songId":""}]' })).success).toBe(false);
   });
 });
