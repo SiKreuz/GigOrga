@@ -32,7 +32,9 @@
       : page.url.pathname.startsWith(href);
 </script>
 
-<header class="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur-md">
+<header
+  class="sticky top-0 z-30 border-b border-border bg-surface/85 backdrop-blur-md print:hidden"
+>
   <div class="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4 sm:gap-6 sm:px-6">
     <a href="/" class="flex shrink-0 items-center gap-2 font-semibold tracking-tight">
       <span

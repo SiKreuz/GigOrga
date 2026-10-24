@@ -14,7 +14,7 @@
   import { estimate, travelCost, tripOf } from "$lib/deal";
   import { formatMoney, formatNumber, relativeDay, todayIso } from "$lib/format";
   import { gigTypes, timetableKinds } from "$lib/labels";
-  import { ArrowLeft, Lock, MapPin, Pencil, Plus, Route } from "@lucide/svelte";
+  import { ArrowLeft, Lock, MapPin, Pencil, Plus, Printer, Route } from "@lucide/svelte";
 
   let { data, form } = $props();
 
@@ -122,6 +122,9 @@
             {/if}
           </div>
         </div>
+        <a href="/gigs/{gig.id}/tagesplan" class="btn h-9 btn-ghost px-3">
+          <Printer class="size-3.5" /> Tagesplan
+        </a>
         {#if !editingBasics && allowed("edit")}
           <button class="btn h-9 btn-ghost px-3" onclick={() => (editingBasics = true)}>
             <Pencil class="size-3.5" /> Bearbeiten
