@@ -15,7 +15,7 @@ describe("songs", () => {
   test("creates, lists by title, updates and deletes songs", async ({ db }) => {
     const id = await createSong(db, intro);
     await createSong(db, { title: "ausklang", durationSec: 240, notes: "Zugabe" });
-    expect((await listSongs(db)).map((song) => song.title)).toEqual(["ausklang", "Intro"]);
+    expect((await listSongs(db)).map((song) => song.title)).toStrictEqual(["ausklang", "Intro"]);
     await updateSong(db, id, { ...intro, durationSec: 120 });
     expect((await listSongs(db)).find((song) => song.id === id)).toMatchObject({
       durationSec: 120,
@@ -30,18 +30,18 @@ describe("songs", () => {
     const hit = await createSong(db, { title: "Hit", durationSec: 240, notes: "" });
     await updateSetlist(db, id, [first, hit, first]);
     await updateSetlist(db, id, [hit, first]);
-    expect(await getSetlist(db, id)).toEqual([
+    expect(await getSetlist(db, id)).toStrictEqual([
       { songId: hit, title: "Hit", durationSec: 240 },
       { songId: first, title: "Intro", durationSec: 90 },
     ]);
     await deleteSong(db, first);
-    expect((await getSetlist(db, id)).map((entry) => entry.songId)).toEqual([hit]);
+    expect((await getSetlist(db, id)).map((entry) => entry.songId)).toStrictEqual([hit]);
   });
 
   test("clears the setlist", async ({ db, insertGig }) => {
     const { id } = await insertGig();
     await updateSetlist(db, id, [await createSong(db, intro)]);
     await updateSetlist(db, id, []);
-    expect(await getSetlist(db, id)).toEqual([]);
+    expect(await getSetlist(db, id)).toStrictEqual([]);
   });
 });

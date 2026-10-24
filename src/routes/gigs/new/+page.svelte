@@ -1,7 +1,8 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import Field from "$lib/components/Field.svelte";
-  import { type GigStatus, gigStatuses } from "$lib/labels";
+  import { gigStatuses } from "$lib/labels";
+  import type { GigStatus } from "$lib/labels";
 
   let { data, form } = $props();
 

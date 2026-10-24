@@ -1,9 +1,9 @@
 import { playtime } from "./daysheet";
 
 export function parseSongDuration(value: string): number | null {
-  const match = /^(\d+)(?::([0-5]\d))?$/u.exec(value.trim());
-  if (!match) return null;
-  const seconds = Number(match[1]) * 60 + Number(match[2] ?? 0);
+  const groups = /^(?<minutes>\d+)(?::(?<seconds>[0-5]\d))?$/u.exec(value.trim())?.groups;
+  if (!groups) return null;
+  const seconds = Number(groups.minutes) * 60 + Number(groups.seconds ?? 0);
   return seconds > 0 ? seconds : null;
 }
 

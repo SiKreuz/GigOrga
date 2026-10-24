@@ -11,7 +11,8 @@ import {
 } from "$lib/labels";
 import { legOf } from "$lib/tour";
 
-import { type Db, type Reader, transaction, type Tx } from "../db";
+import { transaction } from "../db";
+import type { Db, Reader, Tx } from "../db";
 import type {
   GigBasics,
   NewGig,

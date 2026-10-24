@@ -14,7 +14,7 @@ describe("cars", () => {
       seats: null,
       standard: 0,
     });
-    expect((await listCars(db)).map((car) => car.name)).toEqual(["auto von Max", "Bandbus"]);
+    expect((await listCars(db)).map((car) => car.name)).toStrictEqual(["auto von Max", "Bandbus"]);
     await updateCar(db, id, { ...bus, consumption: 12, fuel: "benzin" });
     expect((await listCars(db)).find((car) => car.id === id)).toMatchObject({
       consumption: 12,

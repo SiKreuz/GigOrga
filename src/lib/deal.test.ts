@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 
-import { type DealTerms, estimate, travelCost, tripOf } from "./deal";
+import { estimate, travelCost, tripOf } from "./deal";
+import type { DealTerms } from "./deal";
 
 const terms = (overrides: Partial<DealTerms> = {}): DealTerms => ({
   dealType: "festgage",
@@ -54,15 +55,23 @@ describe("tripOf", () => {
   const gig = { distanceKm: 100, returnKm: 80, tolls: 5 };
 
   test("drives back the same way without a tour", () => {
-    expect(tripOf(gig, null)).toEqual({ distanceKm: 100, returnKm: 100, tolls: 5 });
+    expect(tripOf(gig, null)).toStrictEqual({ distanceKm: 100, returnKm: 100, tolls: 5 });
   });
 
   test("drives on to the next tour stop without returning", () => {
-    expect(tripOf(gig, { returnsHome: false })).toEqual({ distanceKm: 100, returnKm: 0, tolls: 5 });
+    expect(tripOf(gig, { returnsHome: false })).toStrictEqual({
+      distanceKm: 100,
+      returnKm: 0,
+      tolls: 5,
+    });
   });
 
   test("drives home after the last tour stop", () => {
-    expect(tripOf(gig, { returnsHome: true })).toEqual({ distanceKm: 100, returnKm: 80, tolls: 5 });
+    expect(tripOf(gig, { returnsHome: true })).toStrictEqual({
+      distanceKm: 100,
+      returnKm: 80,
+      tolls: 5,
+    });
   });
 });
 

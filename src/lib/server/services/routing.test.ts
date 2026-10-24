@@ -1,5 +1,6 @@
 import { getGig, updateGig } from "$lib/server/services/gigs";
-import { routeToGig, routeTour, type RoutingConfig } from "$lib/server/services/routing";
+import { routeToGig, routeTour } from "$lib/server/services/routing";
+import type { RoutingConfig } from "$lib/server/services/routing";
 import { getSettings, updateSettings } from "$lib/server/services/settings";
 import { createTour } from "$lib/server/services/tours";
 import { getVenue } from "$lib/server/services/venues";
@@ -46,7 +47,7 @@ describe("routeToGig", () => {
       "Hauptstr. 1, Augsburg": [48.3, 10.9],
     });
 
-    expect(await routeToGig(db, config, id)).toEqual({
+    expect(await routeToGig(db, config, id)).toStrictEqual({
       ok: true,
       distanceKm: 123.5,
       durationMin: 91,
@@ -65,7 +66,7 @@ describe("routeToGig", () => {
     expect(await routeToGig(db, config, withoutVenue.id)).toMatchObject({ ok: false });
     const venue = await insertVenue();
     const withVenue = await insertGig({ venueId: venue.id });
-    expect(await routeToGig(db, config, withVenue.id)).toEqual({
+    expect(await routeToGig(db, config, withVenue.id)).toStrictEqual({
       ok: false,
       message: "Bitte zuerst die Startadresse in den Einstellungen eintragen.",
     });
@@ -76,7 +77,7 @@ describe("routeToGig", () => {
     const venue = await insertVenue({ address: "Nirgendwo", city: "" });
     const { id } = await insertGig({ venueId: venue.id });
     const { config } = fakeServices({ "Proberaum, München": [48.1, 11.5] });
-    expect(await routeToGig(db, config, id)).toEqual({
+    expect(await routeToGig(db, config, id)).toStrictEqual({
       ok: false,
       message: "Die Adresse der Venue wurde nicht gefunden.",
     });
@@ -118,8 +119,8 @@ describe("routeToGig", () => {
       "Donauweg 2, Ulm": [48.4, 10],
     });
 
-    expect(await routeTour(db, config, tour)).toEqual({ ok: true });
-    expect(calls.filter((path) => path.startsWith("/route"))).toEqual([
+    expect(await routeTour(db, config, tour)).toStrictEqual({ ok: true });
+    expect(calls.filter((path) => path.startsWith("/route"))).toStrictEqual([
       "/route/v1/driving/11.5,48.1;10.9,48.3",
       "/route/v1/driving/10.9,48.3;10,48.4",
       "/route/v1/driving/10,48.4;11.5,48.1",
@@ -142,7 +143,7 @@ describe("routeToGig", () => {
       gigBasics({ date: second.date, venueId: venue.id, tourId: tour }),
     );
     const { config } = fakeServices({});
-    expect(await routeToGig(db, config, second.id)).toEqual({
+    expect(await routeToGig(db, config, second.id)).toStrictEqual({
       ok: false,
       message: "Der vorherige Gig der Tour hat keine Venue.",
     });

@@ -11,7 +11,7 @@ describe("tours", () => {
       const { id } = await insertGig({ date });
       await updateGig(db, id, gigBasics({ date, tourId: autumn }));
     }
-    expect(await listTours(db)).toEqual([
+    expect(await listTours(db)).toStrictEqual([
       { id: autumn, name: "Herbsttour", gigCount: 2, start: "2026-11-01", end: "2026-11-03" },
       { id: empty, name: "Frühjahr", gigCount: 0, start: null, end: null },
     ]);
@@ -35,7 +35,7 @@ describe("tours", () => {
 
     const detail = await getTour(db, tour);
     expect(detail?.name).toBe("Herbsttour");
-    expect(detail?.stops.map((stop) => stop.id)).toEqual([earlier.id, later.id]);
+    expect(detail?.stops.map((stop) => stop.id)).toStrictEqual([earlier.id, later.id]);
     expect(detail?.stops[0]).toMatchObject({ venue: { name: "Ampere" }, cars: [] });
   });
 

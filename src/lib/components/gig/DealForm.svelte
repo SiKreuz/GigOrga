@@ -5,7 +5,8 @@
   import Select from "$lib/components/Select.svelte";
   import { estimate } from "$lib/deal";
   import { formatMoney, formatNumber, parseNumber } from "$lib/format";
-  import { type DealType, dealTypes, invoiceStatuses } from "$lib/labels";
+  import { dealTypes, invoiceStatuses } from "$lib/labels";
+  import type { DealType } from "$lib/labels";
   import type { PresaleLinkRow } from "$lib/server/services/gigInputs";
   import type { GigDetail } from "$lib/server/services/gigs";
   import { untrack } from "svelte";
@@ -61,13 +62,11 @@
     ),
   );
 
-  const feeLabel = $derived(
-    dealType === "versus"
-      ? "Garantie (€)"
-      : dealType === "hut"
-        ? "Erwartet im Hut (€)"
-        : "Gage (€)",
-  );
+  const feeLabels: Partial<Record<DealType, string>> = {
+    versus: "Garantie (€)",
+    hut: "Erwartet im Hut (€)",
+  };
+  const feeLabel = $derived(feeLabels[dealType] ?? "Gage (€)");
 
   const descriptions: Record<DealType, string> = {
     festgage: "Fester Betrag, unabhängig vom Ticketverkauf.",

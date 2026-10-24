@@ -4,7 +4,8 @@
   import EmptyState from "$lib/components/EmptyState.svelte";
   import StatusChip from "$lib/components/StatusChip.svelte";
   import { formatMonth, relativeDay, todayIso } from "$lib/format";
-  import { type GigStatus, gigStatuses, gigTypes } from "$lib/labels";
+  import { gigStatuses, gigTypes } from "$lib/labels";
+  import type { GigStatus } from "$lib/labels";
   import type { GigSummary } from "$lib/server/services/gigs";
   import { ChevronRight, Clock, ListMusic, MapPin, Plus, Printer } from "@lucide/svelte";
 

@@ -1,4 +1,5 @@
-import { type Db, transaction } from "../db";
+import { transaction } from "../db";
+import type { Db } from "../db";
 
 export type SettingsInput = {
   homeAddress: string;

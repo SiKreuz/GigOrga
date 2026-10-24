@@ -1,4 +1,5 @@
-import { type Db, type Reader, transaction } from "../db";
+import { transaction } from "../db";
+import type { Db, Reader } from "../db";
 
 export type SoundEngineerInput = { name: string; phone: string; email: string };
 

@@ -46,14 +46,14 @@ describe("gigs", () => {
     });
     expect(gig?.timetable).toMatchObject(defaultTimetable);
     expect(gig?.backline).toMatchObject(defaultBackline);
-    expect(gig?.backline.map((item) => item.name)).toEqual(["Drumset", "PA"]);
+    expect(gig?.backline.map((item) => item.name)).toStrictEqual(["Drumset", "PA"]);
   });
 
   test("preselects the standard cars", async ({ db, insertGig }) => {
     await createCar(db, { name: "Bus", consumption: 10, fuel: "diesel", seats: 8, standard: 1 });
     await createCar(db, { name: "Kombi", consumption: 6, fuel: "benzin", seats: 5, standard: 0 });
     const { id } = await insertGig();
-    expect((await getGig(db, id))?.cars.map((car) => car.name)).toEqual(["Bus"]);
+    expect((await getGig(db, id))?.cars.map((car) => car.name)).toStrictEqual(["Bus"]);
   });
 
   test("updates travel with people, fuel prices and cars", async ({ db, insertGig }) => {
@@ -103,12 +103,12 @@ describe("gigs", () => {
     await updateGig(db, firstId, gigBasics({ ...firstBasics, tourId: tour }));
     await updateGig(db, secondId, gigBasics({ ...secondBasics, tourId: tour }));
 
-    expect((await getGig(db, first.id))?.tourLeg).toEqual({
+    expect((await getGig(db, first.id))?.tourLeg).toStrictEqual({
       tour: { id: tour, name: "Herbsttour" },
       from: null,
       returnsHome: false,
     });
-    expect((await getGig(db, second.id))?.tourLeg).toEqual({
+    expect((await getGig(db, second.id))?.tourLeg).toStrictEqual({
       tour: { id: tour, name: "Herbsttour" },
       from: { id: first.id, title: first.title, venue: { name: "Ampere", city: "München" } },
       returnsHome: true,
@@ -150,7 +150,7 @@ describe("gigs", () => {
   test("clears the timetable", async ({ db, insertGig }) => {
     const { id } = await insertGig();
     await updateTimetable(db, id, []);
-    expect((await getGig(db, id))?.timetable).toEqual([]);
+    expect((await getGig(db, id))?.timetable).toStrictEqual([]);
   });
 
   test("replaces support acts", async ({ db, insertGig }) => {
@@ -212,7 +212,7 @@ describe("gigs", () => {
     const tech = { ...techInput, soundEngineerId: engineerId };
     await updateTech(db, id, tech);
     await archiveSoundEngineer(db, engineerId);
-    expect((await getGig(db, id))?.soundEngineer).toEqual({ id: engineerId, ...kim });
+    expect((await getGig(db, id))?.soundEngineer).toStrictEqual({ id: engineerId, ...kim });
     await updateTech(db, id, { ...tech, soundEngineerId: null });
     expect((await getGig(db, id))?.soundEngineer).toBeNull();
   });
@@ -226,7 +226,7 @@ describe("gigs", () => {
       { role: "Technik", contact: { name: contact.name } },
     ]);
     await unlinkContact(db, id, contact.id);
-    expect((await getGig(db, id))?.contacts).toEqual([]);
+    expect((await getGig(db, id))?.contacts).toStrictEqual([]);
   });
 
   test("lists gigs by date with get-in and show time", async ({ db, insertGig }) => {
@@ -237,7 +237,7 @@ describe("gigs", () => {
       { kind: "show", start: "21:00", end: "", label: "", fixed: 0 },
     ]);
     const gigs = await listGigs(db);
-    expect(gigs.map((gig) => gig.id)).toEqual([early.id, late.id]);
+    expect(gigs.map((gig) => gig.id)).toStrictEqual([early.id, late.id]);
     expect(gigs[0]).toMatchObject({ getIn: "16:30", showTime: "21:00" });
   });
 

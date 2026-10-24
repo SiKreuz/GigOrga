@@ -10,7 +10,7 @@ describe("safeRedirect", () => {
     ["", "/"],
     ["https://evil.example.com", "/"],
     ["//evil.example.com", "/"],
-    ["/\\evil.example.com", "/"],
+    [String.raw`/\evil.example.com`, "/"],
     ["gigs", "/"],
   ] as const)("%s → %s", ([target, expected]) => {
     expect(safeRedirect(target)).toBe(expected);

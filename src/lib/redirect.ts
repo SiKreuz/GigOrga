@@ -4,7 +4,8 @@ export function safeRedirect(target: string | null): string {
     !target.startsWith("/") ||
     target.startsWith("//") ||
     target.startsWith("/\\")
-  )
+  ) {
     return "/";
+  }
   return target;
 }

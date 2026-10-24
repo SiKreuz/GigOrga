@@ -10,31 +10,31 @@ const stops = [
 
 describe("orderStops", () => {
   test("orders by date, then by creation", () => {
-    expect(orderStops(stops).map((stop) => stop.id)).toEqual(["a1", "a2", "c"]);
+    expect(orderStops(stops).map((stop) => stop.id)).toStrictEqual(["a1", "a2", "c"]);
   });
 });
 
 describe("legOf", () => {
   test("starts the first stop at home", () => {
-    expect(legOf(stops, "a1")).toEqual({ from: null, returnsHome: false });
+    expect(legOf(stops, "a1")).toStrictEqual({ from: null, returnsHome: false });
   });
 
   test("arrives from the previous stop", () => {
-    expect(legOf(stops, "a2")).toEqual({
+    expect(legOf(stops, "a2")).toStrictEqual({
       from: { id: "a1", date: "2026-11-01" },
       returnsHome: false,
     });
   });
 
   test("drives home after the last stop", () => {
-    expect(legOf(stops, "c")).toEqual({
+    expect(legOf(stops, "c")).toStrictEqual({
       from: { id: "a2", date: "2026-11-01" },
       returnsHome: true,
     });
   });
 
   test("drives home after a tour with a single stop", () => {
-    expect(legOf([{ id: "x", date: "2026-11-01" }], "x")).toEqual({
+    expect(legOf([{ id: "x", date: "2026-11-01" }], "x")).toStrictEqual({
       from: null,
       returnsHome: true,
     });

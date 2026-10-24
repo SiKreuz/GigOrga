@@ -8,20 +8,6 @@ const redirectUri = "https://gigs.example.com/auth/callback";
 let keys: CryptoKeyPair;
 let jwk: JsonWebKey;
 
-beforeAll(async () => {
-  keys = await crypto.subtle.generateKey(
-    {
-      name: "RSASSA-PKCS1-v1_5",
-      modulusLength: 2048,
-      publicExponent: new Uint8Array([1, 0, 1]),
-      hash: "SHA-256",
-    },
-    true,
-    ["sign", "verify"],
-  );
-  jwk = await crypto.subtle.exportKey("jwk", keys.publicKey);
-});
-
 const base64url = (value: string | Uint8Array) => Buffer.from(value).toString("base64url");
 
 async function idToken(nonce: string) {
@@ -86,6 +72,20 @@ function setup() {
 }
 
 describe("oidc", () => {
+  beforeAll(async () => {
+    keys = await crypto.subtle.generateKey(
+      {
+        name: "RSASSA-PKCS1-v1_5",
+        modulusLength: 2048,
+        publicExponent: new Uint8Array([1, 0, 1]),
+        hash: "SHA-256",
+      },
+      true,
+      ["sign", "verify"],
+    );
+    jwk = await crypto.subtle.exportKey("jwk", keys.publicKey);
+  });
+
   test("builds an authorization url with state, nonce and PKCE", async () => {
     const { oidc } = setup();
     const { url, checks } = await oidc.start();
@@ -107,7 +107,7 @@ describe("oidc", () => {
     const { checks } = await oidc.start();
     setNonce(checks.nonce);
     const callback = new URL(`${redirectUri}?code=abc&state=${checks.state}`);
-    expect(await oidc.finish(callback, checks)).toEqual({
+    expect(await oidc.finish(callback, checks)).toStrictEqual({
       sub: "pocket-1",
       email: "max@twiceasmad.de",
       name: "Max",

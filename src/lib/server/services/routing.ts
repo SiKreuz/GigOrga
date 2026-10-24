@@ -1,6 +1,7 @@
 import * as v from "valibot";
 
-import { type Db, transaction } from "../db";
+import { transaction } from "../db";
+import type { Db } from "../db";
 import { getGig } from "./gigs";
 import { getSettings, setHomeLocation } from "./settings";
 import { getTour } from "./tours";

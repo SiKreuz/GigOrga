@@ -5,7 +5,7 @@ import {
   getUser,
   listUsers,
   upsertUserFromClaims,
-  UserChangeRefused,
+  UserChangeRefusedError,
 } from "$lib/server/services/users";
 import { test, userClaims } from "$lib/server/testing";
 import { describe, expect } from "vitest";
@@ -63,7 +63,7 @@ describe("users", () => {
   test("lists users by name", async ({ db, insertUser }) => {
     await insertUser({ name: "Zoe" });
     await insertUser({ name: "anna" });
-    expect((await listUsers(db)).map((user) => user.name)).toEqual(["anna", "Zoe"]);
+    expect((await listUsers(db)).map((user) => user.name)).toStrictEqual(["anna", "Zoe"]);
   });
 
   test("changes another user's role", async ({ db, insertUser }) => {
@@ -76,9 +76,9 @@ describe("users", () => {
   test("refuses changes to oneself", async ({ db, insertUser }) => {
     const admin = await insertUser();
     await expect(changeUser(db, admin.id, admin.id, { role: "viewer" })).rejects.toThrow(
-      UserChangeRefused,
+      UserChangeRefusedError,
     );
-    await expect(deleteUser(db, admin.id, admin.id)).rejects.toThrow(UserChangeRefused);
+    await expect(deleteUser(db, admin.id, admin.id)).rejects.toThrow(UserChangeRefusedError);
   });
 
   test("deactivating a user ends their sessions", async ({ db, insertUser }) => {

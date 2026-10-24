@@ -20,6 +20,6 @@ describe("contacts", () => {
   test("lists contacts by name", async ({ db, insertContact }) => {
     await insertContact({ name: "zoe" });
     await insertContact({ name: "Anna" });
-    expect((await listContacts(db)).map((contact) => contact.name)).toEqual(["Anna", "zoe"]);
+    expect((await listContacts(db)).map((contact) => contact.name)).toStrictEqual(["Anna", "zoe"]);
   });
 });

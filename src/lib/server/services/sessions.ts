@@ -1,6 +1,7 @@
 import { keyOf, roles } from "$lib/labels";
 
-import { type Db, transaction } from "../db";
+import { transaction } from "../db";
+import type { Db } from "../db";
 
 const lifetime = 30 * 24 * 60 * 60 * 1000;
 

@@ -5,7 +5,8 @@
   import Section from "$lib/components/Section.svelte";
   import Select from "$lib/components/Select.svelte";
   import { houseEngineer } from "$lib/forms";
-  import { type BacklineProvider, backlineProviders } from "$lib/labels";
+  import { backlineProviders } from "$lib/labels";
+  import type { BacklineProvider } from "$lib/labels";
   import type { BacklineRow } from "$lib/server/services/gigInputs";
   import type { GigDetail } from "$lib/server/services/gigs";
   import type { SoundEngineerSummary } from "$lib/server/services/soundEngineers";
