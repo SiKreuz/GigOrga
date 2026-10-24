@@ -1,17 +1,27 @@
-import { carSchema, parseForm, settingsSchema } from "$lib/forms";
+import { carSchema, parseForm, settingsSchema, soundEngineerSchema } from "$lib/forms";
 import { getDb } from "$lib/server/context";
 import { createCar, deleteCar, listCars, updateCar } from "$lib/server/services/cars";
 import { getSettings, updateSettings } from "$lib/server/services/settings";
+import {
+  archiveSoundEngineer,
+  createSoundEngineer,
+  listSoundEngineers,
+  updateSoundEngineer,
+} from "$lib/server/services/soundEngineers";
 import { fail } from "@sveltejs/kit";
 
 import type { Actions, PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async () => {
   const db = getDb();
-  return { settings: await getSettings(db), cars: await listCars(db) };
+  return {
+    settings: await getSettings(db),
+    cars: await listCars(db),
+    soundEngineers: await listSoundEngineers(db),
+  };
 };
 
-const carId = (formData: FormData) => {
+const formId = (formData: FormData) => {
   const id = formData.get("id");
   return typeof id === "string" ? id : "";
 };
@@ -31,14 +41,32 @@ export const actions: Actions = {
   },
   updateCar: async ({ request }) => {
     const formData = await request.formData();
-    const id = carId(formData);
+    const id = formId(formData);
     const result = parseForm(carSchema, formData);
     if (!result.success) return fail(400, { form: id, ...result });
     await updateCar(getDb(), id, result.data);
     return { form: id, success: true as const };
   },
   deleteCar: async ({ request }) => {
-    await deleteCar(getDb(), carId(await request.formData()));
+    await deleteCar(getDb(), formId(await request.formData()));
     return { form: "delete", success: true as const };
+  },
+  createSoundEngineer: async ({ request }) => {
+    const result = parseForm(soundEngineerSchema, await request.formData());
+    if (!result.success) return fail(400, { form: "newEngineer", ...result });
+    await createSoundEngineer(getDb(), result.data);
+    return { form: "newEngineer", success: true as const };
+  },
+  updateSoundEngineer: async ({ request }) => {
+    const formData = await request.formData();
+    const id = formId(formData);
+    const result = parseForm(soundEngineerSchema, formData);
+    if (!result.success) return fail(400, { form: id, ...result });
+    await updateSoundEngineer(getDb(), id, result.data);
+    return { form: id, success: true as const };
+  },
+  archiveSoundEngineer: async ({ request }) => {
+    await archiveSoundEngineer(getDb(), formId(await request.formData()));
+    return { form: "archive", success: true as const };
   },
 };

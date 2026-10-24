@@ -10,13 +10,15 @@
   import { formatNumber } from "$lib/format";
   import { fuelTypes } from "$lib/labels";
   import type { CarSummary } from "$lib/server/services/cars";
-  import { Car, Plus, Settings, Trash2 } from "@lucide/svelte";
+  import type { SoundEngineerSummary } from "$lib/server/services/soundEngineers";
+  import { Car, Headphones, Plus, Settings, Trash2 } from "@lucide/svelte";
 
   let { data, form } = $props();
 
   const errorsFor = (name: string): Record<string, string> =>
     form && form.form === name && "errors" in form ? (form.errors ?? {}) : {};
   let adding = $state(false);
+  let addingEngineer = $state(false);
 </script>
 
 <svelte:head>
@@ -63,6 +65,36 @@
     label="Standardmäßig bei neuen Gigs dabei"
     checked={car ? car.standard === 1 : true}
   />
+{/snippet}
+
+{#snippet engineerFields(
+  engineer: SoundEngineerSummary | undefined,
+  errors: Record<string, string>,
+  prefix: string,
+)}
+  <div class="grid gap-3 sm:grid-cols-3">
+    <Field id="{prefix}-name" label="Name" error={errors.name}>
+      <input id="{prefix}-name" name="name" class="input" value={engineer?.name ?? ""} required />
+    </Field>
+    <Field id="{prefix}-phone" label="Telefon">
+      <input
+        id="{prefix}-phone"
+        name="phone"
+        type="tel"
+        class="input"
+        value={engineer?.phone ?? ""}
+      />
+    </Field>
+    <Field id="{prefix}-email" label="E-Mail">
+      <input
+        id="{prefix}-email"
+        name="email"
+        type="email"
+        class="input"
+        value={engineer?.email ?? ""}
+      />
+    </Field>
+  </div>
 {/snippet}
 
 <div class="mx-auto flex max-w-3xl flex-col gap-6">
@@ -173,6 +205,68 @@
           <div>
             <button class="btn btn-ghost" onclick={() => (adding = true)}
               ><Plus class="size-4" /> Auto hinzufügen</button
+            >
+          </div>
+        {/if}
+      {/if}
+    </div>
+  </SectionCard>
+
+  <SectionCard
+    id="tontechnik"
+    title="Tontechniker"
+    icon={Headphones}
+    description="Pro Gig wählst du aus, wer mischt."
+  >
+    <div class="flex flex-col gap-4">
+      {#each data.soundEngineers as engineer (engineer.id)}
+        <div class="rounded-xl border border-border bg-bg p-4">
+          <SectionForm action="?/updateSoundEngineer">
+            <input type="hidden" name="id" value={engineer.id} />
+            {@render engineerFields(engineer, errorsFor(engineer.id), engineer.id)}
+            {#snippet extra()}
+              <div class="mr-auto">
+                <ConfirmButton
+                  message="Tontechniker „{engineer.name}“ entfernen? Vergangene Gigs behalten den Namen."
+                  label="Entfernen"
+                  formaction="?/archiveSoundEngineer"
+                >
+                  <Trash2 class="size-4" />
+                </ConfirmButton>
+              </div>
+            {/snippet}
+          </SectionForm>
+        </div>
+      {:else}
+        {#if !addingEngineer}<p class="text-sm text-muted">
+            Noch keine Tontechniker angelegt.
+          </p>{/if}
+      {/each}
+
+      {#if allowed("edit")}
+        {#if addingEngineer || (form?.form === "newEngineer" && !form.success)}
+          <form
+            method="POST"
+            action="?/createSoundEngineer"
+            class="flex flex-col gap-4 rounded-xl border border-accent/40 p-4"
+            use:enhance={() =>
+              async ({ result, update }) => {
+                await update();
+                if (result.type === "success") addingEngineer = false;
+              }}
+          >
+            {@render engineerFields(undefined, errorsFor("newEngineer"), "newEngineer")}
+            <div class="flex justify-end gap-2">
+              <button type="button" class="btn btn-ghost" onclick={() => (addingEngineer = false)}
+                >Abbrechen</button
+              >
+              <button class="btn btn-primary">Tontechniker anlegen</button>
+            </div>
+          </form>
+        {:else}
+          <div>
+            <button class="btn btn-ghost" onclick={() => (addingEngineer = true)}
+              ><Plus class="size-4" /> Tontechniker hinzufügen</button
             >
           </div>
         {/if}

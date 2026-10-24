@@ -151,6 +151,12 @@ export const carSchema = v.object({
   standard: flag,
 });
 
+export const soundEngineerSchema = v.object({
+  name: required("Bitte einen Namen angeben", 100),
+  phone: text(100),
+  email: text(200),
+});
+
 export const hospitalitySchema = v.object({
   catering: flag,
   drinks: text(500),

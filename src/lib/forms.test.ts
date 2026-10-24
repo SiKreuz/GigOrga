@@ -7,6 +7,7 @@ import {
   newGigSchema,
   parseForm,
   settingsSchema,
+  soundEngineerSchema,
   techSchema,
   tourSchema,
   travelSchema,
@@ -159,6 +160,17 @@ describe("parseForm", () => {
 
   test("requires a tour name", () => {
     expect(parseForm(tourSchema, form({ name: " " }))).toMatchObject({
+      success: false,
+      errors: { name: "Bitte einen Namen angeben" },
+    });
+  });
+
+  test("parses a sound engineer and requires a name", () => {
+    expect(parseForm(soundEngineerSchema, form({ name: " Kim ", phone: "0171 123456" }))).toEqual({
+      success: true,
+      data: { name: "Kim", phone: "0171 123456", email: "" },
+    });
+    expect(parseForm(soundEngineerSchema, form({ name: "" }))).toMatchObject({
       success: false,
       errors: { name: "Bitte einen Namen angeben" },
     });
