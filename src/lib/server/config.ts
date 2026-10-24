@@ -1,12 +1,14 @@
 import { env } from "$env/dynamic/private";
 
+const read = (name: string, fallback = "") => env[name] ?? fallback;
+
 export const config = {
-  dataDir: env.DATA_DIR ?? "data",
-  geocoderUrl: env.GEOCODER_URL ?? "https://nominatim.openstreetmap.org",
-  routerUrl: env.ROUTER_URL ?? "https://router.project-osrm.org",
-  origin: env.ORIGIN ?? "http://localhost:5173",
-  oidcIssuer: env.OIDC_ISSUER ?? "",
-  oidcClientId: env.OIDC_CLIENT_ID ?? "",
-  oidcClientSecret: env.OIDC_CLIENT_SECRET ?? "",
-  adminEmail: env.ADMIN_EMAIL ?? "",
+  dataDir: read("DATA_DIR", "data"),
+  geocoderUrl: read("GEOCODER_URL", "https://nominatim.openstreetmap.org"),
+  routerUrl: read("ROUTER_URL", "https://router.project-osrm.org"),
+  origin: read("ORIGIN", "http://localhost:5173"),
+  oidcIssuer: read("OIDC_ISSUER"),
+  oidcClientId: read("OIDC_CLIENT_ID"),
+  oidcClientSecret: read("OIDC_CLIENT_SECRET"),
+  adminEmail: read("ADMIN_EMAIL"),
 };
