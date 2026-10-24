@@ -4,7 +4,7 @@
   import type { GigDetail } from "$lib/server/services/gigs";
   import type { SetlistEntry, SongSummary } from "$lib/server/services/songs";
   import { formatSongDuration, overrun, showSlot } from "$lib/setlist";
-  import { ListMusic } from "@lucide/svelte";
+  import { ListMusic, Printer } from "@lucide/svelte";
 
   let {
     gig,
@@ -58,6 +58,9 @@
       {/each}
     </ol>
     <div class="mt-3">{@render totals(totalOf(setlist))}</div>
+    <a href="/gigs/{gig.id}/setlist" class="mt-3 btn h-9 btn-ghost px-3">
+      <Printer class="size-4" /> Drucken
+    </a>
   {/snippet}
   {#snippet form()}
     {#if songs.length === 0}
