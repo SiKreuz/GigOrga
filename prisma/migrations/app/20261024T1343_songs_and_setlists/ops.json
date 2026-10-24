@@ -1,0 +1,166 @@
+[
+  {
+    "id": "table.setlist_entries",
+    "label": "Create table setlist_entries",
+    "summary": "Creates table setlist_entries with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "setlist_entries"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"setlist_entries\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "setlist_entries"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"setlist_entries\"",
+        "sql": "CREATE TABLE \"setlist_entries\" (\n  \"gig_id\" TEXT NOT NULL,\n  \"id\" TEXT NOT NULL,\n  \"position\" INTEGER NOT NULL,\n  \"song_id\" TEXT NOT NULL,\n  PRIMARY KEY (\"id\"),\n  FOREIGN KEY (\"gig_id\") REFERENCES \"gigs\" (\"id\") ON DELETE CASCADE,\n  FOREIGN KEY (\"song_id\") REFERENCES \"songs\" (\"id\") ON DELETE CASCADE\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"setlist_entries\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "setlist_entries"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "table.songs",
+    "label": "Create table songs",
+    "summary": "Creates table songs with required columns",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "table",
+        "name": "songs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure table \"songs\" does not exist",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "songs"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create table \"songs\"",
+        "sql": "CREATE TABLE \"songs\" (\n  \"created_at\" TEXT NOT NULL DEFAULT (datetime('now')),\n  \"duration_sec\" INTEGER NOT NULL,\n  \"id\" TEXT NOT NULL,\n  \"notes\" TEXT NOT NULL DEFAULT '',\n  \"title\" TEXT NOT NULL,\n  PRIMARY KEY (\"id\")\n)",
+        "params": []
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify table \"songs\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "table",
+          "songs"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.setlist_entries.setlist_entries_gig_id_idx_f99649af",
+    "label": "Create index setlist_entries_gig_id_idx_f99649af on setlist_entries",
+    "summary": "Creates index setlist_entries_gig_id_idx_f99649af on setlist_entries",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "setlist_entries_gig_id_idx_f99649af",
+        "table": "setlist_entries"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"setlist_entries_gig_id_idx_f99649af\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "setlist_entries_gig_id_idx_f99649af"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"setlist_entries_gig_id_idx_f99649af\"",
+        "sql": "CREATE INDEX \"setlist_entries_gig_id_idx_f99649af\" ON \"setlist_entries\" (\"gig_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"setlist_entries_gig_id_idx_f99649af\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "setlist_entries_gig_id_idx_f99649af"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "index.setlist_entries.setlist_entries_song_id_idx_2e2805d0",
+    "label": "Create index setlist_entries_song_id_idx_2e2805d0 on setlist_entries",
+    "summary": "Creates index setlist_entries_song_id_idx_2e2805d0 on setlist_entries",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "index",
+        "name": "setlist_entries_song_id_idx_2e2805d0",
+        "table": "setlist_entries"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure index \"setlist_entries_song_id_idx_2e2805d0\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "setlist_entries_song_id_idx_2e2805d0"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "create index \"setlist_entries_song_id_idx_2e2805d0\"",
+        "sql": "CREATE INDEX \"setlist_entries_song_id_idx_2e2805d0\" ON \"setlist_entries\" (\"song_id\")"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify index \"setlist_entries_song_id_idx_2e2805d0\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM \"sqlite_master\" WHERE (\"type\" = ? AND \"name\" = ?)",
+        "params": [
+          "index",
+          "setlist_entries_song_id_idx_2e2805d0"
+        ]
+      }
+    ]
+  }
+]

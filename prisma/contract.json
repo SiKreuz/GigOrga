@@ -36,8 +36,16 @@
       "model": "Session",
       "namespace": "__unbound__"
     },
+    "setlist_entries": {
+      "model": "SetlistEntry",
+      "namespace": "__unbound__"
+    },
     "settings": {
       "model": "Settings",
+      "namespace": "__unbound__"
+    },
+    "songs": {
+      "model": "Song",
       "namespace": "__unbound__"
     },
     "sound_engineers": {
@@ -1020,6 +1028,21 @@
                   "namespace": "__unbound__"
                 }
               },
+              "setlist": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "gigId"
+                  ]
+                },
+                "to": {
+                  "model": "SetlistEntry",
+                  "namespace": "__unbound__"
+                }
+              },
               "soundEngineer": {
                 "cardinality": "N:1",
                 "nullable": true,
@@ -1524,6 +1547,90 @@
               "table": "sessions"
             }
           },
+          "SetlistEntry": {
+            "fields": {
+              "gigId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "position": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/integer@1",
+                  "kind": "scalar"
+                }
+              },
+              "songId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "gig": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "gigId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Gig",
+                  "namespace": "__unbound__"
+                }
+              },
+              "song": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "songId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Song",
+                  "namespace": "__unbound__"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "gigId": {
+                  "column": "gig_id"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "position": {
+                  "column": "position"
+                },
+                "songId": {
+                  "column": "song_id"
+                }
+              },
+              "namespaceId": "__unbound__",
+              "table": "setlist_entries"
+            }
+          },
           "Settings": {
             "fields": {
               "bandSize": {
@@ -1603,6 +1710,83 @@
               },
               "namespaceId": "__unbound__",
               "table": "settings"
+            }
+          },
+          "Song": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/datetime@1",
+                  "kind": "scalar"
+                }
+              },
+              "durationSec": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/integer@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "notes": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "title": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "setlistEntries": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "songId"
+                  ]
+                },
+                "to": {
+                  "model": "SetlistEntry",
+                  "namespace": "__unbound__"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "created_at"
+                },
+                "durationSec": {
+                  "column": "duration_sec"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "notes": {
+                  "column": "notes"
+                },
+                "title": {
+                  "column": "title"
+                }
+              },
+              "namespaceId": "__unbound__",
+              "table": "songs"
             }
           },
           "SoundEngineer": {
@@ -3199,6 +3383,90 @@
               },
               "uniques": []
             },
+            "setlist_entries": {
+              "columns": {
+                "gig_id": {
+                  "codecId": "sqlite/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "sqlite/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "position": {
+                  "codecId": "sqlite/integer@1",
+                  "nativeType": "integer",
+                  "nullable": false
+                },
+                "song_id": {
+                  "codecId": "sqlite/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "gig_id"
+                    ],
+                    "namespaceId": "__unbound__",
+                    "tableName": "setlist_entries"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "__unbound__",
+                    "tableName": "gigs"
+                  }
+                },
+                {
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "song_id"
+                    ],
+                    "namespaceId": "__unbound__",
+                    "tableName": "setlist_entries"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "__unbound__",
+                    "tableName": "songs"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "gig_id"
+                  ],
+                  "name": "setlist_entries_gig_id_idx_f99649af",
+                  "prefix": "setlist_entries_gig_id_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "song_id"
+                  ],
+                  "name": "setlist_entries_song_id_idx_2e2805d0",
+                  "prefix": "setlist_entries_song_id_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
             "settings": {
               "columns": {
                 "band_size": {
@@ -3250,6 +3518,51 @@
                     "value": 1.8
                   },
                   "nativeType": "real",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "songs": {
+              "columns": {
+                "created_at": {
+                  "codecId": "sqlite/datetime@1",
+                  "default": {
+                    "expression": "now()",
+                    "kind": "function"
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "duration_sec": {
+                  "codecId": "sqlite/integer@1",
+                  "nativeType": "integer",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "sqlite/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "notes": {
+                  "codecId": "sqlite/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": ""
+                  },
+                  "nativeType": "text",
+                  "nullable": false
+                },
+                "title": {
+                  "codecId": "sqlite/text@1",
+                  "nativeType": "text",
                   "nullable": false
                 }
               },
@@ -3832,7 +4145,7 @@
         "id": "__unbound__"
       }
     },
-    "storageHash": "f9ae66b901b994fc9269be00421f020070b25dbb02028ff1af35dc1f7fe53f91"
+    "storageHash": "59e5816bb7c37d6b6fae1863807677ac39afc4599e9c40ec359fd17155e1c0bb"
   },
   "capabilities": {
     "sql": {

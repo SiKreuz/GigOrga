@@ -17,7 +17,7 @@ import type {
 } from '@prisma/orm-sqlite/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'f9ae66b901b994fc9269be00421f020070b25dbb02028ff1af35dc1f7fe53f91'>;
+  StorageHashBase<'59e5816bb7c37d6b6fae1863807677ac39afc4599e9c40ec359fd17155e1c0bb'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'260b8608d1aacaf1f690779a6cff39a12947c599597c5ba464ca75b9e775df53'>;
@@ -225,6 +225,12 @@ export type FieldOutputTypes = {
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly userId: CodecTypes['sqlite/text@1']['output'];
     };
+    readonly SetlistEntry: {
+      readonly gigId: CodecTypes['sqlite/text@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly position: CodecTypes['sqlite/integer@1']['output'];
+      readonly songId: CodecTypes['sqlite/text@1']['output'];
+    };
     readonly Settings: {
       readonly bandSize: CodecTypes['sqlite/integer@1']['output'];
       readonly dieselPrice: CodecTypes['sqlite/real@1']['output'];
@@ -233,6 +239,13 @@ export type FieldOutputTypes = {
       readonly homeLon: CodecTypes['sqlite/real@1']['output'] | null;
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly petrolPrice: CodecTypes['sqlite/real@1']['output'];
+    };
+    readonly Song: {
+      readonly createdAt: CodecTypes['sqlite/datetime@1']['output'];
+      readonly durationSec: CodecTypes['sqlite/integer@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly notes: CodecTypes['sqlite/text@1']['output'];
+      readonly title: CodecTypes['sqlite/text@1']['output'];
     };
     readonly SoundEngineer: {
       readonly active: CodecTypes['sqlite/integer@1']['output'];
@@ -392,6 +405,12 @@ export type FieldInputTypes = {
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly userId: CodecTypes['sqlite/text@1']['input'];
     };
+    readonly SetlistEntry: {
+      readonly gigId: CodecTypes['sqlite/text@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly position: CodecTypes['sqlite/integer@1']['input'];
+      readonly songId: CodecTypes['sqlite/text@1']['input'];
+    };
     readonly Settings: {
       readonly bandSize: CodecTypes['sqlite/integer@1']['input'];
       readonly dieselPrice: CodecTypes['sqlite/real@1']['input'];
@@ -400,6 +419,13 @@ export type FieldInputTypes = {
       readonly homeLon: CodecTypes['sqlite/real@1']['input'] | null;
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly petrolPrice: CodecTypes['sqlite/real@1']['input'];
+    };
+    readonly Song: {
+      readonly createdAt: CodecTypes['sqlite/datetime@1']['input'];
+      readonly durationSec: CodecTypes['sqlite/integer@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly notes: CodecTypes['sqlite/text@1']['input'];
+      readonly title: CodecTypes['sqlite/text@1']['input'];
     };
     readonly SoundEngineer: {
       readonly active: CodecTypes['sqlite/integer@1']['input'];
@@ -559,6 +585,12 @@ export type StorageColumnTypes = {
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly user_id: CodecTypes['sqlite/text@1']['output'];
     };
+    readonly setlist_entries: {
+      readonly gig_id: CodecTypes['sqlite/text@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly position: CodecTypes['sqlite/integer@1']['output'];
+      readonly song_id: CodecTypes['sqlite/text@1']['output'];
+    };
     readonly settings: {
       readonly band_size: CodecTypes['sqlite/integer@1']['output'];
       readonly diesel_price: CodecTypes['sqlite/real@1']['output'];
@@ -567,6 +599,13 @@ export type StorageColumnTypes = {
       readonly home_lon: CodecTypes['sqlite/real@1']['output'] | null;
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly petrol_price: CodecTypes['sqlite/real@1']['output'];
+    };
+    readonly songs: {
+      readonly created_at: CodecTypes['sqlite/datetime@1']['output'];
+      readonly duration_sec: CodecTypes['sqlite/integer@1']['output'];
+      readonly id: CodecTypes['sqlite/text@1']['output'];
+      readonly notes: CodecTypes['sqlite/text@1']['output'];
+      readonly title: CodecTypes['sqlite/text@1']['output'];
     };
     readonly sound_engineers: {
       readonly active: CodecTypes['sqlite/integer@1']['output'];
@@ -726,6 +765,12 @@ export type StorageColumnInputTypes = {
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly user_id: CodecTypes['sqlite/text@1']['input'];
     };
+    readonly setlist_entries: {
+      readonly gig_id: CodecTypes['sqlite/text@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly position: CodecTypes['sqlite/integer@1']['input'];
+      readonly song_id: CodecTypes['sqlite/text@1']['input'];
+    };
     readonly settings: {
       readonly band_size: CodecTypes['sqlite/integer@1']['input'];
       readonly diesel_price: CodecTypes['sqlite/real@1']['input'];
@@ -734,6 +779,13 @@ export type StorageColumnInputTypes = {
       readonly home_lon: CodecTypes['sqlite/real@1']['input'] | null;
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly petrol_price: CodecTypes['sqlite/real@1']['input'];
+    };
+    readonly songs: {
+      readonly created_at: CodecTypes['sqlite/datetime@1']['input'];
+      readonly duration_sec: CodecTypes['sqlite/integer@1']['input'];
+      readonly id: CodecTypes['sqlite/text@1']['input'];
+      readonly notes: CodecTypes['sqlite/text@1']['input'];
+      readonly title: CodecTypes['sqlite/text@1']['input'];
     };
     readonly sound_engineers: {
       readonly active: CodecTypes['sqlite/integer@1']['input'];
@@ -881,6 +933,7 @@ export namespace Models {
     cars: GigCar[];
     contacts: GigContact[];
     presaleLinks: PresaleLink[];
+    setlist: SetlistEntry[];
     soundEngineer: SoundEngineer | null;
     supportActs: SupportAct[];
     timetable: TimetableEntry[];
@@ -891,6 +944,7 @@ export namespace Models {
       | 'cars'
       | 'contacts'
       | 'presaleLinks'
+      | 'setlist'
       | 'soundEngineer'
       | 'supportActs'
       | 'timetable'
@@ -928,6 +982,15 @@ export namespace Models {
     user: User;
     readonly [RelationKeys]?: 'user';
   };
+  export type SetlistEntry = {
+    gigId: CodecTypes['sqlite/text@1']['output'];
+    id: CodecTypes['sqlite/text@1']['output'];
+    position: CodecTypes['sqlite/integer@1']['output'];
+    songId: CodecTypes['sqlite/text@1']['output'];
+    gig: Gig;
+    song: Song;
+    readonly [RelationKeys]?: 'gig' | 'song';
+  };
   export type Settings = {
     bandSize: CodecTypes['sqlite/integer@1']['output'];
     dieselPrice: CodecTypes['sqlite/real@1']['output'];
@@ -937,6 +1000,15 @@ export namespace Models {
     id: CodecTypes['sqlite/text@1']['output'];
     petrolPrice: CodecTypes['sqlite/real@1']['output'];
     readonly [RelationKeys]?: never;
+  };
+  export type Song = {
+    createdAt: CodecTypes['sqlite/datetime@1']['output'];
+    durationSec: CodecTypes['sqlite/integer@1']['output'];
+    id: CodecTypes['sqlite/text@1']['output'];
+    notes: CodecTypes['sqlite/text@1']['output'];
+    title: CodecTypes['sqlite/text@1']['output'];
+    setlistEntries: SetlistEntry[];
+    readonly [RelationKeys]?: 'setlistEntries';
   };
   export type SoundEngineer = {
     active: CodecTypes['sqlite/integer@1']['output'];
@@ -1018,7 +1090,9 @@ export declare const models: {
   GigContact: Models.GigContact;
   PresaleLink: Models.PresaleLink;
   Session: Models.Session;
+  SetlistEntry: Models.SetlistEntry;
   Settings: Models.Settings;
+  Song: Models.Song;
   SoundEngineer: Models.SoundEngineer;
   SupportAct: Models.SupportAct;
   TimetableEntry: Models.TimetableEntry;
@@ -1847,6 +1921,72 @@ type ContractBase = Omit<
                 },
               ];
             };
+            readonly setlist_entries: {
+              columns: {
+                readonly gig_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+                readonly position: {
+                  readonly nativeType: 'integer';
+                  readonly codecId: 'sqlite/integer@1';
+                  readonly nullable: false;
+                };
+                readonly song_id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [
+                {
+                  readonly name: 'setlist_entries_gig_id_idx_f99649af';
+                  readonly prefix: 'setlist_entries_gig_id_idx';
+                  readonly columns: readonly ['gig_id'];
+                  readonly unique: false;
+                },
+                {
+                  readonly name: 'setlist_entries_song_id_idx_2e2805d0';
+                  readonly prefix: 'setlist_entries_song_id_idx';
+                  readonly columns: readonly ['song_id'];
+                  readonly unique: false;
+                },
+              ];
+              foreignKeys: readonly [
+                {
+                  readonly source: {
+                    readonly namespaceId: '__unbound__' & NamespaceId;
+                    readonly tableName: 'setlist_entries';
+                    readonly columns: readonly ['gig_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: '__unbound__' & NamespaceId;
+                    readonly tableName: 'gigs';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+                {
+                  readonly source: {
+                    readonly namespaceId: '__unbound__' & NamespaceId;
+                    readonly tableName: 'setlist_entries';
+                    readonly columns: readonly ['song_id'];
+                  };
+                  readonly target: {
+                    readonly namespaceId: '__unbound__' & NamespaceId;
+                    readonly tableName: 'songs';
+                    readonly columns: readonly ['id'];
+                  };
+                },
+              ];
+            };
             readonly settings: {
               columns: {
                 readonly band_size: {
@@ -1899,6 +2039,44 @@ type ContractBase = Omit<
                     readonly kind: 'literal';
                     readonly value: DefaultLiteralValue<'sqlite/real@1', 1.8>;
                   };
+                };
+              };
+              primaryKey: { readonly columns: readonly ['id'] };
+              uniques: readonly [];
+              indexes: readonly [];
+              foreignKeys: readonly [];
+            };
+            readonly songs: {
+              columns: {
+                readonly created_at: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/datetime@1';
+                  readonly nullable: false;
+                  readonly default: { readonly kind: 'function'; readonly expression: 'now()' };
+                };
+                readonly duration_sec: {
+                  readonly nativeType: 'integer';
+                  readonly codecId: 'sqlite/integer@1';
+                  readonly nullable: false;
+                };
+                readonly id: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                };
+                readonly notes: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'sqlite/text@1', ''>;
+                  };
+                };
+                readonly title: {
+                  readonly nativeType: 'text';
+                  readonly codecId: 'sqlite/text@1';
+                  readonly nullable: false;
                 };
               };
               primaryKey: { readonly columns: readonly ['id'] };
@@ -2409,10 +2587,15 @@ type ContractBase = Omit<
       readonly namespace: '__unbound__' & NamespaceId;
       readonly model: 'Session';
     };
+    readonly setlist_entries: {
+      readonly namespace: '__unbound__' & NamespaceId;
+      readonly model: 'SetlistEntry';
+    };
     readonly settings: {
       readonly namespace: '__unbound__' & NamespaceId;
       readonly model: 'Settings';
     };
+    readonly songs: { readonly namespace: '__unbound__' & NamespaceId; readonly model: 'Song' };
     readonly sound_engineers: {
       readonly namespace: '__unbound__' & NamespaceId;
       readonly model: 'SoundEngineer';
@@ -2843,6 +3026,17 @@ type ContractBase = Omit<
                   readonly targetFields: readonly ['gigId'];
                 };
               };
+              readonly setlist: {
+                readonly to: {
+                  readonly namespace: '__unbound__' & NamespaceId;
+                  readonly model: 'SetlistEntry';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['gigId'];
+                };
+              };
               readonly soundEngineer: {
                 readonly to: {
                   readonly namespace: '__unbound__' & NamespaceId;
@@ -3142,6 +3336,62 @@ type ContractBase = Omit<
               };
             };
           };
+          readonly SetlistEntry: {
+            readonly fields: {
+              readonly gigId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly position: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/integer@1' };
+              };
+              readonly songId: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+            };
+            readonly relations: {
+              readonly gig: {
+                readonly to: {
+                  readonly namespace: '__unbound__' & NamespaceId;
+                  readonly model: 'Gig';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['gigId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+              readonly song: {
+                readonly to: {
+                  readonly namespace: '__unbound__' & NamespaceId;
+                  readonly model: 'Song';
+                };
+                readonly cardinality: 'N:1';
+                readonly nullable: false;
+                readonly on: {
+                  readonly localFields: readonly ['songId'];
+                  readonly targetFields: readonly ['id'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'setlist_entries';
+              readonly namespaceId: '__unbound__';
+              readonly fields: {
+                readonly gigId: { readonly column: 'gig_id' };
+                readonly id: { readonly column: 'id' };
+                readonly position: { readonly column: 'position' };
+                readonly songId: { readonly column: 'song_id' };
+              };
+            };
+          };
           readonly Settings: {
             readonly fields: {
               readonly bandSize: {
@@ -3185,6 +3435,54 @@ type ContractBase = Omit<
                 readonly homeLon: { readonly column: 'home_lon' };
                 readonly id: { readonly column: 'id' };
                 readonly petrolPrice: { readonly column: 'petrol_price' };
+              };
+            };
+          };
+          readonly Song: {
+            readonly fields: {
+              readonly createdAt: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/datetime@1' };
+              };
+              readonly durationSec: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/integer@1' };
+              };
+              readonly id: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly notes: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+              readonly title: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
+              };
+            };
+            readonly relations: {
+              readonly setlistEntries: {
+                readonly to: {
+                  readonly namespace: '__unbound__' & NamespaceId;
+                  readonly model: 'SetlistEntry';
+                };
+                readonly cardinality: '1:N';
+                readonly on: {
+                  readonly localFields: readonly ['id'];
+                  readonly targetFields: readonly ['songId'];
+                };
+              };
+            };
+            readonly storage: {
+              readonly table: 'songs';
+              readonly namespaceId: '__unbound__';
+              readonly fields: {
+                readonly createdAt: { readonly column: 'created_at' };
+                readonly durationSec: { readonly column: 'duration_sec' };
+                readonly id: { readonly column: 'id' };
+                readonly notes: { readonly column: 'notes' };
+                readonly title: { readonly column: 'title' };
               };
             };
           };
