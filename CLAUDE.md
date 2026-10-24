@@ -49,7 +49,7 @@ There are no `package.json` scripts; tasks live in `vite.config.ts` under `run.t
   - Use a single connection.
   - Schema changes go through the Prisma 8 contract and planned, committed migrations. The Prisma 8 docs ship in `node_modules/@prisma/orm-sqlite/skills/prisma-8/`; read them instead of relying on memory.
   - IDs are UUIDv7.
-    - SQLite PSL has no `Boolean`: flags are `Int` (0/1). Enum columns come back as `string`; services cast them to the label types.
+    - SQLite PSL has no `Boolean`: flags are `Int` (0/1). Enum columns come back as `string`; services convert them with `keyOf()` from `src/lib/labels.ts`, which throws on unknown values.
   - Multi-row deletes need `deleteAll()`; `delete()` removes a single row.
 - List sections (timetable, support acts, backline, presale links) post as one JSON hidden field and are replaced wholesale by the service.
 - Money is stored as euros (`Float`). Number inputs accept a German decimal comma.

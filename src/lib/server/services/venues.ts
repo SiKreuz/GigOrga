@@ -1,4 +1,4 @@
-import type { GigStatus } from "$lib/labels";
+import { gigStatuses, keyOf } from "$lib/labels";
 
 import { type Db, type Reader, transaction } from "../db";
 
@@ -68,7 +68,7 @@ export async function getVenue(db: Reader, id: string) {
   return {
     ...venue,
     gigs: venue.gigs
-      .map((gig) => ({ ...gig, status: gig.status as GigStatus }))
+      .map((gig) => ({ ...gig, status: keyOf(gigStatuses, gig.status) }))
       .toSorted((a, b) => b.date.localeCompare(a.date)),
   };
 }

@@ -1,4 +1,4 @@
-import type { FuelType, GigStatus } from "$lib/labels";
+import { fuelTypes, gigStatuses, keyOf } from "$lib/labels";
 import { orderStops } from "$lib/tour";
 
 import { type Db, type Reader, transaction } from "../db";
@@ -55,8 +55,8 @@ export async function getTour(db: Reader, id: string) {
     ...rest,
     stops: orderStops(gigs).map((gig) => ({
       ...gig,
-      status: gig.status as GigStatus,
-      cars: gig.cars.map((link) => ({ ...link.car, fuel: link.car.fuel as FuelType })),
+      status: keyOf(gigStatuses, gig.status),
+      cars: gig.cars.map((link) => ({ ...link.car, fuel: keyOf(fuelTypes, link.car.fuel) })),
     })),
   };
 }

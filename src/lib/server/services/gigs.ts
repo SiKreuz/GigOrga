@@ -1,12 +1,13 @@
-import type {
-  AccommodationType,
-  BacklineProvider,
-  DealType,
-  FuelType,
-  GigStatus,
-  GigType,
-  InvoiceStatus,
-  TimetableKind,
+import {
+  accommodationTypes,
+  backlineProviders,
+  dealTypes,
+  fuelTypes,
+  gigStatuses,
+  gigTypes,
+  invoiceStatuses,
+  keyOf,
+  timetableKinds,
 } from "$lib/labels";
 import { legOf } from "$lib/tour";
 
@@ -164,22 +165,22 @@ export async function getGig(db: Reader, id: string) {
   return {
     ...rest,
     tourLeg: tour ? tourLegOf(tour, gig.id) : null,
-    status: gig.status as GigStatus,
-    type: gig.type as GigType,
-    dealType: gig.dealType as DealType,
-    invoiceStatus: gig.invoiceStatus as InvoiceStatus,
-    accommodationType: gig.accommodationType as AccommodationType,
+    status: keyOf(gigStatuses, gig.status),
+    type: keyOf(gigTypes, gig.type),
+    dealType: keyOf(dealTypes, gig.dealType),
+    invoiceStatus: keyOf(invoiceStatuses, gig.invoiceStatus),
+    accommodationType: keyOf(accommodationTypes, gig.accommodationType),
     cars: gig.cars
-      .map((link) => ({ ...link.car, fuel: link.car.fuel as FuelType }))
+      .map((link) => ({ ...link.car, fuel: keyOf(fuelTypes, link.car.fuel) }))
       .toSorted((a, b) => a.name.localeCompare(b.name, "de")),
     contacts: gig.contacts.toSorted((a, b) => a.contact.name.localeCompare(b.contact.name, "de")),
     timetable: gig.timetable
       .toSorted(byPosition)
-      .map((entry) => ({ ...entry, kind: entry.kind as TimetableKind })),
+      .map((entry) => ({ ...entry, kind: keyOf(timetableKinds, entry.kind) })),
     supportActs: gig.supportActs.toSorted(byPosition),
     backline: gig.backline
       .toSorted(byPosition)
-      .map((item) => ({ ...item, provider: item.provider as BacklineProvider })),
+      .map((item) => ({ ...item, provider: keyOf(backlineProviders, item.provider) })),
     presaleLinks: gig.presaleLinks.toSorted(byPosition),
   };
 }
@@ -216,9 +217,9 @@ export async function listGigs(db: Reader) {
   return gigs
     .map(({ timetable, setlist, ...gig }) => ({
       ...gig,
-      status: gig.status as GigStatus,
-      type: gig.type as GigType,
-      dealType: gig.dealType as DealType,
+      status: keyOf(gigStatuses, gig.status),
+      type: keyOf(gigTypes, gig.type),
+      dealType: keyOf(dealTypes, gig.dealType),
       getIn: timetable.find((entry) => entry.kind === "getin")?.start ?? "",
       showTime: timetable.find((entry) => entry.kind === "show")?.start ?? "",
       hasSetlist: setlist.length > 0,
