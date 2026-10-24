@@ -1,3 +1,5 @@
+import * as v from "valibot";
+
 import { type Db, transaction } from "../db";
 import { getGig } from "./gigs";
 import { getSettings, setHomeLocation } from "./settings";
@@ -19,6 +21,11 @@ type Venue = {
   lon: number | null;
 };
 
+const geocodeResponse = v.array(v.object({ lat: v.string(), lon: v.string() }));
+const routeResponse = v.object({
+  routes: v.optional(v.array(v.object({ distance: v.number(), duration: v.number() }))),
+});
+
 const headers = { "User-Agent": "GigOrga/1.0 (self-hosted gig planner)", "Accept-Language": "de" };
 
 export async function geocode(config: RoutingConfig, query: string): Promise<Point | undefined> {
@@ -26,7 +33,8 @@ export async function geocode(config: RoutingConfig, query: string): Promise<Poi
   url.search = new URLSearchParams({ q: query, format: "jsonv2", limit: "1" }).toString();
   const response = await config.fetch(url, { headers });
   if (!response.ok) return undefined;
-  const hit = ((await response.json()) as { lat: string; lon: string }[]).at(0);
+  const body = v.safeParse(geocodeResponse, await response.json());
+  const hit = body.success ? body.output.at(0) : undefined;
   return hit ? { lat: Number(hit.lat), lon: Number(hit.lon) } : undefined;
 }
 
@@ -36,8 +44,8 @@ export async function drivingRoute(config: RoutingConfig, from: Point, to: Point
   url.searchParams.set("overview", "false");
   const response = await config.fetch(url, { headers });
   if (!response.ok) return;
-  const body = (await response.json()) as { routes?: { distance: number; duration: number }[] };
-  const route = body.routes?.at(0);
+  const body = v.safeParse(routeResponse, await response.json());
+  const route = body.success ? body.output.routes?.at(0) : undefined;
   if (!route) return;
   return {
     distanceKm: Math.round(route.distance / 100) / 10,
