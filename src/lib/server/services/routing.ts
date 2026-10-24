@@ -23,9 +23,8 @@ type Venue = {
 };
 
 const geocodeResponse = v.array(v.object({ lat: v.string(), lon: v.string() }));
-const routeResponse = v.object({
-  routes: v.optional(v.array(v.object({ distance: v.number(), duration: v.number() }))),
-});
+const routeLeg = v.object({ distance: v.number(), duration: v.number() });
+const routeResponse = v.object({ routes: v.optional(v.array(routeLeg)) });
 
 const headers = { "User-Agent": "GigOrga/1.0 (self-hosted gig planner)", "Accept-Language": "de" };
 

@@ -40,6 +40,7 @@ const requiredNumber = (fallback: number) =>
 const jsonList = <T extends v.GenericSchema>(item: T) =>
   v.pipe(v.optional(v.string(), "[]"), v.parseJson(), v.array(item));
 const flagValue = v.picklist([0, 1]);
+const oneOf = <K extends string>(labels: Record<K, string>) => v.picklist(keys(labels));
 const optionalId = v.pipe(
   v.optional(v.string(), ""),
   v.transform((value) => (value === "" ? null : value)),
@@ -49,7 +50,7 @@ export const newGigSchema = v.pipe(
   v.object({
     title: text(200),
     date: v.pipe(v.string(), v.isoDate("Bitte ein Datum angeben")),
-    status: v.picklist(keys(gigStatuses)),
+    status: oneOf(gigStatuses),
     venueName: text(200),
   }),
   v.forward(
@@ -61,8 +62,8 @@ export const newGigSchema = v.pipe(
 export const gigBasicsSchema = v.object({
   title: required("Bitte einen Namen angeben"),
   date: v.pipe(v.string(), v.isoDate("Bitte ein Datum angeben")),
-  status: v.picklist(keys(gigStatuses)),
-  type: v.picklist(keys(gigTypes)),
+  status: oneOf(gigStatuses),
+  type: oneOf(gigTypes),
   venueId: optionalId,
   tourId: optionalId,
   notes: text(5000),
@@ -72,31 +73,33 @@ export const tourSchema = v.object({
   name: required("Bitte einen Namen angeben"),
 });
 
-export const timetableSchema = v.object({
-  entries: jsonList(
-    v.object({
-      kind: v.picklist(keys(timetableKinds)),
-      start: time,
-      end: time,
-      label: text(200),
-      fixed: flagValue,
-    }),
-  ),
+const timetableEntry = v.object({
+  kind: oneOf(timetableKinds),
+  start: time,
+  end: time,
+  label: text(200),
+  fixed: flagValue,
 });
 
-export const supportActsSchema = v.object({
-  acts: jsonList(
-    v.object({
-      name: required("Name fehlt"),
-      link: text(500),
-      contact: text(500),
-      stageTime: time,
-      sharesBackline: flagValue,
-    }),
-  ),
+export const timetableSchema = v.object({ entries: jsonList(timetableEntry) });
+
+const supportAct = v.object({
+  name: required("Name fehlt"),
+  link: text(500),
+  contact: text(500),
+  stageTime: time,
+  sharesBackline: flagValue,
 });
+
+export const supportActsSchema = v.object({ acts: jsonList(supportAct) });
 
 export const houseEngineer = "haus";
+
+const backlineItem = v.object({
+  name: required("Bezeichnung fehlt"),
+  provider: oneOf(backlineProviders),
+  note: text(500),
+});
 
 export const techSchema = v.pipe(
   v.object({
@@ -105,13 +108,7 @@ export const techSchema = v.pipe(
     stagePlotSent: flag,
     inputListSent: flag,
     techNotes: text(5000),
-    backline: jsonList(
-      v.object({
-        name: required("Bezeichnung fehlt"),
-        provider: v.picklist(keys(backlineProviders)),
-        note: text(500),
-      }),
-    ),
+    backline: jsonList(backlineItem),
   }),
   v.transform(({ soundEngineer, ...tech }) => ({
     ...tech,
@@ -120,22 +117,26 @@ export const techSchema = v.pipe(
   })),
 );
 
+const percent = v.pipe(number, v.nullable(v.pipe(v.number(), v.maxValue(100, "Höchstens 100 %"))));
+const presaleLink = v.object({
+  label: text(100),
+  url: v.pipe(v.string(), v.trim(), v.url("Ungültiger Link")),
+});
+
 export const dealSchema = v.object({
-  dealType: v.picklist(keys(dealTypes)),
+  dealType: oneOf(dealTypes),
   fee: number,
-  doorPercent: v.pipe(number, v.nullable(v.pipe(v.number(), v.maxValue(100, "Höchstens 100 %")))),
+  doorPercent: percent,
   costs: number,
   rent: number,
   deposit: number,
   ticketPresale: number,
   ticketDoor: number,
   expectedAttendance: integer,
-  invoiceStatus: v.picklist(keys(invoiceStatuses)),
+  invoiceStatus: oneOf(invoiceStatuses),
   gemaReported: flag,
   dealNotes: text(5000),
-  presaleLinks: jsonList(
-    v.object({ label: text(100), url: v.pipe(v.string(), v.trim(), v.url("Ungültiger Link")) }),
-  ),
+  presaleLinks: jsonList(presaleLink),
 });
 
 export const travelSchema = v.object({
@@ -157,7 +158,7 @@ export const carSchema = v.object({
     v.number("Bitte den Verbrauch angeben"),
     v.maxValue(50, "Unrealistischer Verbrauch"),
   ),
-  fuel: v.picklist(keys(fuelTypes)),
+  fuel: oneOf(fuelTypes),
   seats: integer,
   standard: flag,
 });
@@ -168,14 +169,16 @@ export const soundEngineerSchema = v.object({
   email: text(200),
 });
 
+const songDuration = v.pipe(
+  v.optional(v.string(), ""),
+  v.transform(parseSongDuration),
+  v.number("Dauer als m:ss angeben"),
+);
+
 export const songSchema = v.pipe(
   v.object({
     title: required("Bitte einen Titel angeben"),
-    duration: v.pipe(
-      v.optional(v.string(), ""),
-      v.transform(parseSongDuration),
-      v.number("Dauer als m:ss angeben"),
-    ),
+    duration: songDuration,
     notes: text(2000),
   }),
   v.transform(({ duration, ...song }) => ({ ...song, durationSec: duration })),
@@ -193,7 +196,7 @@ export const hospitalitySchema = v.object({
 });
 
 export const accommodationSchema = v.object({
-  accommodationType: v.picklist(keys(accommodationTypes)),
+  accommodationType: oneOf(accommodationTypes),
   accommodationName: text(200),
   accommodationAddress: text(500),
   accommodationLink: text(500),
@@ -241,7 +244,7 @@ export const settingsSchema = v.object({
 
 export const userChangeSchema = v.object({
   id: required("Benutzer fehlt"),
-  role: v.optional(v.picklist(keys(roles))),
+  role: v.optional(oneOf(roles)),
   active: v.optional(v.pipe(v.picklist(["0", "1"]), v.transform(Number))),
 });
 
