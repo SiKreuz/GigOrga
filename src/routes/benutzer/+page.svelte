@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import ConfirmButton from "$lib/components/ConfirmButton.svelte";
+  import OutboundLink from "$lib/components/OutboundLink.svelte";
   import { keys, roles } from "$lib/labels";
   import { ExternalLink, Trash2 } from "@lucide/svelte";
 
@@ -18,8 +19,8 @@
   <div class="flex flex-wrap items-center justify-between gap-4">
     <h1 class="text-2xl font-semibold tracking-tight">Benutzer</h1>
     {#if data.identityProvider}
-      <a href={data.identityProvider} class="btn btn-ghost" target="_blank" rel="noreferrer"
-        ><ExternalLink class="size-4" /> In Pocket ID einladen</a
+      <OutboundLink href={data.identityProvider} class="btn btn-ghost"
+        ><ExternalLink class="size-4" /> In Pocket ID einladen</OutboundLink
       >
     {/if}
   </div>
@@ -61,14 +62,15 @@
           <form method="POST" action="?/change" use:enhance>
             <input type="hidden" name="id" value={user.id} />
             <input type="hidden" name="active" value={user.active === 0 ? "1" : "0"} />
-            <button class="btn h-9 btn-ghost px-3">
+            <button type="submit" class="btn h-9 btn-ghost px-3">
               {user.active === 0 ? "Aktivieren" : "Sperren"}
             </button>
           </form>
           <form method="POST" action="?/delete" use:enhance>
             <input type="hidden" name="id" value={user.id} />
             <ConfirmButton
-              message={`${user.name || user.email} aus GigOrga entfernen? Solange das Konto in Pocket ID freigeschaltet ist, kann es sich wieder anmelden. Zum Aussperren „Sperren“ nutzen.`}
+              message="{user.name ||
+                user.email} aus GigOrga entfernen? Solange das Konto in Pocket ID freigeschaltet ist, kann es sich wieder anmelden. Zum Aussperren „Sperren“ nutzen."
               label="Entfernen"
             >
               <Trash2 class="size-4" />

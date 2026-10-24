@@ -25,7 +25,7 @@
     </p>
   {/if}
   <form method="POST" {action} class="mt-8 w-full">
-    <button class="btn w-full btn-primary">
+    <button type="submit" class="btn w-full btn-primary">
       <KeyRound class="size-4" />
       Mit Pocket ID anmelden
     </button>

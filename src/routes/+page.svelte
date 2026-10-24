@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import { page } from "$app/state";
   import { allowed } from "$lib/access.svelte";
   import EmptyState from "$lib/components/EmptyState.svelte";
@@ -20,21 +21,12 @@
   const past = $derived(visible.filter((gig) => gig.date < today).toReversed());
   const next = $derived(upcoming.find((gig) => gig.status !== "abgesagt"));
 
-  function byMonth(gigs: GigSummary[]) {
-    const groups = new Map<string, GigSummary[]>();
-    for (const gig of gigs) {
-      const key = gig.date.slice(0, 7);
-      groups.set(key, [...(groups.get(key) ?? []), gig]);
-    }
-    return [...groups.entries()];
-  }
+  const byMonth = (gigs: GigSummary[]) => [...Map.groupBy(gigs, (gig) => gig.date.slice(0, 7))];
 
-  function filterHref(status: GigStatus | null) {
-    const params = new URLSearchParams(page.url.searchParams);
-    if (status) params.set("status", status);
-    else params.delete("status");
-    const query = params.toString();
-    return query ? `?${query}` : "/";
+  function filterQuery(status: GigStatus | null) {
+    const params = [...page.url.searchParams].filter(([key]) => key !== "status");
+    if (status) params.push(["status", status]);
+    return params.length > 0 ? `?${new URLSearchParams(params)}` : "";
   }
 
   const day = (date: string) => date.slice(8, 10);
@@ -64,8 +56,9 @@
     </div>
     <div class="min-w-0 flex-1">
       <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <a href="/gigs/{gig.id}" class="truncate font-medium after:absolute after:inset-0"
-          >{gig.title}</a
+        <a
+          href={resolve("/gigs/[id]", { id: gig.id })}
+          class="truncate font-medium after:absolute after:inset-0">{gig.title}</a
         >
         <StatusChip status={gig.status} />
       </div>
@@ -83,7 +76,7 @@
       </div>
     </div>
     <a
-      href="/gigs/{gig.id}/tagesplan"
+      href={resolve("/gigs/[id]/tagesplan", { id: gig.id })}
       class="relative btn-icon hover:bg-surface"
       aria-label="Tagesplan"
       title="Tagesplan"
@@ -92,7 +85,7 @@
     </a>
     {#if gig.hasSetlist}
       <a
-        href="/gigs/{gig.id}/setlist"
+        href={resolve("/gigs/[id]/setlist", { id: gig.id })}
         class="relative btn-icon hover:bg-surface"
         aria-label="Setlist"
         title="Setlist"
@@ -115,7 +108,7 @@
         Nächster Gig · {relativeDay(next.date, today)}
       </div>
       <a
-        href="/gigs/{next.id}"
+        href={resolve("/gigs/[id]", { id: next.id })}
         class="mt-2 block text-2xl font-bold tracking-tight after:absolute after:inset-0 sm:text-3xl"
         >{next.title}</a
       >
@@ -134,7 +127,7 @@
         {#if next.showTime}<span>Show {next.showTime}</span>{/if}
       </div>
       <a
-        href="/gigs/{next.id}/tagesplan"
+        href={resolve("/gigs/[id]/tagesplan", { id: next.id })}
         class="relative mt-5 inline-flex h-9 items-center gap-1.5 rounded-lg bg-white/15 px-3 text-sm font-medium transition-colors hover:bg-white/25"
       >
         <Printer class="size-3.5" /> Tagesplan
@@ -143,12 +136,13 @@
   {/if}
 
   <div class="flex flex-wrap items-center gap-2">
-    <a href={filterHref(null)} class={["chip", !filter ? "bg-accent text-accent-contrast" : ""]}
-      >Alle</a
+    <a
+      href="{resolve('/')}{filterQuery(null)}"
+      class={["chip", !filter ? "bg-accent text-accent-contrast" : ""]}>Alle</a
     >
     {#each Object.entries(gigStatuses) as [key, label] (key)}
       <a
-        href={filterHref(key as GigStatus)}
+        href="{resolve('/')}{filterQuery(key as GigStatus)}"
         class={["chip", filter === key ? "bg-accent text-accent-contrast" : "bg-surface-2"]}
       >
         {label}
@@ -163,7 +157,9 @@
         description="Leg den ersten Gig an – Venue, Zeiten und Deal kannst du danach ergänzen."
       >
         {#if allowed("edit")}
-          <a href="/gigs/new" class="btn btn-primary"><Plus class="size-4" /> Neuer Gig</a>
+          <a href={resolve("/gigs/new")} class="btn btn-primary"
+            ><Plus class="size-4" /> Neuer Gig</a
+          >
         {/if}
       </EmptyState>
     </div>
@@ -193,7 +189,7 @@
         </div>
       {:else}
         <a
-          href="?{new URLSearchParams([...page.url.searchParams, ['past', '1']])}"
+          href="{resolve('/')}?{new URLSearchParams([...page.url.searchParams, ['past', '1']])}"
           class="btn btn-ghost"
         >
           {past.length} vergangene Gigs anzeigen

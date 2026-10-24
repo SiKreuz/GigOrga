@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { resolve } from "$app/paths";
   import { allowed } from "$lib/access.svelte";
   import AccommodationSection from "$lib/components/gig/AccommodationSection.svelte";
   import BasicsForm from "$lib/components/gig/BasicsForm.svelte";
@@ -29,7 +30,7 @@
   const net = $derived(estimate(gig, travel, people).net);
 
   let editingBasics = $state(false);
-  let editing = $state({
+  const editing = $state({
     zeitplan: false,
     setlist: false,
     venue: false,
@@ -87,7 +88,10 @@
 {#key gig.id}
   <div class="mx-auto flex max-w-4xl flex-col gap-5">
     <div>
-      <a href="/" class="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-text">
+      <a
+        href={resolve("/")}
+        class="mb-3 inline-flex items-center gap-1 text-sm text-muted hover:text-text"
+      >
         <ArrowLeft class="size-4" /> Alle Gigs
       </a>
       <div class="flex flex-wrap items-start gap-3">
@@ -117,7 +121,7 @@
             <span>{gigTypes[gig.type]}</span>
             {#if gig.tourLeg}
               <a
-                href="/tours/{gig.tourLeg.tour.id}"
+                href={resolve("/tours/[id]", { id: gig.tourLeg.tour.id })}
                 class="flex items-center gap-1 text-accent hover:underline"
               >
                 <Route class="size-3.5" />{gig.tourLeg.tour.name}
@@ -125,11 +129,15 @@
             {/if}
           </div>
         </div>
-        <a href="/gigs/{gig.id}/tagesplan" class="btn h-9 btn-ghost px-3">
+        <a href={resolve("/gigs/[id]/tagesplan", { id: gig.id })} class="btn h-9 btn-ghost px-3">
           <Printer class="size-3.5" /> Tagesplan
         </a>
         {#if !editingBasics && allowed("edit")}
-          <button class="btn h-9 btn-ghost px-3" onclick={() => (editingBasics = true)}>
+          <button
+            type="button"
+            class="btn h-9 btn-ghost px-3"
+            onclick={() => (editingBasics = true)}
+          >
             <Pencil class="size-3.5" /> Bearbeiten
           </button>
         {/if}
@@ -230,7 +238,11 @@
       >
         <span class="mr-1 text-sm text-muted">Hinzufügen:</span>
         {#each addable as section (section.id)}
-          <button class="btn h-8 btn-ghost px-3" onclick={() => (editing[section.id] = true)}>
+          <button
+            type="button"
+            class="btn h-8 btn-ghost px-3"
+            onclick={() => (editing[section.id] = true)}
+          >
             <Plus class="size-3.5" />
             {section.label}
           </button>

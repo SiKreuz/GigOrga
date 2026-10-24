@@ -1,6 +1,8 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { resolve } from "$app/paths";
   import Fact from "$lib/components/Fact.svelte";
+  import OutboundLink from "$lib/components/OutboundLink.svelte";
   import Section from "$lib/components/Section.svelte";
   import type { GigDetail } from "$lib/server/services/gigs";
   import { Building2, ExternalLink, Mail, MapPin, Phone, Plus, X } from "@lucide/svelte";
@@ -34,8 +36,9 @@
     <div class="flex items-center gap-3">
       <div class="min-w-0 flex-1 text-sm">
         <div class="flex flex-wrap items-center gap-2">
-          <a href="/contacts/{link.contactId}" class="font-medium hover:text-accent"
-            >{link.contact.name}</a
+          <a
+            href={resolve("/contacts/[id]", { id: link.contactId })}
+            class="font-medium hover:text-accent">{link.contact.name}</a
           >
           {#if link.role}<span class="chip">{link.role}</span>{/if}
         </div>
@@ -55,7 +58,7 @@
       {#if removable}
         <form method="POST" action="?/unlinkContact" use:enhance>
           <input type="hidden" name="contactId" value={link.contactId} />
-          <button class="btn-icon hover:text-danger" aria-label="Kontakt entfernen"
+          <button type="submit" class="btn-icon hover:text-danger" aria-label="Kontakt entfernen"
             ><X class="size-4" /></button
           >
         </form>
@@ -69,19 +72,20 @@
     <div class="flex flex-col gap-4">
       {#if venue}
         <div>
-          <a href="/venues/{venue.id}" class="font-medium hover:text-accent">{venue.name}</a>
+          <a href={resolve("/venues/[id]", { id: venue.id })} class="font-medium hover:text-accent"
+            >{venue.name}</a
+          >
           {#if venue.address || venue.city}
-            <a
+            <OutboundLink
               href={mapsUrl}
-              target="_blank"
-              rel="noreferrer"
               class="flex items-center gap-1 text-sm text-muted hover:text-accent"
             >
               <MapPin class="size-3.5" />{[venue.address, venue.city].filter(Boolean).join(", ")}
-            </a>
+            </OutboundLink>
           {:else}
-            <a href="/venues/{venue.id}" class="text-xs text-accent hover:underline"
-              >Adresse ergänzen</a
+            <a
+              href={resolve("/venues/[id]", { id: venue.id })}
+              class="text-xs text-accent hover:underline">Adresse ergänzen</a
             >
           {/if}
         </div>
@@ -91,12 +95,10 @@
             {#if venue.stage}<Fact label="Bühne">{venue.stage}</Fact>{/if}
             {#if venue.website}
               <Fact label="Website">
-                <a
+                <OutboundLink
                   href={venue.website}
-                  target="_blank"
-                  rel="noreferrer"
                   class="inline-flex items-center gap-1 text-accent hover:underline"
-                  >Öffnen<ExternalLink class="size-3" /></a
+                  >Öffnen<ExternalLink class="size-3" /></OutboundLink
                 >
               </Fact>
             {/if}
@@ -138,15 +140,16 @@
         <datalist id="contact-roles">
           {#each roles as role (role)}<option value={role}></option>{/each}
         </datalist>
-        <button class="btn btn-ghost"><Plus class="size-4" /> Verknüpfen</button>
+        <button type="submit" class="btn btn-ghost"><Plus class="size-4" /> Verknüpfen</button>
       </form>
       {#if errors.contactId}<span class="text-sm text-danger">{errors.contactId}</span>{/if}
       <p class="text-xs text-muted">
-        Neuer Kontakt? <a href="/contacts" class="text-accent hover:underline"
+        Neuer Kontakt? <a href={resolve("/contacts")} class="text-accent hover:underline"
           >Im Adressbuch anlegen</a
         >
         {#if venue}
-          · <a href="/venues/{venue.id}" class="text-accent hover:underline">Venue bearbeiten</a
+          · <a href={resolve("/venues/[id]", { id: venue.id })} class="text-accent hover:underline"
+            >Venue bearbeiten</a
           >{/if}
       </p>
     </div>

@@ -2,6 +2,7 @@
   import Checkbox from "$lib/components/Checkbox.svelte";
   import Fact from "$lib/components/Fact.svelte";
   import Field from "$lib/components/Field.svelte";
+  import OutboundLink from "$lib/components/OutboundLink.svelte";
   import Section from "$lib/components/Section.svelte";
   import Select from "$lib/components/Select.svelte";
   import { formatNumber } from "$lib/format";
@@ -34,14 +35,9 @@
       {#if gig.beds !== null}<Fact label="Schlafplätze">{gig.beds}</Fact>{/if}
       {#if gig.accommodationAddress}
         <Fact label="Adresse" wide>
-          <a
-            href={mapsUrl}
-            target="_blank"
-            rel="noreferrer"
-            class="inline-flex items-center gap-1 hover:text-accent"
-          >
+          <OutboundLink href={mapsUrl} class="inline-flex items-center gap-1 hover:text-accent">
             <MapPin class="size-3.5" />{gig.accommodationAddress}
-          </a>
+          </OutboundLink>
         </Fact>
       {/if}
       {#if gig.checkIn}<Fact label="Check-in ab">{gig.checkIn}</Fact>{/if}
@@ -52,14 +48,12 @@
       </Fact>
       {#if gig.accommodationLink}
         <Fact label="Link">
-          <a
+          <OutboundLink
             href={gig.accommodationLink}
-            target="_blank"
-            rel="noreferrer"
             class="inline-flex items-center gap-1 text-accent hover:underline"
           >
             Öffnen<ExternalLink class="size-3" />
-          </a>
+          </OutboundLink>
         </Fact>
       {/if}
       {#if gig.accommodationNotes}<Fact label="Notizen" wide>{gig.accommodationNotes}</Fact>{/if}

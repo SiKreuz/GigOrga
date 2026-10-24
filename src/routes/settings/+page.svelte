@@ -198,12 +198,12 @@
               <button type="button" class="btn btn-ghost" onclick={() => (adding = false)}
                 >Abbrechen</button
               >
-              <button class="btn btn-primary">Auto anlegen</button>
+              <button type="submit" class="btn btn-primary">Auto anlegen</button>
             </div>
           </form>
         {:else}
           <div>
-            <button class="btn btn-ghost" onclick={() => (adding = true)}
+            <button type="button" class="btn btn-ghost" onclick={() => (adding = true)}
               ><Plus class="size-4" /> Auto hinzufügen</button
             >
           </div>
@@ -260,12 +260,12 @@
               <button type="button" class="btn btn-ghost" onclick={() => (addingEngineer = false)}
                 >Abbrechen</button
               >
-              <button class="btn btn-primary">Tontechniker anlegen</button>
+              <button type="submit" class="btn btn-primary">Tontechniker anlegen</button>
             </div>
           </form>
         {:else}
           <div>
-            <button class="btn btn-ghost" onclick={() => (addingEngineer = true)}
+            <button type="button" class="btn btn-ghost" onclick={() => (addingEngineer = true)}
               ><Plus class="size-4" /> Tontechniker hinzufügen</button
             >
           </div>

@@ -91,12 +91,12 @@
               <button type="button" class="btn btn-ghost" onclick={() => (adding = false)}
                 >Abbrechen</button
               >
-              <button class="btn btn-primary">Song anlegen</button>
+              <button type="submit" class="btn btn-primary">Song anlegen</button>
             </div>
           </form>
         {:else}
           <div>
-            <button class="btn btn-ghost" onclick={() => (adding = true)}
+            <button type="button" class="btn btn-ghost" onclick={() => (adding = true)}
               ><Plus class="size-4" /> Song hinzufügen</button
             >
           </div>
