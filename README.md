@@ -24,21 +24,11 @@ bunx vp run test     # Unit-Tests
 bunx vp run check    # Format, Lint, Typen
 ```
 
-Für die Anmeldung lokal einen Pocket ID starten (nur für die Entwicklung):
-
-```sh
-docker compose -f compose.dev.yml up -d
-```
-
-Einmalig einrichten:
-
-1. http://localhost:1411/setup öffnen und das Admin-Konto mit Passkey anlegen.
-2. Unter „OIDC Clients“ einen Client „GigOrga“ mit der Callback-URL `http://localhost:5173/auth/callback` anlegen.
-3. `cp .env.example .env` und Client-ID und Secret in `OIDC_CLIENT_ID` und `OIDC_CLIENT_SECRET` eintragen.
+Für die Anmeldung braucht auch die lokale Entwicklung einen Pocket ID (siehe unten). Dort einen eigenen OIDC-Client mit der Callback-URL `http://localhost:5173/auth/callback` anlegen und `cp .env.example .env` ausfüllen.
 
 ## Anmeldung mit Pocket ID
 
-Pocket ID ist nicht Teil dieses Repos und läuft im Betrieb separat, z. B. neben dem Reverse Proxy (mit HTTPS, sonst funktionieren Passkeys nicht).
+Pocket ID ist nicht Teil dieses Repos und läuft separat, z. B. neben dem Reverse Proxy (mit HTTPS, sonst funktionieren Passkeys nicht).
 
 1. In Pocket ID eine Gruppe `twiceasmad` anlegen und die Bandmitglieder hinzufügen.
 2. Einen OIDC-Client für GigOrga mit der Callback-URL `https://<deine-domain>/auth/callback` anlegen und unter „Allowed User Groups“ auf `twiceasmad` beschränken.
