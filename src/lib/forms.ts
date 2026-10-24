@@ -157,6 +157,8 @@ export const soundEngineerSchema = v.object({
   email: text(200),
 });
 
+export const gigSoundEngineerSchema = v.object({ soundEngineerId: optionalId });
+
 export const hospitalitySchema = v.object({
   catering: flag,
   drinks: text(500),

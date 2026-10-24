@@ -3,6 +3,7 @@ import { describe, expect, test } from "vitest";
 import {
   carSchema,
   dealSchema,
+  gigSoundEngineerSchema,
   gigBasicsSchema,
   newGigSchema,
   parseForm,
@@ -173,6 +174,13 @@ describe("parseForm", () => {
     expect(parseForm(soundEngineerSchema, form({ name: "" }))).toMatchObject({
       success: false,
       errors: { name: "Bitte einen Namen angeben" },
+    });
+  });
+
+  test("maps an empty sound engineer choice to null", () => {
+    expect(parseForm(gigSoundEngineerSchema, form({ soundEngineerId: "" }))).toEqual({
+      success: true,
+      data: { soundEngineerId: null },
     });
   });
 

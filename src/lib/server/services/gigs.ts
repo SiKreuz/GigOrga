@@ -158,7 +158,7 @@ export function createGig(db: Db, gig: NewGig): Promise<string> {
 export async function updateGig(
   db: Db,
   id: string,
-  input: GigBasics | HospitalityInput | AccommodationInput,
+  input: GigBasics | HospitalityInput | AccommodationInput | { soundEngineerId: string | null },
 ) {
   await transaction(db, (tx) => tx.orm.Gig.where({ id }).update(input));
 }
@@ -221,6 +221,7 @@ export async function getGig(db: Reader, id: string) {
     .include("supportActs")
     .include("backline")
     .include("presaleLinks")
+    .include("soundEngineer", (engineer) => engineer.select("id", "name", "phone", "email"))
     .include("tour", (tour) =>
       tour
         .select("id", "name")

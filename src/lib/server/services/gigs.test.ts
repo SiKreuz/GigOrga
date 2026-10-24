@@ -14,6 +14,7 @@ import {
   updateTimetable,
   updateTravel,
 } from "$lib/server/services/gigs";
+import { archiveSoundEngineer, createSoundEngineer } from "$lib/server/services/soundEngineers";
 import { createTour } from "$lib/server/services/tours";
 import { deleteVenue } from "$lib/server/services/venues";
 import { gigBasics, test } from "$lib/server/testing";
@@ -181,6 +182,18 @@ describe("gigs", () => {
     const gig = await getGig(db, id);
     expect(gig).toMatchObject({ riderSent: 1, techNotes: "IEM" });
     expect(gig?.backline).toMatchObject(tech.backline);
+  });
+
+  test("keeps showing a sound engineer after they are archived", async ({ db, insertGig }) => {
+    const { id } = await insertGig();
+    expect((await getGig(db, id))?.soundEngineer).toBeNull();
+    const kim = { name: "Kim", phone: "0171 123456", email: "kim@example.com" };
+    const engineerId = await createSoundEngineer(db, kim);
+    await updateGig(db, id, { soundEngineerId: engineerId });
+    await archiveSoundEngineer(db, engineerId);
+    expect((await getGig(db, id))?.soundEngineer).toEqual({ id: engineerId, ...kim });
+    await updateGig(db, id, { soundEngineerId: null });
+    expect((await getGig(db, id))?.soundEngineer).toBeNull();
   });
 
   test("links and unlinks contacts", async ({ db, insertGig, insertContact }) => {

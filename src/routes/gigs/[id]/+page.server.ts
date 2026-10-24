@@ -2,6 +2,7 @@ import {
   accommodationSchema,
   dealSchema,
   gigBasicsSchema,
+  gigSoundEngineerSchema,
   hospitalitySchema,
   linkContactSchema,
   parseForm,
@@ -28,6 +29,7 @@ import {
 } from "$lib/server/services/gigs";
 import { routeToGig } from "$lib/server/services/routing";
 import { getSettings } from "$lib/server/services/settings";
+import { listSoundEngineers } from "$lib/server/services/soundEngineers";
 import { listTours } from "$lib/server/services/tours";
 import { listVenues } from "$lib/server/services/venues";
 import { error, fail, redirect } from "@sveltejs/kit";
@@ -39,14 +41,15 @@ export const load: PageServerLoad = async ({ params }) => {
   const db = getDb();
   const gig = await getGig(db, params.id);
   if (gig === undefined) error(404, "Gig nicht gefunden");
-  const [venues, contacts, cars, settings, tours] = await Promise.all([
+  const [venues, contacts, cars, settings, tours, soundEngineers] = await Promise.all([
     listVenues(db),
     listContacts(db),
     listCars(db),
     getSettings(db),
     listTours(db),
+    listSoundEngineers(db),
   ]);
-  return { gig, venues, contacts, cars, settings, tours };
+  return { gig, venues, contacts, cars, settings, tours, soundEngineers };
 };
 
 type Schema = Parameters<typeof parseForm>[0];
@@ -75,6 +78,9 @@ export const actions: Actions = {
   tech: section("tech", techSchema, (id, data) => updateTech(getDb(), id, data)),
   deal: section("deal", dealSchema, (id, data) => updateDeal(getDb(), id, data)),
   travel: section("travel", travelSchema, (id, data) => updateTravel(getDb(), id, data)),
+  soundEngineer: section("soundEngineer", gigSoundEngineerSchema, (id, data) =>
+    updateGig(getDb(), id, data),
+  ),
   hospitality: section("hospitality", hospitalitySchema, (id, data) =>
     updateGig(getDb(), id, data),
   ),
