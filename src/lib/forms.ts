@@ -9,6 +9,7 @@ import {
   gigTypes,
   invoiceStatuses,
   keys,
+  roles,
   timetableKinds,
 } from "./labels";
 
@@ -203,6 +204,12 @@ export const settingsSchema = v.object({
   ),
   petrolPrice: requiredNumber(1.8),
   dieselPrice: requiredNumber(1.7),
+});
+
+export const userChangeSchema = v.object({
+  id: required("Benutzer fehlt"),
+  role: v.optional(v.picklist(keys(roles))),
+  active: v.optional(v.pipe(v.picklist(["0", "1"]), v.transform(Number))),
 });
 
 type Schema = v.GenericSchema<Record<string, unknown>, Record<string, unknown>>;

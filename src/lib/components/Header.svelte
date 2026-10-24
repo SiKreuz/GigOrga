@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from "$app/state";
+  import { allowed } from "$lib/access.svelte";
   import {
     AudioLines,
     Building2,
@@ -8,6 +9,7 @@
     Plus,
     Route,
     Settings,
+    UserCog,
     Users,
   } from "@lucide/svelte";
 
@@ -22,6 +24,7 @@
     { href: "/contacts", label: "Kontakte", icon: Users },
     { href: "/settings", label: "Einstellungen", icon: Settings },
   ];
+  const adminLinks = [{ href: "/benutzer", label: "Benutzer", icon: UserCog }];
 
   const active = (href: string) =>
     href === "/"
@@ -41,7 +44,7 @@
     </a>
     {#if user}
       <nav class="flex min-w-0 items-center gap-1">
-        {#each links as link (link.href)}
+        {#each allowed("manageUsers") ? [...links, ...adminLinks] : links as link (link.href)}
           {@const Icon = link.icon}
           <a
             href={link.href}
@@ -61,7 +64,7 @@
       </nav>
     {/if}
     <div class="ml-auto flex shrink-0 items-center gap-2">
-      {#if user}
+      {#if user && allowed("edit")}
         <a
           href="/gigs/new"
           class="btn w-10 btn-primary px-0 sm:w-auto sm:px-4"

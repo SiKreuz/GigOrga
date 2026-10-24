@@ -1,5 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
+  import { allowed } from "$lib/access.svelte";
   import ContactFields from "$lib/components/ContactFields.svelte";
   import { ChevronRight, Mail, Phone, Plus } from "@lucide/svelte";
 
@@ -14,7 +15,7 @@
 <div class="flex flex-col gap-6">
   <div class="flex items-center justify-between gap-4">
     <h1 class="text-2xl font-semibold tracking-tight">Kontakte</h1>
-    {#if !creating && !form}
+    {#if !creating && !form && allowed("edit")}
       <button class="btn btn-primary" onclick={() => (creating = true)}
         ><Plus class="size-4" /> Neuer Kontakt</button
       >

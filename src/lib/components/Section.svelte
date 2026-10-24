@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { allowed } from "$lib/access.svelte";
   import { Check, Pencil } from "@lucide/svelte";
   import type { Component, Snippet } from "svelte";
 
@@ -46,7 +47,7 @@
         <Check class="size-4" /> Gespeichert
       </span>
     {/if}
-    {#if !editing}
+    {#if !editing && allowed("edit")}
       <button type="button" class="btn h-8 btn-ghost px-3" onclick={() => (editing = true)}>
         <Pencil class="size-3.5" />
         <span class="hidden sm:inline">Bearbeiten</span>

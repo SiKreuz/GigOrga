@@ -9,6 +9,7 @@ services:
       OIDC_ISSUER: ${OIDC_ISSUER}
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
     volumes:
       - gigorga-data:/data
     restart: unless-stopped

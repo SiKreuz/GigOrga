@@ -8,4 +8,5 @@ export const config = {
   oidcIssuer: env.OIDC_ISSUER ?? "",
   oidcClientId: env.OIDC_CLIENT_ID ?? "",
   oidcClientSecret: env.OIDC_CLIENT_SECRET ?? "",
+  adminEmail: env.ADMIN_EMAIL ?? "",
 };

@@ -224,6 +224,23 @@
               }
             ]
           },
+          "Role": {
+            "codecId": "sqlite/text@1",
+            "members": [
+              {
+                "name": "admin",
+                "value": "admin"
+              },
+              {
+                "name": "editor",
+                "value": "editor"
+              },
+              {
+                "name": "viewer",
+                "value": "viewer"
+              }
+            ]
+          },
           "TimetableKind": {
             "codecId": "sqlite/text@1",
             "members": [
@@ -1839,6 +1856,13 @@
           },
           "User": {
             "fields": {
+              "active": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/integer@1",
+                  "kind": "scalar"
+                }
+              },
               "createdAt": {
                 "nullable": false,
                 "type": {
@@ -1874,6 +1898,19 @@
                   "kind": "scalar"
                 }
               },
+              "role": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "Role",
+                  "namespaceId": "__unbound__",
+                  "plane": "domain"
+                }
+              },
               "subject": {
                 "nullable": false,
                 "type": {
@@ -1901,6 +1938,9 @@
             },
             "storage": {
               "fields": {
+                "active": {
+                  "column": "active"
+                },
                 "createdAt": {
                   "column": "created_at"
                 },
@@ -1915,6 +1955,9 @@
                 },
                 "name": {
                   "column": "name"
+                },
+                "role": {
+                  "column": "role"
                 },
                 "subject": {
                   "column": "subject"
@@ -3301,6 +3344,15 @@
             },
             "users": {
               "columns": {
+                "active": {
+                  "codecId": "sqlite/integer@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 1
+                  },
+                  "nativeType": "integer",
+                  "nullable": false
+                },
                 "created_at": {
                   "codecId": "sqlite/datetime@1",
                   "default": {
@@ -3341,6 +3393,21 @@
                   },
                   "nativeType": "text",
                   "nullable": false
+                },
+                "role": {
+                  "codecId": "sqlite/text@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": "viewer"
+                  },
+                  "nativeType": "text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Role",
+                    "namespaceId": "__unbound__",
+                    "plane": "storage"
+                  }
                 },
                 "subject": {
                   "codecId": "sqlite/text@1",
@@ -3531,6 +3598,14 @@
                 "bezahlt"
               ]
             },
+            "Role": {
+              "kind": "valueSet",
+              "values": [
+                "admin",
+                "editor",
+                "viewer"
+              ]
+            },
             "TimetableKind": {
               "kind": "valueSet",
               "values": [
@@ -3552,7 +3627,7 @@
         "id": "__unbound__"
       }
     },
-    "storageHash": "97dc7e08346af0e4eb8dada17252120b0cafa109c00bb7871dae2c43b4ecd265"
+    "storageHash": "5eb55c7d8dc2244916bbf755d83df68cb32989e09d0adccecff00a529754d67d"
   },
   "capabilities": {
     "sql": {

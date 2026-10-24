@@ -33,8 +33,18 @@ Pocket ID ist nicht Teil dieses Repos und läuft separat, z. B. neben dem Revers
 1. In Pocket ID eine Gruppe `twiceasmad` anlegen und die Bandmitglieder hinzufügen.
 2. Einen OIDC-Client für GigOrga mit der Callback-URL `https://<deine-domain>/auth/callback` anlegen und unter „Allowed User Groups“ auf `twiceasmad` beschränken.
 3. Die Selbstregistrierung in Pocket ID ausgeschaltet lassen. Neue Mitglieder lädst du als Admin ein: Benutzer anlegen und den Einmal-Login-Link schicken, damit sie einen Passkey registrieren.
-4. `ORIGIN`, `OIDC_ISSUER`, `OIDC_CLIENT_ID` und `OIDC_CLIENT_SECRET` setzen.
+4. `ORIGIN`, `OIDC_ISSUER`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` und `ADMIN_EMAIL` setzen.
 5. Die Basic Auth am Reverse Proxy entfernen; sie stört den Login-Redirect.
+
+## Rollen
+
+| Rolle      | Darf                                      |
+| ---------- | ----------------------------------------- |
+| Admin      | alles, plus Benutzer verwalten            |
+| Bearbeiten | Gigs, Touren, Venues, Kontakte bearbeiten |
+| Nur lesen  | alles ansehen, nichts ändern              |
+
+Neue Mitglieder starten nach ihrer ersten Anmeldung mit „Nur lesen“. Wer sich mit der Adresse aus `ADMIN_EMAIL` anmeldet, wird Admin. Unter „Benutzer“ ändern Admins die Rollen, sperren Mitglieder für GigOrga oder entfernen sie. Eingeladen wird weiterhin in Pocket ID.
 
 ## Umgebungsvariablen
 
@@ -46,6 +56,7 @@ Pocket ID ist nicht Teil dieses Repos und läuft separat, z. B. neben dem Revers
 | `OIDC_ISSUER`        | –                                     | URL des Pocket ID                                     |
 | `OIDC_CLIENT_ID`     | –                                     | Client-ID des GigOrga-Clients in Pocket ID            |
 | `OIDC_CLIENT_SECRET` | –                                     | Client-Secret dazu                                    |
+| `ADMIN_EMAIL`        | –                                     | Diese Adresse wird bei der Anmeldung Admin            |
 | `GEOCODER_URL`       | `https://nominatim.openstreetmap.org` | Geocoding für die Routenberechnung                    |
 | `ROUTER_URL`         | `https://router.project-osrm.org`     | Routing (OSRM) für Entfernung und Fahrzeit            |
 
