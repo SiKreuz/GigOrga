@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 
-import { hasAccommodation, hasContacts, hasHospitality, timesOf } from "./daysheet";
+import { hasAccommodation, hasContacts, hasHospitality, playtime, timesOf } from "./daysheet";
 
 const noHospitality = { catering: 0, buyout: null, drinks: "", hospitalityNotes: "" };
 
@@ -48,5 +48,31 @@ describe("hasAccommodation", () => {
 
   test("is filled with any accommodation type", () => {
     expect(hasAccommodation({ accommodationType: "hotel" })).toBe(true);
+  });
+});
+
+describe("playtime", () => {
+  test("is the length of the show slot in minutes", () => {
+    expect(playtime({ timetable: [{ kind: "show", start: "21:00", end: "22:15" }] })).toBe(75);
+  });
+
+  test("runs past midnight", () => {
+    expect(playtime({ timetable: [{ kind: "show", start: "23:30", end: "00:30" }] })).toBe(60);
+  });
+
+  test("adds up several show slots", () => {
+    const timetable = [
+      { kind: "show", start: "20:00", end: "20:45" },
+      { kind: "show", start: "21:15", end: "22:00" },
+    ];
+    expect(playtime({ timetable })).toBe(90);
+  });
+
+  test("ignores other kinds and shows without an end", () => {
+    const timetable = [
+      { kind: "soundcheck", start: "17:00", end: "17:30" },
+      { kind: "show", start: "21:00", end: "" },
+    ];
+    expect(playtime({ timetable })).toBeNull();
   });
 });
