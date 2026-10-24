@@ -1,0 +1,7 @@
+# New worktrees start without node_modules and the gitignored local files.
+[pre-start]
+install = "bun install --frozen-lockfile"
+# Symlinked, so secrets and personal Claude settings stay in one place.
+link = "for f in .env .claude/settings.local.json; do [ ! -f {{ primary_worktree_path }}/$f ] || ln -sfn {{ primary_worktree_path }}/$f $f; done"
+# Copied, so migrations on a branch never touch the main database.
+data = "[ ! -d {{ primary_worktree_path }}/data ] || [ -e data ] || command cp -R {{ primary_worktree_path }}/data data"
