@@ -7,7 +7,7 @@ The UI is German (hardcoded strings, labels in `src/lib/labels.ts`). Code, ident
 ## Stack
 
 - Bun for everything: package manager and runtime (dev, tests, production). Never use npm, npx, yarn, pnpm or node.
-- Vite+ (`vp`) as the toolchain: Vite for dev/build, Vitest for tests, Oxlint for linting (correctness + pedantic, type-aware), Oxfmt for formatting. Config lives in `vite.config.ts`.
+- Vite+ (`vp`) as the toolchain: Vite for dev/build, Vitest for tests, Oxlint for linting (type-aware), Oxfmt for formatting. Config lives in `vite.config.ts`.
 - SvelteKit 2 + Svelte 5 (runes) + TypeScript 7 (`@typescript/native`; TypeScript 6 stays installed for the Svelte tooling), `svelte-adapter-bun`.
 - SQLite via Prisma 8 (`@prisma/orm-sqlite`). The data contract and the single migration live in `prisma/`. The database lives under `DATA_DIR`.
 - Tailwind CSS v4.
@@ -55,6 +55,7 @@ There are no `package.json` scripts; tasks live in `vite.config.ts` under `run.t
 - Money is stored as euros (`Float`). Number inputs accept a German decimal comma.
 - Travel cost: per selected car with its own consumption and fuel type (diesel or petrol); people and both fuel prices fall back to the settings when a gig leaves them empty.
 - Tours group gigs, ordered by date. A gig without a tour is a round trip from home. On a tour each gig arrives from the previous stop (the first from home) and only the last stop adds the drive home (`returnKm`).
+- Internal links go through `resolve()` from `$app/paths`; external links use `OutboundLink`.
 - The gig page shows each section as a read-only summary; "Bearbeiten" swaps in the form. Optional sections that are still empty appear only as "Hinzufügen" chips.
 
 ## UI
