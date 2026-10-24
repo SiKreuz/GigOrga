@@ -280,15 +280,17 @@ export async function listGigs(db: Reader) {
   const gigs = await db.orm.Gig.select("id", "title", "date", "status", "type", "dealType", "fee")
     .include("venue", (venue) => venue.select("id", "name", "city"))
     .include("timetable", (entry) => entry.select("kind", "start", "fixed"))
+    .include("setlist", (entry) => entry.select("id"))
     .all();
   return gigs
-    .map(({ timetable, ...gig }) => ({
+    .map(({ timetable, setlist, ...gig }) => ({
       ...gig,
       status: gig.status as GigStatus,
       type: gig.type as GigType,
       dealType: gig.dealType as DealType,
       getIn: timetable.find((entry) => entry.kind === "getin")?.start ?? "",
       showTime: timetable.find((entry) => entry.kind === "show")?.start ?? "",
+      hasSetlist: setlist.length > 0,
     }))
     .toSorted((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title, "de"));
 }

@@ -15,6 +15,7 @@ import {
   updateTimetable,
   updateTravel,
 } from "$lib/server/services/gigs";
+import { createSong, updateSetlist } from "$lib/server/services/songs";
 import { archiveSoundEngineer, createSoundEngineer } from "$lib/server/services/soundEngineers";
 import { createTour } from "$lib/server/services/tours";
 import { deleteVenue } from "$lib/server/services/venues";
@@ -232,6 +233,15 @@ describe("gigs", () => {
     const gigs = await listGigs(db);
     expect(gigs.map((gig) => gig.id)).toEqual([early.id, late.id]);
     expect(gigs[0]).toMatchObject({ getIn: "16:30", showTime: "21:00" });
+  });
+
+  test("marks gigs with a setlist in the overview", async ({ db, insertGig }) => {
+    const { id } = await insertGig();
+    expect((await listGigs(db))[0]?.hasSetlist).toBe(false);
+    await updateSetlist(db, id, [
+      await createSong(db, { title: "Hit", durationSec: 200, notes: "" }),
+    ]);
+    expect((await listGigs(db))[0]?.hasSetlist).toBe(true);
   });
 
   test("deletes a gig", async ({ db, insertGig }) => {

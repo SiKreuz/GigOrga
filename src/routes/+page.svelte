@@ -6,7 +6,7 @@
   import { formatMonth, relativeDay, todayIso } from "$lib/format";
   import { type GigStatus, gigStatuses, gigTypes } from "$lib/labels";
   import type { GigSummary } from "$lib/server/services/gigs";
-  import { ChevronRight, Clock, MapPin, Plus, Printer } from "@lucide/svelte";
+  import { ChevronRight, Clock, ListMusic, MapPin, Plus, Printer } from "@lucide/svelte";
 
   let { data } = $props();
 
@@ -89,6 +89,16 @@
     >
       <Printer class="size-4" />
     </a>
+    {#if gig.hasSetlist}
+      <a
+        href="/gigs/{gig.id}/setlist"
+        class="relative btn-icon hover:bg-surface"
+        aria-label="Setlist"
+        title="Setlist"
+      >
+        <ListMusic class="size-4" />
+      </a>
+    {/if}
     <ChevronRight
       class="size-4 shrink-0 text-muted transition-transform group-hover:translate-x-0.5"
     />
