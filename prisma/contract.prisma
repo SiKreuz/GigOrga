@@ -181,6 +181,7 @@ model Gig {
   tour               Tour?             @relation(fields: [tourId], references: [id], onDelete: SetNull)
   soundEngineerId    String?           @map("sound_engineer_id")
   soundEngineer      SoundEngineer?    @relation(fields: [soundEngineerId], references: [id], onDelete: SetNull)
+  houseEngineer      Int               @default(0) @map("house_engineer")
   notes              String            @default("")
   dealType           DealType          @default(festgage) @map("deal_type")
   fee                Float?

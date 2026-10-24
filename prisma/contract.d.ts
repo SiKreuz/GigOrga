@@ -17,7 +17,7 @@ import type {
 } from '@prisma/orm-sqlite/contract/types';
 
 export type StorageHash =
-  StorageHashBase<'7bc9240d28add0c960b3d91c89a56aa4d1df083d98f0d81985999b5113990216'>;
+  StorageHashBase<'f9ae66b901b994fc9269be00421f020070b25dbb02028ff1af35dc1f7fe53f91'>;
 export type ExecutionHash = ExecutionHashBase<string>;
 export type ProfileHash =
   ProfileHashBase<'260b8608d1aacaf1f690779a6cff39a12947c599597c5ba464ca75b9e775df53'>;
@@ -181,6 +181,7 @@ export type FieldOutputTypes = {
       readonly fee: CodecTypes['sqlite/real@1']['output'] | null;
       readonly gemaReported: CodecTypes['sqlite/integer@1']['output'];
       readonly hospitalityNotes: CodecTypes['sqlite/text@1']['output'];
+      readonly houseEngineer: CodecTypes['sqlite/integer@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly inputListSent: CodecTypes['sqlite/integer@1']['output'];
       readonly invoiceStatus: CodecTypes['sqlite/text@1']['output'];
@@ -347,6 +348,7 @@ export type FieldInputTypes = {
       readonly fee: CodecTypes['sqlite/real@1']['input'] | null;
       readonly gemaReported: CodecTypes['sqlite/integer@1']['input'];
       readonly hospitalityNotes: CodecTypes['sqlite/text@1']['input'];
+      readonly houseEngineer: CodecTypes['sqlite/integer@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly inputListSent: CodecTypes['sqlite/integer@1']['input'];
       readonly invoiceStatus: CodecTypes['sqlite/text@1']['input'];
@@ -522,6 +524,7 @@ export type StorageColumnTypes = {
       readonly fee: CodecTypes['sqlite/real@1']['output'] | null;
       readonly gema_reported: CodecTypes['sqlite/integer@1']['output'];
       readonly hospitality_notes: CodecTypes['sqlite/text@1']['output'];
+      readonly house_engineer: CodecTypes['sqlite/integer@1']['output'];
       readonly id: CodecTypes['sqlite/text@1']['output'];
       readonly input_list_sent: CodecTypes['sqlite/integer@1']['output'];
       readonly invoice_status: CodecTypes['sqlite/text@1']['output'];
@@ -688,6 +691,7 @@ export type StorageColumnInputTypes = {
       readonly fee: CodecTypes['sqlite/real@1']['input'] | null;
       readonly gema_reported: CodecTypes['sqlite/integer@1']['input'];
       readonly hospitality_notes: CodecTypes['sqlite/text@1']['input'];
+      readonly house_engineer: CodecTypes['sqlite/integer@1']['input'];
       readonly id: CodecTypes['sqlite/text@1']['input'];
       readonly input_list_sent: CodecTypes['sqlite/integer@1']['input'];
       readonly invoice_status: CodecTypes['sqlite/text@1']['input'];
@@ -851,6 +855,7 @@ export namespace Models {
     fee: CodecTypes['sqlite/real@1']['output'] | null;
     gemaReported: CodecTypes['sqlite/integer@1']['output'];
     hospitalityNotes: CodecTypes['sqlite/text@1']['output'];
+    houseEngineer: CodecTypes['sqlite/integer@1']['output'];
     id: CodecTypes['sqlite/text@1']['output'];
     inputListSent: CodecTypes['sqlite/integer@1']['output'];
     invoiceStatus: CodecTypes['sqlite/text@1']['output'];
@@ -1526,6 +1531,15 @@ type ContractBase = Omit<
                   readonly default: {
                     readonly kind: 'literal';
                     readonly value: DefaultLiteralValue<'sqlite/text@1', ''>;
+                  };
+                };
+                readonly house_engineer: {
+                  readonly nativeType: 'integer';
+                  readonly codecId: 'sqlite/integer@1';
+                  readonly nullable: false;
+                  readonly default: {
+                    readonly kind: 'literal';
+                    readonly value: DefaultLiteralValue<'sqlite/integer@1', 0>;
                   };
                 };
                 readonly id: {
@@ -2695,6 +2709,10 @@ type ContractBase = Omit<
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
               };
+              readonly houseEngineer: {
+                readonly nullable: false;
+                readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/integer@1' };
+              };
               readonly id: {
                 readonly nullable: false;
                 readonly type: { readonly kind: 'scalar'; readonly codecId: 'sqlite/text@1' };
@@ -2914,6 +2932,7 @@ type ContractBase = Omit<
                 readonly fee: { readonly column: 'fee' };
                 readonly gemaReported: { readonly column: 'gema_reported' };
                 readonly hospitalityNotes: { readonly column: 'hospitality_notes' };
+                readonly houseEngineer: { readonly column: 'house_engineer' };
                 readonly id: { readonly column: 'id' };
                 readonly inputListSent: { readonly column: 'input_list_sent' };
                 readonly invoiceStatus: { readonly column: 'invoice_status' };

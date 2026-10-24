@@ -1,0 +1,43 @@
+[
+  {
+    "id": "column.gigs.house_engineer",
+    "label": "Add column house_engineer on gigs",
+    "summary": "Adds column house_engineer on gigs",
+    "operationClass": "additive",
+    "target": {
+      "id": "sqlite",
+      "details": {
+        "schema": "main",
+        "objectType": "column",
+        "name": "house_engineer",
+        "table": "gigs"
+      }
+    },
+    "precheck": [
+      {
+        "description": "ensure column \"house_engineer\" is missing",
+        "sql": "SELECT COUNT(*) = 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "house_engineer"
+        ]
+      }
+    ],
+    "execute": [
+      {
+        "description": "add column \"house_engineer\"",
+        "sql": "ALTER TABLE \"gigs\" ADD COLUMN \"house_engineer\" INTEGER DEFAULT 0 NOT NULL"
+      }
+    ],
+    "postcheck": [
+      {
+        "description": "verify column \"house_engineer\" exists",
+        "sql": "SELECT COUNT(*) > 0 AS \"result\" FROM pragma_table_info(?) WHERE \"name\" = ?",
+        "params": [
+          "gigs",
+          "house_engineer"
+        ]
+      }
+    ]
+  }
+]

@@ -786,6 +786,13 @@
                   "kind": "scalar"
                 }
               },
+              "houseEngineer": {
+                "nullable": false,
+                "type": {
+                  "codecId": "sqlite/integer@1",
+                  "kind": "scalar"
+                }
+              },
               "id": {
                 "nullable": false,
                 "type": {
@@ -1171,6 +1178,9 @@
                 },
                 "hospitalityNotes": {
                   "column": "hospitality_notes"
+                },
+                "houseEngineer": {
+                  "column": "house_engineer"
                 },
                 "id": {
                   "column": "id"
@@ -2808,6 +2818,15 @@
                   "nativeType": "text",
                   "nullable": false
                 },
+                "house_engineer": {
+                  "codecId": "sqlite/integer@1",
+                  "default": {
+                    "kind": "literal",
+                    "value": 0
+                  },
+                  "nativeType": "integer",
+                  "nullable": false
+                },
                 "id": {
                   "codecId": "sqlite/text@1",
                   "nativeType": "text",
@@ -3813,7 +3832,7 @@
         "id": "__unbound__"
       }
     },
-    "storageHash": "7bc9240d28add0c960b3d91c89a56aa4d1df083d98f0d81985999b5113990216"
+    "storageHash": "f9ae66b901b994fc9269be00421f020070b25dbb02028ff1af35dc1f7fe53f91"
   },
   "capabilities": {
     "sql": {
