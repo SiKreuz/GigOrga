@@ -81,4 +81,13 @@ export type FuelType = keyof typeof fuelTypes;
 export type Role = keyof typeof roles;
 
 export const keys = <T extends Record<string, string>>(labels: T) =>
+  // oxlint-disable-next-line typescript/no-unsafe-type-assertion -- Object.keys loses the key type
   Object.keys(labels) as [keyof T & string, ...(keyof T & string)[]];
+
+const isKey = <K extends string>(labels: Record<K, string>, value: string): value is K =>
+  Object.hasOwn(labels, value);
+
+export function keyOf<K extends string>(labels: Record<K, string>, value: string): K {
+  if (isKey(labels, value)) return value;
+  throw new Error(`Unknown value: ${value}`);
+}

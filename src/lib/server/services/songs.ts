@@ -37,9 +37,9 @@ export async function getSetlist(db: Reader, gigId: string) {
 export async function updateSetlist(db: Db, gigId: string, songIds: string[]) {
   await transaction(db, async (tx) => {
     await tx.orm.SetlistEntry.where({ gigId }).deleteAll();
-    for (const [position, songId] of songIds.entries()) {
-      await tx.orm.SetlistEntry.create({ id: Bun.randomUUIDv7(), gigId, songId, position });
-    }
+    await tx.orm.SetlistEntry.createAndCount(
+      songIds.map((songId, position) => ({ id: Bun.randomUUIDv7(), gigId, songId, position })),
+    );
   });
 }
 

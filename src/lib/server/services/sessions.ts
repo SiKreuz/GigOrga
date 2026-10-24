@@ -1,4 +1,4 @@
-import type { Role } from "$lib/labels";
+import { keyOf, roles } from "$lib/labels";
 
 import { type Db, transaction } from "../db";
 
@@ -36,7 +36,7 @@ export async function validateSession(db: Db, token: string, now = new Date()) {
     );
   }
   const { active: _active, ...user } = row;
-  return { user: { ...user, role: user.role as Role }, session };
+  return { user: { ...user, role: keyOf(roles, user.role) }, session };
 }
 
 export type Auth = NonNullable<Awaited<ReturnType<typeof validateSession>>>;

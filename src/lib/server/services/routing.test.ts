@@ -82,6 +82,18 @@ describe("routeToGig", () => {
     });
   });
 
+  test("treats unexpected responses as not found", async ({ db, insertGig, insertVenue }) => {
+    await updateSettings(db, settings);
+    const venue = await insertVenue({ address: "Hauptstr. 1", city: "Augsburg" });
+    const { id } = await insertGig({ venueId: venue.id });
+    const { config } = fakeServices({});
+    const fetch = vi.fn<() => Promise<Response>>(() =>
+      Promise.resolve(Response.json({ error: "Rate limit exceeded" })),
+    );
+    const broken = { ...config, fetch: fetch as unknown as typeof globalThis.fetch };
+    expect(await routeToGig(db, broken, id)).toMatchObject({ ok: false });
+  });
+
   test("drives a tour from stop to stop and home after the last one", async ({
     db,
     insertGig,

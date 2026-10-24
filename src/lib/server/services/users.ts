@@ -1,4 +1,4 @@
-import type { Role } from "$lib/labels";
+import { keyOf, roles, type Role } from "$lib/labels";
 
 import { type Db, type Reader, transaction } from "../db";
 
@@ -34,13 +34,13 @@ export async function getUser(db: Reader, id: string) {
   const user = await db.orm.User.where({ id })
     .select(...fields)
     .first();
-  return user && { ...user, role: user.role as Role };
+  return user && { ...user, role: keyOf(roles, user.role) };
 }
 
 export async function listUsers(db: Reader) {
   const users = await db.orm.User.select(...fields).all();
   return users
-    .map((user) => ({ ...user, role: user.role as Role }))
+    .map((user) => ({ ...user, role: keyOf(roles, user.role) }))
     .toSorted((a, b) => a.name.localeCompare(b.name, "de", { sensitivity: "base" }));
 }
 

@@ -1,4 +1,5 @@
 import type { Cookies } from "@sveltejs/kit";
+import * as v from "valibot";
 
 import type { LoginChecks } from "./oidc";
 
@@ -17,6 +18,13 @@ export function deleteSessionCookie(cookies: Cookies) {
 
 export type LoginState = LoginChecks & { redirectTo: string };
 
+const loginState = v.object({
+  state: v.string(),
+  nonce: v.string(),
+  codeVerifier: v.string(),
+  redirectTo: v.string(),
+});
+
 export function setLoginCookie(cookies: Cookies, state: LoginState) {
   cookies.set(loginCookie, JSON.stringify(state), {
     path: "/auth/callback",
@@ -31,7 +39,8 @@ export function takeLoginCookie(cookies: Cookies): LoginState | undefined {
   cookies.delete(loginCookie, { path: "/auth/callback" });
   if (value === undefined) return;
   try {
-    return JSON.parse(value) as LoginState;
+    const parsed = v.safeParse(loginState, JSON.parse(value));
+    return parsed.success ? parsed.output : undefined;
   } catch {
     return undefined;
   }

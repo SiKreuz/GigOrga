@@ -1,4 +1,4 @@
-import type { FuelType } from "$lib/labels";
+import { fuelTypes, keyOf, type FuelType } from "$lib/labels";
 
 import { type Db, type Reader, transaction } from "../db";
 
@@ -36,7 +36,7 @@ export async function listCars(db: Reader) {
     "standard",
   ).all();
   return cars
-    .map((car) => ({ ...car, fuel: car.fuel as FuelType }))
+    .map((car) => ({ ...car, fuel: keyOf(fuelTypes, car.fuel) }))
     .toSorted((a, b) => a.name.localeCompare(b.name, "de", { sensitivity: "base" }));
 }
 

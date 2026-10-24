@@ -6,7 +6,8 @@
   import { estimate } from "$lib/deal";
   import { formatMoney, formatNumber, parseNumber } from "$lib/format";
   import { type DealType, dealTypes, invoiceStatuses } from "$lib/labels";
-  import type { GigDetail, PresaleLinkRow } from "$lib/server/services/gigs";
+  import type { PresaleLinkRow } from "$lib/server/services/gigInputs";
+  import type { GigDetail } from "$lib/server/services/gigs";
   import { untrack } from "svelte";
 
   let {

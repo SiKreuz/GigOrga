@@ -1,98 +1,30 @@
-import type { techSchema } from "$lib/forms";
-import type {
-  AccommodationType,
-  BacklineProvider,
-  DealType,
-  FuelType,
-  GigStatus,
-  GigType,
-  InvoiceStatus,
-  TimetableKind,
+import {
+  accommodationTypes,
+  backlineProviders,
+  dealTypes,
+  fuelTypes,
+  gigStatuses,
+  gigTypes,
+  invoiceStatuses,
+  keyOf,
+  timetableKinds,
 } from "$lib/labels";
 import { legOf } from "$lib/tour";
-import type * as v from "valibot";
 
 import { type Db, type Reader, transaction, type Tx } from "../db";
-
-export type GigBasics = {
-  title: string;
-  date: string;
-  status: GigStatus;
-  type: GigType;
-  venueId: string | null;
-  tourId: string | null;
-  notes: string;
-};
-
-export type NewGig = Pick<GigBasics, "title" | "date" | "status" | "venueId">;
-
-export type TimetableRow = {
-  kind: TimetableKind;
-  start: string;
-  end: string;
-  label: string;
-  fixed: number;
-};
-
-export type SupportActRow = {
-  name: string;
-  link: string;
-  contact: string;
-  stageTime: string;
-  sharesBackline: number;
-};
-
-export type BacklineRow = { name: string; provider: BacklineProvider; note: string };
-export type PresaleLinkRow = { label: string; url: string };
-
-export type DealInput = {
-  dealType: DealType;
-  fee: number | null;
-  doorPercent: number | null;
-  costs: number | null;
-  rent: number | null;
-  deposit: number | null;
-  ticketPresale: number | null;
-  ticketDoor: number | null;
-  expectedAttendance: number | null;
-  invoiceStatus: InvoiceStatus;
-  gemaReported: number;
-  dealNotes: string;
-  presaleLinks: PresaleLinkRow[];
-};
-
-export type TravelInput = {
-  distanceKm: number | null;
-  durationMin: number | null;
-  returnKm: number | null;
-  returnMin: number | null;
-  people: number | null;
-  petrolPrice: number | null;
-  dieselPrice: number | null;
-  tolls: number | null;
-  carIds: string[];
-};
-
-export type TechInput = v.InferOutput<typeof techSchema>;
-
-export type HospitalityInput = {
-  catering: number;
-  drinks: string;
-  buyout: number | null;
-  hospitalityNotes: string;
-};
-
-export type AccommodationInput = {
-  accommodationType: AccommodationType;
-  accommodationName: string;
-  accommodationAddress: string;
-  accommodationLink: string;
-  beds: number | null;
-  checkIn: string;
-  breakfast: number;
-  accommodationPaid: number;
-  accommodationNotes: string;
-};
+import type {
+  GigBasics,
+  NewGig,
+  TimetableRow,
+  SupportActRow,
+  BacklineRow,
+  PresaleLinkRow,
+  DealInput,
+  TravelInput,
+  TechInput,
+  HospitalityInput,
+  AccommodationInput,
+} from "./gigInputs";
 
 export const defaultTimetable: TimetableRow[] = [
   { kind: "getin", start: "", end: "", label: "", fixed: 1 },
@@ -111,28 +43,28 @@ const byPosition = (a: { position: number }, b: { position: number }) => a.posit
 
 async function replaceTimetable(tx: Tx, gigId: string, rows: TimetableRow[]) {
   await tx.orm.TimetableEntry.where({ gigId }).deleteAll();
-  for (const [position, row] of rows.entries()) {
-    await tx.orm.TimetableEntry.create({ id: Bun.randomUUIDv7(), gigId, position, ...row });
-  }
+  await tx.orm.TimetableEntry.createAndCount(
+    rows.map((row, position) => ({ id: Bun.randomUUIDv7(), gigId, position, ...row })),
+  );
 }
 
 async function replaceBackline(tx: Tx, gigId: string, rows: BacklineRow[]) {
   await tx.orm.BacklineItem.where({ gigId }).deleteAll();
-  for (const [position, row] of rows.entries()) {
-    await tx.orm.BacklineItem.create({ id: Bun.randomUUIDv7(), gigId, position, ...row });
-  }
+  await tx.orm.BacklineItem.createAndCount(
+    rows.map((row, position) => ({ id: Bun.randomUUIDv7(), gigId, position, ...row })),
+  );
 }
 
 async function replacePresaleLinks(tx: Tx, gigId: string, rows: PresaleLinkRow[]) {
   await tx.orm.PresaleLink.where({ gigId }).deleteAll();
-  for (const [position, row] of rows.entries()) {
-    await tx.orm.PresaleLink.create({ id: Bun.randomUUIDv7(), gigId, position, ...row });
-  }
+  await tx.orm.PresaleLink.createAndCount(
+    rows.map((row, position) => ({ id: Bun.randomUUIDv7(), gigId, position, ...row })),
+  );
 }
 
 async function replaceCars(tx: Tx, gigId: string, carIds: string[]) {
   await tx.orm.GigCar.where({ gigId }).deleteAll();
-  for (const carId of new Set(carIds)) await tx.orm.GigCar.create({ gigId, carId });
+  await tx.orm.GigCar.createAndCount([...new Set(carIds)].map((carId) => ({ gigId, carId })));
 }
 
 export function createGig(db: Db, gig: NewGig): Promise<string> {
@@ -187,9 +119,9 @@ export async function updateTimetable(db: Db, id: string, rows: TimetableRow[]) 
 export async function updateSupportActs(db: Db, gigId: string, rows: SupportActRow[]) {
   await transaction(db, async (tx) => {
     await tx.orm.SupportAct.where({ gigId }).deleteAll();
-    for (const [position, row] of rows.entries()) {
-      await tx.orm.SupportAct.create({ id: Bun.randomUUIDv7(), gigId, position, ...row });
-    }
+    await tx.orm.SupportAct.createAndCount(
+      rows.map((row, position) => ({ id: Bun.randomUUIDv7(), gigId, position, ...row })),
+    );
   });
 }
 
@@ -233,22 +165,22 @@ export async function getGig(db: Reader, id: string) {
   return {
     ...rest,
     tourLeg: tour ? tourLegOf(tour, gig.id) : null,
-    status: gig.status as GigStatus,
-    type: gig.type as GigType,
-    dealType: gig.dealType as DealType,
-    invoiceStatus: gig.invoiceStatus as InvoiceStatus,
-    accommodationType: gig.accommodationType as AccommodationType,
+    status: keyOf(gigStatuses, gig.status),
+    type: keyOf(gigTypes, gig.type),
+    dealType: keyOf(dealTypes, gig.dealType),
+    invoiceStatus: keyOf(invoiceStatuses, gig.invoiceStatus),
+    accommodationType: keyOf(accommodationTypes, gig.accommodationType),
     cars: gig.cars
-      .map((link) => ({ ...link.car, fuel: link.car.fuel as FuelType }))
+      .map((link) => ({ ...link.car, fuel: keyOf(fuelTypes, link.car.fuel) }))
       .toSorted((a, b) => a.name.localeCompare(b.name, "de")),
     contacts: gig.contacts.toSorted((a, b) => a.contact.name.localeCompare(b.contact.name, "de")),
     timetable: gig.timetable
       .toSorted(byPosition)
-      .map((entry) => ({ ...entry, kind: entry.kind as TimetableKind })),
+      .map((entry) => ({ ...entry, kind: keyOf(timetableKinds, entry.kind) })),
     supportActs: gig.supportActs.toSorted(byPosition),
     backline: gig.backline
       .toSorted(byPosition)
-      .map((item) => ({ ...item, provider: item.provider as BacklineProvider })),
+      .map((item) => ({ ...item, provider: keyOf(backlineProviders, item.provider) })),
     presaleLinks: gig.presaleLinks.toSorted(byPosition),
   };
 }
@@ -285,9 +217,9 @@ export async function listGigs(db: Reader) {
   return gigs
     .map(({ timetable, setlist, ...gig }) => ({
       ...gig,
-      status: gig.status as GigStatus,
-      type: gig.type as GigType,
-      dealType: gig.dealType as DealType,
+      status: keyOf(gigStatuses, gig.status),
+      type: keyOf(gigTypes, gig.type),
+      dealType: keyOf(dealTypes, gig.dealType),
       getIn: timetable.find((entry) => entry.kind === "getin")?.start ?? "",
       showTime: timetable.find((entry) => entry.kind === "show")?.start ?? "",
       hasSetlist: setlist.length > 0,

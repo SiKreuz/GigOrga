@@ -1,4 +1,5 @@
 import { createCar } from "$lib/server/services/cars";
+import type { TechInput } from "$lib/server/services/gigInputs";
 import {
   defaultBackline,
   defaultTimetable,
@@ -6,7 +7,6 @@ import {
   getGig,
   linkContact,
   listGigs,
-  type TechInput,
   unlinkContact,
   updateDeal,
   updateGig,
@@ -145,6 +145,12 @@ describe("gigs", () => {
     ];
     await updateTimetable(db, id, rows);
     expect((await getGig(db, id))?.timetable).toMatchObject(rows);
+  });
+
+  test("clears the timetable", async ({ db, insertGig }) => {
+    const { id } = await insertGig();
+    await updateTimetable(db, id, []);
+    expect((await getGig(db, id))?.timetable).toEqual([]);
   });
 
   test("replaces support acts", async ({ db, insertGig }) => {
