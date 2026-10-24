@@ -96,7 +96,6 @@ export const supportActsSchema = v.object({
 });
 
 export const techSchema = v.object({
-  ownFoh: flag,
   riderSent: flag,
   stagePlotSent: flag,
   inputListSent: flag,

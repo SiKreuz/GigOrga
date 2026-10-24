@@ -117,6 +117,18 @@ model GigCar {
   @@map("gig_cars")
 }
 
+model SoundEngineer {
+  id        String   @id
+  name      String
+  phone     String   @default("")
+  email     String   @default("")
+  active    Int      @default(1)
+  createdAt DateTime @default(now()) @map("created_at")
+  gigs      Gig[]
+
+  @@map("sound_engineers")
+}
+
 model Tour {
   id        String   @id
   name      String
@@ -167,6 +179,8 @@ model Gig {
   venue              Venue?            @relation(fields: [venueId], references: [id], onDelete: SetNull)
   tourId             String?           @map("tour_id")
   tour               Tour?             @relation(fields: [tourId], references: [id], onDelete: SetNull)
+  soundEngineerId    String?           @map("sound_engineer_id")
+  soundEngineer      SoundEngineer?    @relation(fields: [soundEngineerId], references: [id], onDelete: SetNull)
   notes              String            @default("")
   dealType           DealType          @default(festgage) @map("deal_type")
   fee                Float?
@@ -188,7 +202,6 @@ model Gig {
   petrolPrice        Float?            @map("petrol_price")
   dieselPrice        Float?            @map("diesel_price")
   tolls              Float?
-  ownFoh             Int               @default(0) @map("own_foh")
   riderSent          Int               @default(0) @map("rider_sent")
   stagePlotSent      Int               @default(0) @map("stage_plot_sent")
   inputListSent      Int               @default(0) @map("input_list_sent")
@@ -216,6 +229,7 @@ model Gig {
 
   @@index([venueId])
   @@index([tourId])
+  @@index([soundEngineerId])
   @@index([date])
   @@map("gigs")
 }

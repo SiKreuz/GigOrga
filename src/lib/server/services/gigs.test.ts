@@ -171,7 +171,6 @@ describe("gigs", () => {
   test("updates tech and backline", async ({ db, insertGig }) => {
     const { id } = await insertGig();
     const tech = {
-      ownFoh: 1,
       riderSent: 1,
       stagePlotSent: 0,
       inputListSent: 0,
@@ -180,7 +179,7 @@ describe("gigs", () => {
     };
     await updateTech(db, id, tech);
     const gig = await getGig(db, id);
-    expect(gig).toMatchObject({ ownFoh: 1, riderSent: 1, techNotes: "IEM" });
+    expect(gig).toMatchObject({ riderSent: 1, techNotes: "IEM" });
     expect(gig?.backline).toMatchObject(tech.backline);
   });
 

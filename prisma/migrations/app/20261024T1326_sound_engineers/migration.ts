@@ -1,0 +1,285 @@
+#!/usr/bin/env -S bun
+import type { Contract as Start } from '../../snapshots/5eb55c7d8dc2244916bbf755d83df68cb32989e09d0adccecff00a529754d67d/contract';
+import startContract from '../../snapshots/5eb55c7d8dc2244916bbf755d83df68cb32989e09d0adccecff00a529754d67d/contract.json' with { type: 'json' };
+import type { Contract as End } from '../../snapshots/7bc9240d28add0c960b3d91c89a56aa4d1df083d98f0d81985999b5113990216/contract';
+import endContract from '../../snapshots/7bc9240d28add0c960b3d91c89a56aa4d1df083d98f0d81985999b5113990216/contract.json' with { type: 'json' };
+import { Migration, MigrationCLI, col, fn, lit, primaryKey } from '@prisma/orm-sqlite/migration';
+
+export default class M extends Migration<Start, End> {
+  override readonly startContractJson = startContract;
+  override readonly endContractJson = endContract;
+
+  override get operations() {
+    return [
+      this.createTable({
+        table: 'sound_engineers',
+        columns: [
+          col('active', 'INTEGER', { notNull: true, default: lit(1) }),
+          col('created_at', 'TEXT', { notNull: true, default: fn('now()') }),
+          col('email', 'TEXT', { notNull: true, default: lit('') }),
+          col('id', 'TEXT', { notNull: true }),
+          col('name', 'TEXT', { notNull: true }),
+          col('phone', 'TEXT', { notNull: true, default: lit('') }),
+        ],
+        constraints: [primaryKey(['id'])],
+      }),
+      this.addColumn({
+        table: 'gigs',
+        column: { name: 'sound_engineer_id', typeSql: 'TEXT', defaultSql: '', nullable: true },
+      }),
+      this.createIndex({
+        table: 'gigs',
+        index: 'gigs_sound_engineer_id_idx_19ca55aa',
+        columns: ['sound_engineer_id'],
+      }),
+      this.recreateTable({
+        tableName: 'gigs',
+        contractTable: {
+          columns: [
+            {
+              name: 'accommodation_address',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT ''",
+              nullable: false,
+            },
+            {
+              name: 'accommodation_link',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT ''",
+              nullable: false,
+            },
+            {
+              name: 'accommodation_name',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT ''",
+              nullable: false,
+            },
+            {
+              name: 'accommodation_notes',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT ''",
+              nullable: false,
+            },
+            {
+              name: 'accommodation_paid',
+              typeSql: 'INTEGER',
+              defaultSql: 'DEFAULT 0',
+              nullable: false,
+            },
+            {
+              name: 'accommodation_type',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT 'keine'",
+              nullable: false,
+            },
+            { name: 'beds', typeSql: 'INTEGER', defaultSql: '', nullable: true },
+            {
+              name: 'breakfast',
+              typeSql: 'INTEGER',
+              defaultSql: 'DEFAULT 0',
+              nullable: false,
+            },
+            { name: 'buyout', typeSql: 'REAL', defaultSql: '', nullable: true },
+            {
+              name: 'catering',
+              typeSql: 'INTEGER',
+              defaultSql: 'DEFAULT 0',
+              nullable: false,
+            },
+            { name: 'check_in', typeSql: 'TEXT', defaultSql: "DEFAULT ''", nullable: false },
+            { name: 'costs', typeSql: 'REAL', defaultSql: '', nullable: true },
+            {
+              name: 'created_at',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT (datetime('now'))",
+              nullable: false,
+            },
+            { name: 'date', typeSql: 'TEXT', defaultSql: '', nullable: false },
+            {
+              name: 'deal_notes',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT ''",
+              nullable: false,
+            },
+            {
+              name: 'deal_type',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT 'festgage'",
+              nullable: false,
+            },
+            { name: 'deposit', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'diesel_price', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'distance_km', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'door_percent', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'drinks', typeSql: 'TEXT', defaultSql: "DEFAULT ''", nullable: false },
+            { name: 'duration_min', typeSql: 'INTEGER', defaultSql: '', nullable: true },
+            {
+              name: 'expected_attendance',
+              typeSql: 'INTEGER',
+              defaultSql: '',
+              nullable: true,
+            },
+            { name: 'fee', typeSql: 'REAL', defaultSql: '', nullable: true },
+            {
+              name: 'gema_reported',
+              typeSql: 'INTEGER',
+              defaultSql: 'DEFAULT 0',
+              nullable: false,
+            },
+            {
+              name: 'hospitality_notes',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT ''",
+              nullable: false,
+            },
+            { name: 'id', typeSql: 'TEXT', defaultSql: '', nullable: false },
+            {
+              name: 'input_list_sent',
+              typeSql: 'INTEGER',
+              defaultSql: 'DEFAULT 0',
+              nullable: false,
+            },
+            {
+              name: 'invoice_status',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT 'offen'",
+              nullable: false,
+            },
+            { name: 'notes', typeSql: 'TEXT', defaultSql: "DEFAULT ''", nullable: false },
+            { name: 'people', typeSql: 'INTEGER', defaultSql: '', nullable: true },
+            { name: 'petrol_price', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'rent', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'return_km', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'return_min', typeSql: 'INTEGER', defaultSql: '', nullable: true },
+            {
+              name: 'rider_sent',
+              typeSql: 'INTEGER',
+              defaultSql: 'DEFAULT 0',
+              nullable: false,
+            },
+            { name: 'sound_engineer_id', typeSql: 'TEXT', defaultSql: '', nullable: true },
+            {
+              name: 'stage_plot_sent',
+              typeSql: 'INTEGER',
+              defaultSql: 'DEFAULT 0',
+              nullable: false,
+            },
+            {
+              name: 'status',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT 'anfrage'",
+              nullable: false,
+            },
+            {
+              name: 'tech_notes',
+              typeSql: 'TEXT',
+              defaultSql: "DEFAULT ''",
+              nullable: false,
+            },
+            { name: 'ticket_door', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'ticket_presale', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'title', typeSql: 'TEXT', defaultSql: '', nullable: false },
+            { name: 'tolls', typeSql: 'REAL', defaultSql: '', nullable: true },
+            { name: 'tour_id', typeSql: 'TEXT', defaultSql: '', nullable: true },
+            { name: 'type', typeSql: 'TEXT', defaultSql: "DEFAULT 'club'", nullable: false },
+            { name: 'venue_id', typeSql: 'TEXT', defaultSql: '', nullable: true },
+          ],
+          primaryKey: { columns: ['id'] },
+          uniques: [],
+          foreignKeys: [
+            {
+              columns: ['venue_id'],
+              references: { table: 'venues', columns: ['id'] },
+              onDelete: 'setNull',
+            },
+            {
+              columns: ['tour_id'],
+              references: { table: 'tours', columns: ['id'] },
+              onDelete: 'setNull',
+            },
+            {
+              columns: ['sound_engineer_id'],
+              references: { table: 'sound_engineers', columns: ['id'] },
+              onDelete: 'setNull',
+            },
+          ],
+        },
+        schemaColumnNames: [
+          'accommodation_address',
+          'accommodation_link',
+          'accommodation_name',
+          'accommodation_notes',
+          'accommodation_paid',
+          'accommodation_type',
+          'beds',
+          'breakfast',
+          'buyout',
+          'catering',
+          'check_in',
+          'costs',
+          'created_at',
+          'date',
+          'deal_notes',
+          'deal_type',
+          'deposit',
+          'diesel_price',
+          'distance_km',
+          'door_percent',
+          'drinks',
+          'duration_min',
+          'expected_attendance',
+          'fee',
+          'gema_reported',
+          'hospitality_notes',
+          'id',
+          'input_list_sent',
+          'invoice_status',
+          'notes',
+          'own_foh',
+          'people',
+          'petrol_price',
+          'rent',
+          'return_km',
+          'return_min',
+          'rider_sent',
+          'stage_plot_sent',
+          'status',
+          'tech_notes',
+          'ticket_door',
+          'ticket_presale',
+          'title',
+          'tolls',
+          'tour_id',
+          'type',
+          'venue_id',
+        ],
+        indexes: [
+          { name: 'gigs_date_idx_b4ca319c', columns: ['date'] },
+          { name: 'gigs_sound_engineer_id_idx_19ca55aa', columns: ['sound_engineer_id'] },
+          { name: 'gigs_tour_id_idx_be575d54', columns: ['tour_id'] },
+          { name: 'gigs_venue_id_idx_7506cf3f', columns: ['venue_id'] },
+        ],
+        summary:
+          'Recreates table gigs to apply schema changes: database/gigs/foreign-key:sound_engineer_id->.sound_engineers(id)',
+        postchecks: [
+          {
+            description: 'verify foreign key (venue_id) → venues(id) on "gigs"',
+            sql: "SELECT EXISTS (SELECT 1 FROM pragma_foreign_key_list('gigs') f WHERE f.\"table\" = 'venues' GROUP BY f.id HAVING COUNT(*) = 1 AND SUM(CASE WHEN (f.\"from\", f.\"to\") IN (('venue_id', 'id')) THEN 1 ELSE 0 END) = 1)",
+          },
+          {
+            description: 'verify foreign key (tour_id) → tours(id) on "gigs"',
+            sql: "SELECT EXISTS (SELECT 1 FROM pragma_foreign_key_list('gigs') f WHERE f.\"table\" = 'tours' GROUP BY f.id HAVING COUNT(*) = 1 AND SUM(CASE WHEN (f.\"from\", f.\"to\") IN (('tour_id', 'id')) THEN 1 ELSE 0 END) = 1)",
+          },
+          {
+            description: 'verify foreign key (sound_engineer_id) → sound_engineers(id) on "gigs"',
+            sql: "SELECT EXISTS (SELECT 1 FROM pragma_foreign_key_list('gigs') f WHERE f.\"table\" = 'sound_engineers' GROUP BY f.id HAVING COUNT(*) = 1 AND SUM(CASE WHEN (f.\"from\", f.\"to\") IN (('sound_engineer_id', 'id')) THEN 1 ELSE 0 END) = 1)",
+          },
+        ],
+        operationClass: 'destructive',
+      }),
+      this.dropColumn({ table: 'gigs', column: 'own_foh' }),
+    ];
+  }
+}
+
+MigrationCLI.run(import.meta.url, M);

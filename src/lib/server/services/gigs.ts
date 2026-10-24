@@ -72,7 +72,6 @@ export type TravelInput = {
 };
 
 export type TechInput = {
-  ownFoh: number;
   riderSent: number;
   stagePlotSent: number;
   inputListSent: number;

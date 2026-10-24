@@ -51,7 +51,6 @@
             {check.done ? "verschickt" : "offen"}
           </span>
         {/each}
-        {#if gig.ownFoh}<span class="text-muted">Eigener FOH</span>{/if}
       </div>
       {#if gig.techNotes}<p class="text-sm whitespace-pre-line">{gig.techNotes}</p>{/if}
     </div>
@@ -98,7 +97,6 @@
         label="Inputliste verschickt"
         checked={gig.inputListSent === 1}
       />
-      <Checkbox name="ownFoh" label="Eigener Tontechniker (FOH)" checked={gig.ownFoh === 1} />
     </div>
     <Field id="techNotes" label="Technik-Notizen">
       <textarea

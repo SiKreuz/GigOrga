@@ -93,7 +93,7 @@ describe("parseForm", () => {
     );
     expect(result).toMatchObject({
       success: true,
-      data: { ownFoh: 0, backline: [{ name: "Drumset", provider: "venue" }] },
+      data: { riderSent: 0, backline: [{ name: "Drumset", provider: "venue" }] },
     });
   });
 
