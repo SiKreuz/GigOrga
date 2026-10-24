@@ -1,6 +1,7 @@
 <script lang="ts">
   import ListEditor from "$lib/components/ListEditor.svelte";
   import Section from "$lib/components/Section.svelte";
+  import { timesOf } from "$lib/daysheet";
   import { timetableKinds } from "$lib/labels";
   import type { GigDetail, TimetableRow } from "$lib/server/services/gigs";
   import { Clock, Lock, LockOpen } from "@lucide/svelte";
@@ -18,7 +19,7 @@
     label: "",
     fixed: 0,
   });
-  const filled = $derived(gig.timetable.filter((entry) => entry.start));
+  const filled = $derived(timesOf(gig));
 </script>
 
 <Section id="zeitplan" title="Zeitplan" icon={Clock} action="?/timetable" bind:editing>
