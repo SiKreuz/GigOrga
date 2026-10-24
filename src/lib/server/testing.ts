@@ -9,7 +9,8 @@ import { test as base } from "vitest";
 import contractJson from "../../../prisma/contract.json" with { type: "json" };
 import { createDb } from "./db";
 import { type ContactInput, createContact } from "./services/contacts";
-import { createGig, type GigBasics, type NewGig } from "./services/gigs";
+import type { GigBasics, NewGig } from "./services/gigInputs";
+import { createGig } from "./services/gigs";
 import { upsertUserFromClaims, type UserClaims } from "./services/users";
 import { createVenue, type VenueInput } from "./services/venues";
 

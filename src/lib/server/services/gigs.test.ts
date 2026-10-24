@@ -1,4 +1,5 @@
 import { createCar } from "$lib/server/services/cars";
+import type { TechInput } from "$lib/server/services/gigInputs";
 import {
   defaultBackline,
   defaultTimetable,
@@ -6,7 +7,6 @@ import {
   getGig,
   linkContact,
   listGigs,
-  type TechInput,
   unlinkContact,
   updateDeal,
   updateGig,

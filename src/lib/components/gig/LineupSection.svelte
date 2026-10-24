@@ -1,7 +1,8 @@
 <script lang="ts">
   import ListEditor from "$lib/components/ListEditor.svelte";
   import Section from "$lib/components/Section.svelte";
-  import type { GigDetail, SupportActRow } from "$lib/server/services/gigs";
+  import type { SupportActRow } from "$lib/server/services/gigInputs";
+  import type { GigDetail } from "$lib/server/services/gigs";
   import { ExternalLink, Mic } from "@lucide/svelte";
 
   let {

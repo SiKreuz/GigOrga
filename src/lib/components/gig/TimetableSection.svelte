@@ -3,7 +3,8 @@
   import Section from "$lib/components/Section.svelte";
   import { timesOf } from "$lib/daysheet";
   import { timetableKinds } from "$lib/labels";
-  import type { GigDetail, TimetableRow } from "$lib/server/services/gigs";
+  import type { TimetableRow } from "$lib/server/services/gigInputs";
+  import type { GigDetail } from "$lib/server/services/gigs";
   import { Clock, Lock, LockOpen } from "@lucide/svelte";
 
   let {
