@@ -46,15 +46,22 @@ export default defineConfig({
     categories: {
       correctness: "error",
       pedantic: "error",
+      suspicious: "error",
+      perf: "error",
     },
     rules: {
       "typescript/prefer-readonly-parameter-types": "off",
+      "typescript/consistent-return": "off",
+      "oxc/no-map-spread": "off",
+      "import/no-unassigned-import": ["error", { allow: ["**/*.css"] }],
     },
     overrides: [
       {
         files: ["**/*.test.ts"],
         rules: {
           "eslint/max-lines-per-function": "off",
+          "eslint/no-await-in-loop": "off",
+          "typescript/no-unsafe-type-assertion": "off",
           "vitest/no-standalone-expect": [
             "error",
             { additionalTestBlockFunctions: ["test", "test.for"] },

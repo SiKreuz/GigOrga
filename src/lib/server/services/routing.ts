@@ -127,6 +127,7 @@ export async function routeTour(
 ): Promise<{ ok: true } | { ok: false; message: string }> {
   const tour = await getTour(db, tourId);
   for (const stop of tour?.stops ?? []) {
+    // oxlint-disable-next-line no-await-in-loop -- each stop starts at the previous one; geocoder allows 1 req/s
     const result = await routeToGig(db, config, stop.id);
     if (!result.ok) return { ok: false, message: `${stop.title}: ${result.message}` };
   }

@@ -10,6 +10,8 @@ export type OidcSettings = {
 
 export type LoginChecks = { state: string; nonce: string; codeVerifier: string };
 
+const text = (value: unknown) => (typeof value === "string" ? value : "");
+
 export function createOidc({ issuer, clientId, clientSecret, redirectUri, fetch }: OidcSettings) {
   let configuration: Promise<client.Configuration> | undefined;
 
@@ -55,7 +57,6 @@ export function createOidc({ issuer, clientId, clientSecret, redirectUri, fetch 
       });
       const claims = tokens.claims();
       if (!claims) throw new Error("ID token missing");
-      const text = (value: unknown) => (typeof value === "string" ? value : "");
       return { sub: claims.sub, email: text(claims.email), name: text(claims.name) };
     },
   };
