@@ -20,7 +20,8 @@ export default defineConfig({
       start: { command: "bun ./build/index.js", cache: false, dependsOn: ["build"] },
       test: { command: "bun --bun vp test run", cache: { input: generated } },
       check: {
-        command: "svelte-kit sync && vp check && svelte-check --tsgo --tsconfig ./tsconfig.json",
+        command:
+          "svelte-kit sync && vp check && svelte-check --tsgo --fail-on-warnings --tsconfig ./tsconfig.json",
         cache: { input: generated },
       },
       fix: { command: "vp check --fix", cache: false },
